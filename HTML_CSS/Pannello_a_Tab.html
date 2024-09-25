@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <style>
+            #tabs { font-family: Verdana, sans-serif; font-size: 14px; }
+            #tabs li {
+                list-style: none;
+                float: left;
+                width: 150px;
+                height: 35px;
+                margin: 0 5px;
+            }
+            #tabs li a {
+                background-color: #dedede;
+                color: #222;
+                font-weight: bold;
+                text-decoration: none;
+                width: 150px;
+                height: 35px;
+                display: block;
+                float: left;
+                line-height: 35px;
+                text-align: center;
+            }
+            #tabs li a:hover, #tabs li a:active {
+                background-color: #ededed;
+            }
+            div.content {
+                color: #222;
+                font-family: Verdana;
+                font-size: 12px;
+                background-color: #efefef;
+                padding: 25px;
+                width: 600px;
+                height: 350px;
+                line-height: 22px;
+            }
+            #container {
+                clear: both;
+                height: 400px; /* 350px + 25px (padding sx) + 25px (padding dx) */
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <ul id="tabs">
+            <li><a href="#tab1">Tab 1</a></li>
+            <li><a href="#tab2">Tab 2</a></li>
+            <li><a href="#tab3">Tab 3</a></li>
+       </ul>
+       <div id="container">
+           <div class="content">
+               <a name="tab1" id="tab1"></a>
+               <h2>Tab 1</h2>
+               <p>Contenuto Tab1</p>
+           </div>
+
+           <div class="content">
+               <a name="tab2" id="tab2"></a>
+               <h2>Tab 2</h2>
+               <p>Contenuto Tab2</p>
+           </div>
+           
+           <div class="content">
+            <a name="tab3" id="tab3"></a>
+            <h2>Tab 3</h2>
+            <p>Contenuto Tab3</p>
+        </div>
+       </div>
+    </body>
+</html>

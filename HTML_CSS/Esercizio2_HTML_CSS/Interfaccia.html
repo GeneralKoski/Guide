@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="Logo.png">
+    <title>Lista Aule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100%;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;  
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #004085;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 10px;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            padding-bottom: 5px;
+            color: white;
+            font-size: 20px;
+            border-bottom: 2px solid #3a84cf;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #0056b3;
+        }
+
+        .content {
+            width: 100%;
+            margin-left: 260px;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgb(222, 222, 222);   
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        a {
+            font-style: none;
+            color: rgb(53, 53, 182);
+            text-decoration: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: white;
+        }
+
+        .badge-giallo { background-color: #f0ad4e; color: #f0ad4e}
+        .badge-aqua { background-color: aqua; color:aqua}
+        .badge-blucadet { background-color: cadetblue; color:cadetblue}
+        .badge-violetto { background-color: #9263d4; color:#9263d4}
+        .badge-marrone { background-color: brown; color:brown}
+        .badge-marroncino { background-color: rgba(149, 55, 55, 0.35); color:rgba(149, 55, 55, 0.35)}
+        .badge-blu { background-color: blue; color:blue}
+        .badge-grigio { background-color: grey; color:grey}
+        .badge-rosa { background-color: palevioletred; color:palevioletred}
+        .check-icon {
+            color: green;
+            font-size: 18px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            width: 25%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .search-container button {
+            padding: 8px 12px;
+        }
+
+        @media screen and (max-width: 1280px){
+            .sidebar {
+                width: 180px;
+            }
+
+            .content {
+                margin-left: 180px;
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            .sidebar {
+                visibility: hidden;
+            }
+            .content {
+                margin-left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><img src="LogoMenu.png" width="30px" height= "20px"> Uomo e Ambiente</h2>
+        <ul>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Dashboard</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Auto</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Collaboratori</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Clienti</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Aule</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Sedi UeA</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Formazione</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Planning</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Fatturazione</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Convocazioni</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Report</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h2>Home/Lista Aule</h2>
+        <div class="search-container">
+            <input type="text" placeholder="Digita">
+            <button>Aggiungi</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Riferimento Tipo</th>
+                    <th>Capienza</th>
+                    <th>Costo giornaliero</th>
+                    <th style="min-width: 115px;">Utilizzo</th>
+                    <th>Colore</th>
+                    <th>Internet</th>
+                    <th>Acqua</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="#">Aosta</a></td>
+                    <td>U&A</td>
+                    <td><a href="#">Aosta</a></td>
+                    <td>20</td>
+                    <td>-</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-giallo">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">APPARTAMENTO</a></td>
+                    <td>U&A</td>
+                    <td><a href="#">Torino</a></td>
+                    <td>1</td>
+                    <td>-</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-aqua">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">NEWCLEO</a></td>
+                    <td>Cliente</td>
+                    <td><a href="#">NEWCLEO S.R.L.</a></td>
+                    <td>35</td>
+                    <td>-</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-blucadet">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Padova</a></td>
+                    <td>U&A</td>
+                    <td><a href="#">Padova</a></td>
+                    <td>35</td>
+                    <td>-</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-violetto">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">R.A.V.</a></td>
+                    <td>Cliente</td>
+                    <td><a href="#">R.A.V. S.p.A.</a></td>
+                    <td>35</td>
+                    <td>-</td>
+                    <td>Teorica, Pratica</td>
+                    <td><span class="badge badge-marrone">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Torino - Ferrero</a></td>
+                    <td>Cliente</td>
+                    <td><a href="#">UOMO & AMBIENTE SRL SOCIETA' BENEFIT</a></td>
+                    <td>24</td>
+                    <td>€1,00</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-marroncino">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Torino - Montalcini</a></td>
+                    <td>U&A</td>
+                    <td><a href="#">Torino</a></td>
+                    <td>15</td>
+                    <td>-</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-blu">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Torino - Olivetti</a></td>
+                    <td>U&A</td>
+                    <td><a href="#">Torino</a></td>
+                    <td>25</td>
+                    <td>-</td>
+                    <td>Teorica</td>
+                    <td><span class="badge badge-grigio">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+                <tr>
+                    <td><a href="#">Torino - Saletta</a></td>
+                    <td>U&A</td>
+                    <td><a href="#">Torino</a></td>
+                    <td>9</td>
+                    <td>-</td>
+                    <td>Teorica, Pratica</td>
+                    <td><span class="badge badge-rosa">.</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><span class="check-icon">✔</span></td>
+                    <td><button>Modifica</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

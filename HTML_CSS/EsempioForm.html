@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <style>
+            * { margin: 0; padding: 0; }
+            body {
+                background: #F6F9FE;
+                color: #69B1D9;
+                font-family: Verdana, sans-serif;
+                font-size: 12px;
+            }
+            form { margin: 20px; }
+            fieldset { border: none; }
+            legend { font-size: 16px; font-weight: bold; }
+            fieldset fieldset legend {
+                font-size: 12px;
+                font-weight: bold;
+                padding: 5px 0;
+            }
+            ul li { list-style: none; margin: 20px 10px; }
+
+            input, textarea, select {
+                border: 1px solid #C6CFE2;
+                background: #F7FBFE;
+                padding: 2px;
+            }
+            label {
+                padding: 2px;
+                width: 80px;
+                display: block;
+                float: left;
+                font-weight: bold;
+            }
+            fieldset fieldset label {
+                margin-left: 50px;
+                width: 50px;
+            }
+            fieldset fieldset input {
+                border: none;
+                float: left;
+            }
+            #submit {
+                background: #69B1D9;
+                color: #fff;
+                font-weight: bold;
+                padding: 2px 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <form action="#">
+            <fieldset>
+                <legend>Inserisci i tuoi dati</legend>
+                <ul>
+                 <li>
+                   <label for="titolo">Titolo</label>
+                   <select name="titolo" id="titolo">
+                    <option value="">Sig.</option>
+                    <option value="">Sig.ra</option>
+                   </select>
+                 </li>
+                 <li>
+                  <label for="nome">Nome</label>
+                  <input type="text" name="nome" id="nome" />
+                 </li>
+                 <li>
+                  <fieldset>
+                   <legend>Sesso</legend>
+                    <label for="sessom">Uomo</label>
+                    <input type="radio" name="sesso" id="sessom" />
+                    <label for="sessof">Donna</label>
+                    <input type="radio" name="sesso" id="sessof" />
+                  </fieldset>
+                 </li>
+                 <li>
+                  <fieldset>
+                   <legend>Interessi</legend>
+                    <label for="interessim">Musica</label>
+                    <input type="checkbox" name="interessi" id="interessim" />
+                    <label for="interessis">Sport</label>
+                    <input type="checkbox" name="interessi" id="interessis" />
+                    <label for="interessil">Libri</label>
+                    <input type="checkbox" name="interessi" id="interessil" />
+                  </fieldset>
+                 </li>
+                 <li>
+                   <label for="biografia">Biografia</label>
+                   <textarea name="biografia" id="biografia" cols="30" rows="10"></textarea>
+                 </li>
+                 <li>
+                  <input type="submit" name="submit" id="submit" value="Invia" />
+                 </li>
+              </ul>
+            </fieldset>
+          </form>
+    </body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <title>Ciao Mondo!</title>
+    
+    <!-- per dare lo stile con CSS definisco nella head nel paragrafi style
+     successivamente nel body inserisco la div riguardante-->
+    <style type="text/css">
+        #logo {
+           position:absolute;
+           left:200;
+           top:50;
+           width:600px;
+           height:80px;
+           background-image: url(sfondo.gif);
+           border: 1px solid #000000;
+        }
+
+        li + li {color: blue;}
+        
+        li {color: green;} /* CSS collegato */
+        li {color: red !important;} /* CSS incorporato */
+        li {color: black;} /* CSS in linea */   
+
+    </style>
+</head>
+<body>
+    <h1>Ciao Mondo!</h1>
+    <a class="hover">Questa e' la nostra prima pagina HTML!</a> <br>
+    <img src="Prova.avif" height="38" width="38">
+    <a hred="#" onclick="alert('Ciao');">clicca qui</a>
+    <div id="logo">
+        <img src="Prova.avif" alt="HTML.it" title="HTML.it" width="224" height="69">
+        <img src="Prova.avif" alt="HTML.it" title="HTML.it" width="59" height="70">
+    </div>
+    <ul id="elenco">
+        <li data-indirizzo="Piazza la lenza" data-telefono="3863535555">Luca</li>
+        <li data-indirizzo="Via le mani dal naso" data-telefono="3164192342">Paolo</li>
+        <li data-indirizzo="Largo la loggia" data-telefono="3213344314">Umberto</li>
+    </ul>
+    <p>Nel primo paragrafo di questa trattazione, ci occuperemo
+        dell'importanza del testo nel Web. Grazie ad un semplice esempio
+        possiamo sperimentare molte cose.
+    </p>
+    <p>Per default il browser manderà a capo il contenuto di questo
+        secondo paragrafo.
+    </p>
+    <p>
+        Questo è un testo che va a capo
+        spesso all'interno dell'editor
+        tuttavia i browser ignoreranno
+        questo fatto e considereranno <br>
+        il testo come una singola
+        riga continua, che va a capo
+        solo quando incontra il limite
+        del proprio contenitore
+        Questo è un testo che va a capo due volte<br>
+        <br>
+        nel browser il risultato somiglia alla separazione
+        tra due paragrafi
+    </p>
+
+    <h1>Casa</h1>
+    <h2>Acquistare la casa</h2>
+    <h3>Le pratiche per l'acquisto di casa</h3>
+    <h3>Agenzie immobiliari, quali scegliere</h3>
+    <h2>Arredare la casa</h2>
+    <h3>Come scegliere la cucina per la nuova casa</h3>
+    <h3>Lampadari, tipologie e differenze</h3>
+    
+    <strong>Questo testo è potente</strong> <br>
+    <b>Questo testo è b</b><br>
+    <em>Questo testo è em</em><br>
+    <i>Questo testo è i</i><br><br>
+    
+    <blockquote>
+        <p>[...] fatti non foste a viver come bruti, ma per seguir virtute e canoscenza</p>
+        <cite>Inferno Canto XXVI - La Divina Commedia</cite>
+    </blockquote>
+    
+    <p>Avrei spronato i miei colleghi a fare di più, li avrei incalzati citando <cite>Dante Alighieri</cite>: "<q>Fatti non foste a viver come bruti</q>".</p>
+
+    <p>In questa guida approfondiamo l'<abbr title="HyperText Markup Language">HTML</abbr> e ne esploriamo i tag e le potenzialità espressive.</p>
+    
+    <dfn title="Insieme di componenti software, che rende operativi computer, apparati e dispositivi informatici">Sistema Operativo</dfn>
+
+    <p>Prova apice: E = mc<sup>2</sup></p>
+    <p>Prova pedice: <var>x<sub>i</sub></var></p>
+
+    <pre>
+        <code>
+        for (i=0;i<5;i++) {
+            console.log("i = "+i);
+        }
+        </code>
+    </pre>
+
+    <!-- questo è un commento -->
+    <p>Questo paragrafo si vede</p>
+    <!--
+    <p>Questo paragrafo non si vede</p>
+    -->
+
+    <div id="main">
+        <article>
+        ...
+        contenuto
+        </article>
+        <div class="mybox">
+        <ul>
+        <li>... </li>
+        <li>contenuto</li>
+        </ul>
+        </div><!--/.mybox-->
+    </div><!--/#main-->
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/CSS" href="stile-per-IE7.css">
+    <![endif]-->
+    <p>Prima lista non ordinata</p>
+    <ul>
+        <li>primo elemento</li>
+        <li>secondo elemento</li>
+        <li>terzo elemento</li>
+    </ul>
+
+    <br>
+    <p>Seconda lista non ordinata</p>
+
+    <ul>
+        <li>primo della 1a lista</li>
+        <li>secondo della 1a lista
+            <ul>
+                <li>primo della 2a lista</li>
+                <li>secondo della 2a lista
+                    <ul>
+                        <li>primo della 3a lista</li>
+                    </ul>
+                </li>
+                <li>terzo della 2a lista</li>
+            </ul>
+        </li>
+    </ul>
+
+    <br>
+    <p>Prima lista ordinata</p>
+    Testo che precede la lista
+    <ol>
+        <li>primo elemento</li>
+        <li>secondo elemento</li>
+        <li>terzo elemento</li>
+    </ol>
+    Testo che segue la lista
+
+    <br>
+    <p>Seconda lista ordinata con varietà di puntatori</p>
+    <ol type="1"><!-- numeri -->
+        <li>Primo livello
+            <ol type="a"><!-- lettere -->
+                <li>Secondo livello
+                    <ol type="I"><!-- numeri romani -->
+                        <li>Terzo livello</li>
+                        <li>Terzo livello</li>
+                    </ol>
+                </li>
+                <li>Secondo livello</li>
+            </ol>
+        </li>
+        <li>Primo livello</li>
+    </ol>
+    <br>
+    <p>Terza lista numerata con incrementi di numero</p>
+    <!-- lista che parte da 10 -->
+    <ol start="10">
+        <li>elemento</li>
+        <li>elemento</li>
+        <!-- da questo punto in poi contiamo a partire da 30 -->
+        <li value="30">elemento</li>
+        <li>elemento</li>
+    </ol>
+
+    <br>
+    <p>Elenco ordinato, perfetto per definizioni</p>
+    Ecco i principali tag per delimitare il testo:
+    <dl>
+        <dt>p</dt>
+        <dd>individua l'apertura di un nuovo paragrafo</dd>
+        <dt>div</dt>
+        <dd>individua l'apertura di un nuovo blocco di testo</dd>
+        <dt>span</dt>
+        <dd>individua l'apertura di un elemento inline, cui attribuire
+            una formattazione atraverso gli stili</dd>
+    </dl>
+    ci sono poi altri tag che...
+
+    <br><br>
+    <p>Inserimento di tabella basilare</p>
+    
+    <table>
+        <tr><td>Colonna 1</td><td>Colonna 2</td></tr>
+        <tr><td>Dato 1,1</td><td>Dato 1,2</td></tr>
+        <tr><td>Dato 2,1</td><td>Dato 2,2</td></tr>
+        <tr><td>Dato 3,1</td><td>Dato 3,2</td></tr>
+    </table>
+
+    <br>
+    <p>Inserimento di tabella piu' completa</p>
+    <table>
+        <caption>
+        <p>I miei dati</p>
+        </caption>
+        <thead>
+        <tr><th>Colonna 1</th><th>Colonna 2</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Dato 1,1</td><td>Dato 1,2</td></tr>
+            <tr><td>Dato 2,1</td><td>Dato 2,2</td></tr>
+            <tr><td>Dato 3,1</td><td>Dato 3,2</td></tr>
+            </tbody>
+        <tfoot>
+        <tr><td>Totale 1</td><td>Totale 2</td></tr>
+        </tfoot>
+    </table>
+
+    <br>
+    <p>esempio tabella con colgroup</p>
+    <table>
+        <colgroup id="a" span="3"></colgroup>
+        <colgroup id="b">
+        <col id="b1">
+        <col id="b2" span="2">
+        </colgroup>
+        <thead>
+        <tr><th>head</th><th>head</th><th>head</th><th>head</th><th>head</th><th>head</th></tr>
+        </thead>
+        <tbody>
+        <tr><td>cell</td><td>cell</td><td>cell</td><td>cell</td><td>cell</td><td>cell</td></tr>
+        <tr><td>cell</td><td>cell</td><td>cell</td><td>cell</td><td>cell</td><td>cell</td></tr>
+        <tr><td>cell</td><td>cell</td><td>cell</td><td>cell</td><td>cell</td><td>cell</td></tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p>Tabella annidata</p>
+    <table>
+        <thead>
+        <tr><th>Campo</th><th>Tabella</th></tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td>Campo1</td>
+        <td>
+        <table>
+        <thead><tr><th>Campo</th><th>Descrizione</th></tr></thead>
+        <tbody><tr><td>Campo1</td><td>Descrizione1</td></tr></tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p>Tabella con colonna con doppia intestazione</p>
+    <table>
+        <thead>
+            <tr><th colspan="2">double head</th><th>head</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>cell</td><td>cell</td><td>cell</td></tr>
+            <tr><td>cell</td><td>cell</td><td>cell</td></tr>
+            <tr><td>cell</td><td>cell</td><td>cell</td></tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p>Tabella con cella che occupa tutta una riga</p>
+
+    <table>
+        <thead>
+            <tr><th>Lunedì</th><th>Mercoledì</th><th>Venerdì</th></tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="3">Cyclette</td></tr>
+            <tr><td>Esercizi spalle</td><td>Pettorali</td><td>Tricipiti</td></tr>
+            <tr><td>Squat</td><td>Estensioni gambe</td><td>Polpacci</td></tr>
+        </tbody>
+    </table>
+
+    <br>
+    <p>Tabella con cella che occupa 2 righe in verticale</p>
+    <table>
+        <thead>
+            <tr><th>head</th><th>head</th><th>head</th></tr>
+        </thead>
+        <tbody>
+            <tr><td rowspan="2">double row cell</td><td>cell</td><td>cell</td></tr>
+            <tr><td>cell</td><td>cell</td></tr>
+            <tr><td>cell</td><td>cell</td><td>cell</td></tr>
+        </tbody>
+    </table>
+    <br>
+    <p>Tabella Completa</p>
+    <table>
+        <caption>Orario III B</caption>
+        <thead>
+            <tr>
+                <th>Ora</th><th>Lunedì</th><th>Martedì</th><th>Mercoledì</th><th>Giovedì</th><th>Venerdì</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>I</th>
+                <td rowspan="3">Italiano</td><td>Geografia</td><td nowrap>Ed. artistica</td><td colspan="2">Ed. Musicale</td>
+            </tr>
+            <tr>
+                <th>II</th>
+                <td rowspan="2">Scienze</td><td rowspan="2">Ed. fisica</td><td colspan="2">Matematica</td>
+            </tr>
+            <tr>
+                <th>III</th>
+                <td colspan="2">Italiano</td>
+            </tr>
+            <tr>
+                <th>IV</th>
+                <td>Storia</td><td>Matematica</td><td>Geografia</td><td colspan="2">Ed. tecnica</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br><br>
+    <p>Collegamenti Ipertestuali:</p>
+    I contenuti per sviluppatori sono su
+    <a href="https://www.html.it/">HTML.it</a>.
+    <br>
+    Esempio di collegamento per e-mail:
+    <a href="mailto:tuaMail@nomeTuoSito.it">
+        Invia una email
+    </a>
+    <br>
+    Per collegarsi ad una pagina all'interno di una cartella in locale:
+    <a href="cartellaprincipale/eventualesottocartelle/pagina.html">Visita la sotto-pagina</a>
+    <br>
+    Partendo dall'interno di una doppia sotto-cartella, collegarsi ad una pagina fuori da essa:
+    <a href="../../index.html">Visita la pagina principale</a>
+
+    <br><br>
+    se punti alla scritta, esce la descrizione completa
+    <a title="in HTML.it puoi trovare risorse per webmaster"
+    href="https://www.html.it/" target="_blank" >
+    Visita HTML.it
+    </a>
+
+    <br><br>
+    Specifico il linguaggio del sito al quale ci si collega
+    Nel sito del <a rel="nofollow" href="http://www.w3c.org/" hreflang="eng" target="_blank">World Wide Web Consortium</a> puoi trovare le specifiche dell'HTML in lingua inglese
+
+    <br><br>
+    Cliccando il seguente link, apre la pagina in una finestra targettata, in questo caso in una nuova finestra
+    <a target="_blank" href="http://www.html.it">visita HTML.IT</a>
+
+    <br><br>
+    Specifico che cliccando h sulla tastiera, mi porta in homepage
+    <a href="https://www.html.it/" accesskey="h" target="_blank" >Torna all'home page di HTML.it</a>
+
+
+    <br><br>
+    Inserisco un'immagine con testo alternativo in caso di fallimento di upload
+    <img src="https://miosito.it/miaImmagine.png" alt="Mia Immagine">
+
+    <br><br>
+    includi un file audio
+    <audio controls>
+        <source src="musica.mp3" type="audio/mp3">
+    </audio>
+
+    <br><br>
+    includi un file video
+    <video width="320" height="240" controls>
+        <source src="video.mp4" type="video/mp4">
+        <source src="video.ogg" type="video/ogg">
+    Il browser non supporta il tag video
+    </video>
+
+    <br><br><br><br>
+    definita la classe "formattaTitoli per dare un formato ai titoli
+    <p class="formattaTitoli">
+        titolo 1
+    </p>
+
+    <br><br>
+    definisco il colore dello sfondo
+    <body style="background-color:white"></body>
+    <br><br>
+    definisco una tabella colorata
+    <table width="75%" border="1" align="center" bgcolor="#00FF00">
+        <tr>
+        <td width="50%" bgcolor="#FF0000">
+        <font color="#FFFFFF">prova</font>
+        </td>
+        <td width="50%"></td>
+        </tr>
+    </table>
+
+    <br><br>
+    creare un form
+    <form action=ìì>
+        <fieldset>
+         <legend>Dati anagrafici</legend>
+         <label>Anno di nascita: <input type="text"></label>
+        </fieldset>
+    </form>
+
+   <br><br>
+   bottone per cancellare le cose scritte
+    <form action=ìì>
+        <input type="text"><br>
+        <input type="reset" value="cancella">
+    </form> 
+
+    <br><br>
+    bottone per mandare al sito
+    <form action=http://www.html.it target="_blank">
+        <input type="submit"value="visita HTML.it">
+    </form>
+
+    <br><br>
+    si può creare un bottone con input type button per creare un bottone generico utilizzabile poi in javascript
+
+
+    <br><br>
+    <form action=ìì>
+        <input type = "button" value = "bottone generico">
+    </form>
+
+    <br><br><br><br>
+
+    creo un form con più bottoni implementando "button"
+    <form action=http://www.html.it target="_blank">
+
+        <input type="text"><br>
+        
+        <button type="button">
+        bottone generico
+        </button>
+        
+        <button type="reset">
+        cancella
+        </button>
+        
+        <button type="submit">
+        invia
+        </button>    
+    </form>
+
+    <br><br><br>esempio "complesso" di button
+    <form action=http://www.html.it target=_blank>
+        <button name="vai" type="submit">
+        invia <br>
+        
+        <img src="Prova.avif" width="23" height="67" title="invia adesso" vspace="5" alt="invia adesso" allign="middle"><br>
+        
+        <b>invia adesso</b>
+        </button>
+    </form>
+    
+    <br><br>
+    <form action="http://www.google.it" target="_blank">
+        <button disabled = "disabled" type="submit">
+            Provaprova
+        </button>
+    </form>
+
+    <br><br><br>
+    <form action="https://www.google.it" target="_blank">
+        <input name="Invia modulo" type="image" src="Prova.avif" alt="Invia modulo" title="Invia il modulo" width="78" height="38"/>
+    </form>
+
+    <br><br>
+    campo di testo
+    <form action="ìì">
+        <input name="mioTesto" type="text" value="qui il tuo testo" size="40" maxlength="20"><br>
+        <button type="reset">
+            Cancella
+        </button><br>          
+    </form>
+    
+    <br><br>
+
+    <form>
+        <textarea name="testo" rows="3" cols="6" maxlength="18">Prova</textarea>
+        <br><button type="reset">
+            Cancella
+        </button>
+    </form>
+<br><br><br><br>
+    Inserire Password
+    <input type="password" maxlength="8" size="18" name="mioTesto" />
+    
+    <br><br><br>
+    campo di sola lettura simile al disabilitato
+    <input readonly="readonly" maxlength="8" size="25" value="leggere l'informativa" name="mioTesto" />
+    <input disabled="disabled" maxLength="8" size="25" value="leggere l'informativa" name="mioTesto" />
+    <br><br><br>
+    checkbox
+    <form action="">
+        <fieldset>
+        <legend>Linguaggi conosciuti</legend><br>
+        <input type="checkbox" name="html" value="html" checked="checked"/> html
+        <br />
+        <input type="checkbox" name="css" value="css"/> css
+        <br />
+        <input type="checkbox" name="javascript" value="javascript" disabled="disabled"/> JavaScript
+        </fieldset>
+    </form>
+    <br><br><br> Radio button<br>
+    <form action="">
+        <fieldset>
+        <legend>Linguaggi conosciuti</legend>
+        HTML <input type="radio" name="linguaggio" value="html"/><br>
+        CSS <input type="radio" name="linguaggio" value="css" checked="checked"/><br>
+        JavaScript <input type="radio" name="linguaggio" value="javascript" disabled="disabled"/>
+        </fieldset>
+    </form>
+
+        <br><br><br>Menu di opzioni
+        <form>
+            <fieldset>
+            <legend>Siti per webmaster</legend>
+            <select name="siti" >
+            <option value="http://www.html.it" selected="selected">www.html.it </option>
+            <option value="http://freephp.html.it">frephp.html.it </option>
+            <option value="http://freasp.html.it">freasp.html.it </option>
+            </select>
+            </fieldset>
+        </form>
+        <br><br><br>
+        <form>
+            <fieldset>
+            <legend>Siti per webmaster:</legend>
+            <select name="Siti">
+                <optgroup label="Siti">
+                    <option value="html.it">HTML</option>
+                    <option value="html.it">CSS</option>
+                    <option value="html.it">JavaScript</option>
+                </optgroup>
+            </select>
+            </fieldset>
+        </form>
+    <br><br><br>
+    <form action="">
+        <label>Quale siti visiti?<br>
+        <select name="siti" size="5" multiple="multiple">
+        <option value="http://www.html.it">www.html.it </option>
+        <option value="http://freephp.html.it">frephp.html.it </option>
+        <option value="http://freasp.html.it">freasp.html.it </option>
+        <option value="http://font.html.it">font.html.it </option>
+        <option value="http://cgipoint.html.it" >cgipoint.html.it </option>
+        </select>
+        </label>
+    </form>
+<br><br><br>
+<input type="hidden" name="urlDiProvenienza" value="www.html.it">
+ <br><br>
+    per far caricare un file
+    <form action="">
+        <input name="fileUtente" type="file" size="20">
+    </form>
+
+    <br><br>Esempio concreto<br>
+    <form>
+    <fieldset>
+        <legend>Dati Utente</legend>
+        <label>Nome:        <input name="nome"    type="text" size="20" maxlength="30"></label>
+        <label>Cognome:     <input name="cognome" type="text" size="20" maxlength="30"></label>
+        <label>Professione: <input name="cognome" type="text" size="20" maxlength="30"/></label>
+    </fieldset>
+    <br/>
+    <fieldset>
+        <legend>Questionario</legend>
+        <label>Siti visitati:<br>
+            <select name="siti" size="5" multiple="multiple">
+            <option value="http://www.html.it">www.html.it</option>
+            <option value="http://freephp.html.it">frephp.html.it</option>
+            <option value="http://freasp.html.it">freasp.html.it</option>
+            <option value="http://font.html.it">font.html.it</option>
+            <option value="http://cgipoint.html.it" >cgipoint.html.it </option>
+            </select>
+        </label>
+    </fieldset>
+    <br/>
+    
+    <fieldset>
+        <legend>Campo libero</legend>
+        <label>Lasciami un parere:<br>
+            <textarea name="parere" cols="20" rows="10"></textarea>
+        </label><br>
+    </fieldset>
+    <br/>
+    <button type="reset">annulla</button>
+    <button type="submit">invia</button>
+    </form>
+
+    <br><br><br><br>Creo un form fatto a tabella, indicizzando il movimento delle celle attraverso TAB <br>
+    <form action="datiUtente">
+        <fieldset>
+         <legend>Dati utente</legend>
+       
+         <table width="300" border="1" cellspacing="0" cellpadding="5">
+          <tr>
+           <td>
+            <label>Nome:
+             <input tabindex="1" name="nome" type="text" size="30" maxlength="30"/>
+            </label>
+           </td>
+           <td>
+            <label>Professione:
+             <input tabindex="3" name="professione" type="text" size="30" maxlength="100"/>
+            </label>
+           </td>
+          </tr>
+       
+          <tr>
+           <td>
+            <label>Cognome:
+             <input tabindex="2" name="cognome" type="text" size="30" maxlength="30"/>
+            </label>
+           </td>
+           <td>
+            <label>Telefono:
+                <input tabindex="4" name="numero" type="text" size="30" maxlength="10">
+            </label>
+           </td>
+          </tr>
+         </table>
+        </fieldset>
+       </form>
+
+       <br><br><br><br>
+
+       <ul>
+        <li>List Item 1</li>
+        <p>List Item 2</p>
+        <li>List Item 3</li>
+        <li>List Item 4</li>
+        <li>List Item 5</li>
+        </ul>
+
+
+
+        <li style="color: white;">Questo [...]</li> 
+
+
+
+
+
+
+
+</body>
+</html>

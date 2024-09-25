@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="Logo.png">
+    <title>Uomo e Ambiente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;  
+        }
+        .sidebar {
+            width: 18%;
+            max-width: fit-content;
+            background-color: #004085;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 10px;
+            height: 100%;
+        }
+
+        .sidebar h2 {
+            padding-bottom: 5px;
+            color: white;
+            font-size: 20px;
+            border-bottom: 2px solid #3a84cf;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #0056b3;
+        }
+
+        .content {
+            width: 78%;
+            margin-left: 260px;
+            padding: 20px;
+            position: relative;
+            height: 80%;
+            position: fixed;
+        }
+
+        .content div {
+            background-color: white;
+            color: black;
+            width: 48%;
+            position: absolute;
+        }
+
+        .Blocco1 {
+            left: 1,5%;
+            top: 15%;
+            width: 48%;
+            height: auto;
+            border: 1px solid rgb(185, 185, 185);
+            border-radius: 10px;
+            padding: 5px;   
+        }
+
+        .Blocco2 {
+            top: 15%;
+            left: 52%;
+            width: 48%;
+            height: auto;
+            border: 1px solid rgb(185, 185, 185);
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .Blocco3 {
+            left: 1,5%;
+            top: 53%;
+            width: 48%;
+            height: auto;
+            border: 1px solid rgb(185, 185, 185);
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        .Blocco4 {
+            left: 52%;
+            top: 53%;
+            width: 48%;
+            height: auto;
+            border: 1px solid rgb(185, 185, 185);
+            border-radius: 10px;
+            padding: 5px;
+        }
+
+        fieldset {
+            border: 0;
+        }
+
+        h4 {
+            text-decoration: solid;
+            margin: 3px;
+            padding: 0px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .colore {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 1280px){
+            .sidebar {
+                width: 180px;
+            }
+
+            .content {
+                margin-left: 180px;
+                width: 80%;
+                height: 100%;
+                overflow: scroll;
+            }
+
+            h3 {
+                padding: 0;
+                margin: 10px;
+                border: 0;
+            }
+
+            .Blocco1 {
+                top: 15%;
+                width: 48%;
+                overflow: scroll;
+            }
+            .Blocco2 {
+                top: 15%;
+                width: 48%;
+                overflow: scroll;
+            }
+            .Blocco3 {
+                top: 53%;
+                width: 48%;
+                height: 40%;
+                overflow: scroll;
+            }
+            .Blocco4 {
+                top: 53%;
+                width: 100%;
+                overflow:scroll;
+            }
+
+            .content div {
+                width: 48%;
+            }
+        }
+
+        @media screen and (max-width: 800px) {
+            .sidebar {
+                visibility: hidden;
+            }
+            .content {
+                width: 98%;
+                margin: 0px;
+                padding: 0px;
+                height: 100%;
+                overflow: hidden;
+                
+            }
+
+            h3 {
+                padding: 0px;
+                margin: 20px;
+                border: 0px;
+                clear: both;
+                text-align: center;
+            }
+            .Blocco1 {
+                width: 48%;
+                overflow: scroll;
+                height: 30%;
+                
+            }
+            .Blocco2 {
+                width: 48%;
+                height: 30%;
+                overflow: scroll;
+                
+            }
+            .Blocco3 {
+                width: 48%;
+                height: 30%;
+                overflow: scroll;
+                
+            }
+            .Blocco4 {
+                width: 100%;
+                height: 30%;
+                overflow:scroll;
+                
+            }
+
+            .content div {
+                width: 45%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><img src="LogoMenu.png" width="30px" height= "20px"> Uomo e Ambiente</h2>
+        <ul>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Dashboard</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Auto</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Collaboratori</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Clienti</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Aule</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Sedi UeA</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Formazione</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Planning</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Fatturazione</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Convocazioni</a></li>
+            <li><a href="#"><img src="LogoMenu.png" width="30px" height= "20px">Report</a></li>
+        </ul>
+    </div>
+    
+
+    <div class="content">
+        <h3>Home / Lista aule / Modifca aula</h3>
+        <div class="Blocco1">
+            <h4>Anagrafica<hr></h4>
+            <legend><span style="color: red;">* </span>Nome</legend>
+            <input name="Nome" type="text" size="75" maxlength="75">
+            
+            <br>
+            
+            <legend style="margin-top: 25px;"><span style="color: red;">* </span>Utilizzo</legend>
+            <input type="checkbox" name="Teorica" value="Teorica" checked/>Teorica
+            <input type="checkbox" name="Pratica" value="Pratica"/>Pratica    
+            
+            <br>
+            
+            <legend style="margin-top: 25px;"><span style="color: red;">* </span>Sedi abilitate ad usare l'aula</legend>
+            <select name="Nome" style="overflow: auto">
+                <option value="Aosta" selected="selected">Aosta, Rue de la Maladiere, 90, Saint-Christophe(AO), 11020, Valle d'Aosta, Italia </option>
+                <option value="Opzione2">Opzione2</option>
+                <option value="Opzione3">Opzione3</option>
+            </select>
+        </div>
+
+
+        <div class="Blocco2">
+            <h4>Sede<hr></h4>
+            
+            <legend><span style="color: red;">* </span>Tipo</legend>
+            <button >U&A</button>
+            <button>Esterna</button>
+            <button>Cliente</button>
+                
+            <legend style="margin-top: 25px;"><span style="color: red;">* </span>Sede</legend>
+            <select name="Nome" >
+                <option value="Aosta" selected="selected">Aosta, Rue de la Maladiere, 90, Saint-Christophe(AO), 11020, Valle d'Aosta, Italia </option>
+                <option value="Opzione2">Opzione2</option>
+                <option value="Opzione3">Opzione3</option>
+            </select>
+
+            <legend style="margin-top: 25px;">Nei pressi di</legend>
+            <label><input name="Nome" type="text" size="75" maxlength="75" placeholder="Digita"></label>
+                
+        </div>
+
+
+        <div class="Blocco3">
+            <h4>Caratteristcihe<hr></h4>
+            
+            <legend>Costo giornaliero (imponibile)</legend>
+            <input name="CostoGiornaliero" type="text" size="75" maxlength="75" placeholder="Digita">
+            
+            <legend style="margin-top: 25px;"><span style="color: red;">* </span>Capienza</legend>
+            <input name="Capienza" type="text" size="75" maxlength="75" placeholder="Numero">
+
+            <legend style="margin-top: 25px;"><span style="color: red;">* </span>Colore</legend>
+            <input name="Colore" type="color" value="#f0ad4e" class="colore">
+
+            <legend style="margin-top: 25px;">Acqua</legend>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+
+            <legend style="margin-top: 25px;">Internet</legend>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+       </div>
+
+        <div class="Blocco4">
+            <h4>Informazioni aggiuntive<hr></h4>
+            
+            <legend>Contatti</legend>
+            <textarea cols="62" rows="3" placeholder="Digita"></textarea>
+            
+            <legend>Come raggiungerci</legend>
+            <textarea cols="62" rows="3" placeholder="Digita"></textarea>
+            
+            <legend>Note</legend>
+            <textarea cols="62" rows="3" placeholder="Digita"></textarea>    
+        </div>
+    </div>
+    
+</body>
+</html>
