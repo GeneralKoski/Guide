@@ -1,0 +1,240 @@
+/* Min-width 992px */
+@media (min-width: 728px) {
+    .header {
+		padding-top: 4rem;
+        padding-bottom: 4rem;
+        text-align: center;
+
+        .h1-large {
+            font-size: 3.75rem;
+            line-height: 4.625rem;
+        }
+	}
+}
+
+@media (min-width: 992px) {
+	.heading {
+		width: 33rem;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	.p-heading {
+		width: 46rem;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	.navbar {
+		padding-top: 1.75rem;
+		box-shadow: none;
+		transition: all 0.2s;
+
+        .offcanvas-collapse {
+            position: static;
+            top: auto;
+            bottom: auto;
+            left: auto;
+            width: auto;
+            padding-right: 0;
+            padding-left: 0;
+            background-color: transparent;
+            overflow-y: visible;
+            visibility: visible;
+            
+            &.open {
+                -webkit-transform: none;
+                transform: none;
+            }
+
+            .navbar-nav {
+                margin-top: 0;
+                margin-bottom: 0;
+
+                .nav-item {
+                    .nav-link {
+                        padding-right: 0.75rem;
+                        padding-left: 0.75rem;
+                    }
+
+                    .btn-outline-sm {
+                        margin-top: 0;
+                        margin-left: 0.625rem;
+                    }
+                }
+            }
+        }
+	}
+
+	.header {
+		padding-top: 12rem;
+		padding-bottom: 12rem;
+		text-align: left;
+
+        .text-container {
+            margin-bottom: 0;
+        }
+
+        .btn-solid-lg {
+            display: inline-block;
+            margin-bottom: 0;
+        }
+	}
+
+	.cards-1 {
+        .card {
+            display: inline-block;
+            width: 286px;
+            vertical-align: top;
+
+            &:nth-of-type(3n+2) {
+                margin-right: 2rem;
+                margin-left: 2rem;
+            }
+        }
+    }
+
+	.basic-1 {
+        .text-container {
+            margin-bottom: 0;
+        }
+    }
+
+	.basic-2 {
+		padding-bottom: 2rem;
+
+        .image-container {
+            margin-bottom: 0;
+        }
+	}
+
+	.basic-3 {
+        h4 {
+            width: 44rem;
+            margin-right: auto;
+            margin-left: auto;
+        }
+	}
+
+    .cards-2 {
+        .card {
+            display: inline-block;
+            width: 298px;
+            vertical-align: top;
+
+            &:nth-of-type(3n+2) {
+                margin-right: 1rem;
+                margin-left: 1rem;
+            }
+        }
+    }
+
+	.accordion {
+		width: 820px;
+		margin-right: auto;
+		margin-left: auto;
+	}
+	
+	.footer {
+        .footer-col {
+            margin-bottom: 2rem;
+        }
+
+        .first {
+            display: inline-block;
+            width: 320px;
+            margin-right: 1.75rem;
+            vertical-align: top;
+        }
+    
+        .second {
+            display: inline-block;
+            width: 320px;
+            margin-right: 1.75rem;
+            vertical-align: top;
+        }
+    
+        .third {
+            display: inline-block;
+            width: 224px;
+            text-align: right;
+            vertical-align: top;
+    
+            .fa-stack {
+                margin-right: 0;
+                margin-left: 0.375rem;
+            }
+        }
+    }
+}
+
+/* Min-width 1200px */
+@media (min-width: 1200px) {
+    .container {
+		max-width: 1140px;
+	}
+
+    .header {
+		overflow: hidden;
+		padding-top: 10rem;
+		padding-bottom: 2rem;
+
+		.image-container {
+			position: relative;
+
+			img {
+				position: absolute;
+				top: -180px;
+				left: -10px;
+				width: 840px;
+				max-width: none;
+			}
+		}
+	}
+
+    .cards-1 {
+        .card {
+            width: 310px;
+
+            &:nth-of-type(3n+2) {
+                margin-right: 5.5rem;
+                margin-left: 5.5rem;
+            }
+        }
+    }
+
+    .basic-1 {
+        h2 {
+            margin-right: 4rem;
+        }
+
+        .image-container {
+            margin-left: 4rem;
+        }
+    }
+
+    .cards-2 {
+        .card {
+            display: inline-block;
+		    width: 342px;
+
+            &:nth-of-type(3n+2) {
+                margin-right: 2.5rem;
+                margin-left: 2.5rem;
+            }
+        }
+	}
+
+    .footer {
+        .first {
+            width: 352px;
+            margin-right: 6rem;
+        }
+        .second {
+            margin-right: 6.5rem;
+        }
+        .third {
+            text-align: right;
+        }
+    }
+}

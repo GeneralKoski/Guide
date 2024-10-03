@@ -1,0 +1,74 @@
+@import "../variables.scss";
+
+.cards-2 {
+    background-color: $basicBgColor;
+    padding-top: 9rem;
+	padding-bottom: 5.25em;
+
+    h2 {
+        color: $secondaryColor
+    }
+    .heading {
+        margin-bottom: 3.75rem;
+        text-align: center;
+    }
+
+    .card {
+        margin-bottom: 3rem;
+        padding: 4rem 1rem;
+        border: 1px solid $cardBorderColor;
+        border-radius: 20px;
+        background-color: #ffffff;
+        text-align: center;
+
+        .card-body {
+            padding: 0;
+
+            .card-title {
+                margin-bottom: 2rem;
+
+                span {
+                    margin-right: 0.75rem;
+                    margin-left: 0.75rem;
+                    color: $primaryColor;
+                    font-weight: 600;
+                    font-size: 1.75rem;
+                    line-height: 2rem;
+                    letter-spacing: -0.2px;
+                }
+
+                .decoration-lines {
+                    width: 30px;
+                    margin-bottom: 0.25rem;
+                }
+
+                .decoration-lines.flipped {
+                    transform: scaleX(-1);
+                }
+            }
+
+            .list-unstyled {
+                height: 450px;
+            
+                li {
+                    margin-bottom: 0.625rem;
+                }
+            }
+
+            .price {
+                margin-bottom: 3rem;
+                color: $primaryColor;
+                font-weight: 600;
+                font-size: 3.5rem;
+                line-height: 2rem;
+                letter-spacing: -0.2px;
+
+                span {
+                    font-weight: 400;
+                    font-size: 1rem;
+                    line-height: 0;
+                }
+            }
+        }
+    }    
+}

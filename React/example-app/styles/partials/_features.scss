@@ -1,0 +1,70 @@
+@import "../variables.scss";
+
+.cards-1 {
+    padding-top: 9rem;
+    padding-bottom: 1.25rem;
+    text-align: center;
+    padding-top: 4rem;
+}
+
+.cards-1 .heading {
+    margin-bottom: 3.75rem;
+}
+
+.cards-1 .heading span {
+    color: $secondaryColor;
+    text-decoration: underline;
+}
+
+.cards-1 .card {
+    margin-bottom: 5rem;
+    border: none;
+    background-color: transparent;
+}
+
+.cards-1 .card-icon {
+    width: 76px;
+    height: 76px;
+    margin-right: auto;
+    margin-bottom: 2.5rem;
+    margin-left: auto;
+    border-radius: 10px;
+    background-color: $featureBackground;
+}
+
+.cards-1 .card-icon .fas,
+.cards-1 .card-icon .far {
+    color: $featureCardIconDefault;
+    font-size: 2.5rem;
+    line-height: 76px;
+}
+
+.cards-1 .card-icon.green {
+    background-color: $featureCardIconFirstType;
+}
+
+.cards-1 .card-icon.green .fas,
+.cards-1 .card-icon.green .far {
+    color: $featureIconFirstType
+}
+
+.cards-1 .card-icon.blue {
+    background-color: $featureCardIconSecondType;
+}
+
+.cards-1 .card-icon.blue .fas,
+.cards-1 .card-icon.blue .fas {
+    $color: $featureIconSecondType;
+}
+
+.cards-1 .card-body {
+    padding: 0;
+}
+
+.cards-1 .card-title {
+    margin-bottom: 1rem;
+}
+
+.cards-1 .card-body p {
+    margin-bottom: 1.125rem;
+}

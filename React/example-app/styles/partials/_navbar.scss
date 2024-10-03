@@ -1,0 +1,40 @@
+@import '../variables.scss';
+
+.navbar {
+    background-color: $primaryBackground;
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 0.875rem;
+
+    .navbar-brand {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .logo-text {
+        color: $secondaryColor;
+        font-weight: 600;
+        font-size: 1.875rem;
+        line-height: 1rem;
+        text-decoration: none;
+    }
+
+    .navbar-toggler {
+        padding: 0;
+        border: none;
+        font-size: 1.25rem;
+    }
+
+    .navbar-nav {
+        margin-top: 0.75rem;
+        margin-bottom: 0.5rem;
+
+        .nav-item, .nav-link {
+            padding-top: 0.625rem;
+            padding-bottom: 0.625rem;
+            color: $primaryColor;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+    }
+}

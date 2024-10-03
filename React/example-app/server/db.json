@@ -1,0 +1,92 @@
+{
+    "features": [
+        {
+            "id": "feature-1",
+            "name": "Consulente Fiscale",
+            "icon": "fas fa-headphones-alt",
+            "iconColor": "",
+            "description": "Ti proponiamo un consulente dedicato specializzato nel tuo business e pronto a rispondere alle tue domande."
+        },
+        {
+            "id": "feature-2",
+            "name": "Applicazione Web",
+            "icon": "fas fa-desktop",
+            "iconColor": "green",
+            "description": "Gestisci i tuoi clienti/fornitori, crea le fatture, ottieni una previsione di tasse e contributi. Tutto in modo semplice ed intuitivo."
+        },
+        {
+            "id": "feature-3",
+            "name": "Previsioni",
+            "icon": "fas fa-chart-line",
+            "iconColor": "blue",
+            "description": "Con EasyFisco hai le previsioni sempre aggiornate sulle tasse e la previdenza sociale."
+        }
+    ],
+    "pricing": [
+        {
+            "id": "price-1",
+            "name": "Starter",
+            "features": [
+                "Consulenza fiscale iniziale",
+                "Apertura partita IVA",
+                "Fatture elettroniche illimitate",
+                "Invio dei modelli F24 annuali",
+                "Invio dichiarazione dei redditi",
+                "Gestione clienti",
+                "Previsione tasse e previdenza"
+            ],
+            "value": "€250"
+        },
+        {
+            "id": "price-2",
+            "name": "Advanced",
+            "features": [
+                "Consulenza fiscale iniziale",
+                "Apertura partita IVA",
+                "Fatture elettroniche illimitate",
+                "Invio dei modelli F24 annuali",
+                "Invio dichiarazione dei redditi",
+                "Gestione clienti",
+                "Previsione tasse e previdenza",
+                "Consulente fiscale dedicato",
+                "Gestione delle spese"
+            ],
+            "value": "€600"
+        },
+        {
+            "id": "price-3",
+            "name": "Professional",
+            "features": [
+                "Consulenza fiscale iniziale",
+                "Apertura partita IVA",
+                "Fatture elettroniche illimitate",
+                "Invio dei modelli F24 annuali",
+                "Invio dichiarazione dei redditi",
+                "Gestione clienti",
+                "Previsione tasse e previdenza",
+                "Consulente fiscale dedicato",
+                "Gestione delle spese",
+                "Calcolo IMU e TASI",
+                "PEC",
+                "Firma elettronica qualificata"
+            ],
+            "value": "€1000"
+        }
+    ],
+    "faq": [
+        {
+            "id": "faq-1",
+            "title": "Easyfisco è un commercialista?",
+            "answer": "EasyFisco non è un commercialista. E' un'azienda tecnologica che ti permette di gestire la tua contabilità e i tuoi clienti attraverso una piattaforma software ed un servizio di consulenza generica con il supporto di consulenti fiscali specializzati. Tutte le attività riservate sono svolte da un commercialista partner iscritto all'Albo dei Dottori Commercialisti."
+        },
+        {
+            "id": "faq-2",
+            "title": "Quali professioni gestite?",
+            "answer": "Tutte, perchè abbiamo un consulente dedicato per ogni campo d'impresa. Dall'avvocato all'azienda agricola, dallo Youtuber al cuoco a domicilio."
+        },{
+            "id": "faq-3",
+            "title": "Come posso contattarvi?",
+            "answer": "Puoi inviarci una mail, chiamarci oppure venirci a trovare nella nostra sede di Milano."
+        }
+    ]
+}

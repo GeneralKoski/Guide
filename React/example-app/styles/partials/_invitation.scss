@@ -1,0 +1,27 @@
+@import '../variables.scss';
+
+.basic-3 {
+	padding-top: 9rem;
+	padding-bottom: 9rem;
+	background-color: $primaryColor;
+	text-align: center;
+
+	h4 {
+		margin-bottom: 2.375rem;
+		color: #ffffff;
+
+		span {
+			color: $secondaryColor;
+		}
+	}
+
+	.btn-outline-lg {
+		border-color: #ffffff;
+		color: #ffffff;
+
+		&:hover {
+			background-color: #ffffff;
+			color: $primaryColor;
+		}
+	}
+}
