@@ -1,0 +1,69 @@
+/* INDEX.CSS */
+/* slider section */
+#slider {
+    background-color: #f8f9fa;
+    padding: 3rem 0;
+}
+.slides-container {
+    display: flex;
+    justify-content: flex-start;
+    overflow: auto;
+    height: 21rem;
+}
+.slide {
+    width: calc(100% / 5);
+    min-width: 25rem;
+    height: 20rem;
+    position: relative;
+    margin: auto;
+    padding: 0 0.5rem;
+}
+.slide:hover .slide-img img{
+    transition: all .3s linear;
+    transform: scale(1.2);
+}
+.slide .slide-img img{
+    transition: all .3s linear;
+}
+.slide-img {
+    text-align: center;
+    font-size: 1.2rem;
+    color: white;
+    overflow: hidden;
+    position: relative;
+}
+.slide-img img {
+    width: 100%;
+    height: 20rem;
+    object-fit: cover;
+}
+.slide-img .bar {
+    border-bottom: solid white 1px;
+    display: inline-block;
+    width: 10%;
+    transform: translateY(-0.2rem);
+}
+.slide-text {
+    z-index: 4;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+}
+.layer {
+    background-color: rgba(0, 0, 0, 0.342);
+    position: absolute;
+    left: 0.5rem;
+    top: 0;
+    right: 0.5rem;
+    bottom: 0;
+    z-index: 3;
+}
+
+.truncate{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}

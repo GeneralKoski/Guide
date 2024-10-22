@@ -1,0 +1,9 @@
+// File dove uso tutti i parziali e importo bootstrap
+@use './partials/laterale';
+@use './partials/general';
+@use './partials/preview';
+@use './partials//app';
+@use './partials//sidebar';
+@use './partials//chatsingola';
+
+@import 'bootstrap/dist/css/bootstrap.css';

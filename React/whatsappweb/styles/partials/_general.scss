@@ -1,0 +1,15 @@
+// File parziale da importare in theme.scss
+// In _general definisco un layout generale della pagina
+// Negli altri _esempio.scss definisco altri parziali (interno chat, barra laterale...)
+
+body {
+    background-color: white;
+}
+
+h2 {
+    color: white;
+}
+
+h4 {
+    color: grey;
+}

@@ -11,34 +11,25 @@ const user = {
 };
 
 const params = {id: user.id, color: user.profile.color}
-
 console.log(params);
 
-const { profile: {location: {lat: lt, lng: lg, zoom = 5}}} = user;
+const { profile: {location: {lat: lt, lng: lg}}} = user;
 
 const params2 = {
   lt,
-  lg,
-  zoom
+  lg
 }
 
-console.log(params2)
+console.log(params2);
 
-
-
-
-
-
-
-const user2 = {
+let user2 = {
   first: 'Fabio',
   last: 'Biondi',
-  //preference: 'red'
 };
 
-let {first: f, preference: pref = 'blue'} = user2;
+let {first: f, last: l, preference: pref = 'blue'} = user2;
 
-console.log(`${f} (${pref})`)
+console.log(`${f} ${l} (${pref})`)
 
 
 

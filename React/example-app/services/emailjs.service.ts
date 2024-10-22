@@ -1,11 +1,4 @@
-export async function send(
-    to_name: string,
-    from_name: string,
-    email: string,
-    phoneNumber: string,
-    coupon: string,
-    hasPartitaIVA: string
-) {
+export async function send(to_name: string, from_name: string, email: string, phoneNumber: string, coupon: string, hasPartitaIVA: string) {
   const data = {
     service_id: 'service_47vwdkj',
     template_id: 'template_gukwbih',

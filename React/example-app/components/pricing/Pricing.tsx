@@ -8,7 +8,7 @@ interface PricingProps {
 
 const Pricing: React.FC<PricingProps> = ({items}) => {
     return (
-        <div className="cards-2">
+        <div className="cards-2" id="price">
             <div className="container">
                 <div className="row">
                     <div className="col-lg-12">

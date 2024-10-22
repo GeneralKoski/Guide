@@ -1,0 +1,5 @@
+sul hover della casella sbuca l'icona della faccina per aprire le emoji di reazione ed il triangolino con le varie scelte tipo "rispondi"
+
+far uscire il pisellino alla casella se è il primo messaggio di una sequenza
+
+rendere un minimo responsive

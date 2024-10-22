@@ -3,7 +3,7 @@ import Image from "next/image";
 const Details: React.FC = () => {
     return (
         <>
-            <div className="basic-1">
+            <div className="basic-1" id="details">
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-lg-6 col-xl-5">

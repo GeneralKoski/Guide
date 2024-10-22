@@ -1,0 +1,5 @@
+***DA FARE***
+*PROBLEMA ID* file single-post-response.ts da riempire con json2ts con un oggetto esempio di posts
+*PROBLEMA ID* file post-category-response da riempire con json2ts con un oggetto esempio di categories/id?populate=posts
+*PROBLEMA ID* file post-tag-response da riempire con json2ts con un oggetto esempio di tags/id?populate=posts 
+file strapi.ts da importare SinglePostResponse dal suo .ts, post-category-response dal suo .ts, post-tag-response dal suo .ts, top-post-response dal suo .ts
