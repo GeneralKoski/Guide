@@ -1,105 +1,53 @@
-import Image from "next/image";
 import React, { useState } from "react";
+import { SidebarButton } from "./SidebarButton";
 
 const SideBar: React.FC = () => {
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
-  const handleClick = (message: string, index: number) => {
-    alert(message);
-    setSelectedIndex(index);
+  const [selectedId, setSelectedId] = useState<string>("chat");
+
+  const handleClick = (message: string, id: string) => {
+    setSelectedId(id);
   };
+
+  const topItems = [
+    { id: "chat", icon: "/images/chat.png" },
+    { id: "stato", icon: "/images/stato.png" },
+    { id: "canali", icon: "/images/canali.png" },
+    { id: "community", icon: "/images/community.png" },
+  ];
+
+  const bottomItems = [
+    { id: "impostazioni", icon: "/images/impostazioni.png" },
+    { id: "profilo", icon: "/images/profilo.png" },
+  ];
+
   return (
     <div className="containerside">
       <ul className="icon-group top-icons">
-        <li className={`icone ${selectedIndex === 0 ? "selected" : ""}`}>
-          <a href="#" onClick={() => handleClick("Hai cliccato Chat!", 0)}>
-            <Image
-              className="img-fluid inverso"
-              src="/images/chat.png"
-              alt="Chat"
-              title="Chat"
-              width={35}
-              height={35}
-            />
-          </a>
-        </li>
-        <li className={`icone ${selectedIndex === 1 ? "selected" : ""}`}>
-          <a href="#" onClick={() => handleClick("Hai cliccato Stato!", 1)}>
-            <Image
-              className="img-fluid inverso"
-              src="/images/stato.png"
-              alt="Stato"
-              title="Stato"
-              width={30}
-              height={30}
-            />
-          </a>
-        </li>
-        <li className={`icone ${selectedIndex === 2 ? "selected" : ""}`}>
-          <a
-            href="#"
-            onClick={() => handleClick("Hai cliccato Canali!", 2)}
-            title="Stato"
-          >
-            <Image
-              className="img-fluid inverso"
-              src="/images/canali.png"
-              alt="Canali"
-              title="Canali"
-              width={35}
-              height={35}
-            />
-          </a>
-        </li>
-        <li className={`icone ${selectedIndex === 3 ? "selected" : ""}`}>
-          <a
-            href="#"
-            onClick={() => handleClick("Hai cliccato Community!", 3)}
-            title="Stato"
-          >
-            <Image
-              className="img-fluid inverso"
-              src="/images/community.png"
-              alt="Community"
-              title="Community"
-              width={35}
-              height={35}
-            />
-          </a>
-        </li>
+        {topItems.map((item, index) => {
+          return (
+            <SidebarButton
+              id={item.id}
+              icon={item.icon}
+              selected={selectedId === item.id}
+              onClick={(index) => handleClick("Hai cliccato Chat!", index)}
+            >
+              <div>asd</div>
+            </SidebarButton>
+          );
+        })}
       </ul>
+
       <ul className="basso">
-        <li className={`icone ${selectedIndex === 4 ? "selected" : ""}`}>
-          <a
-            href="#"
-            onClick={() => handleClick("Hai cliccato Impostazioni!", 4)}
-            title="Stato"
-          >
-            <Image
-              className="img-fluid inverso"
-              src="/images/impostazioni.png"
-              alt="Impostazioni"
-              title="Impostazioni"
-              width={30}
-              height={30}
+        {bottomItems.map((item, index) => {
+          return (
+            <SidebarButton
+              id={item.id}
+              icon={item.icon}
+              selected={selectedId === item.id}
+              onClick={(index) => handleClick("Hai cliccato Chat!", index)}
             />
-          </a>
-        </li>
-        <li className={`icone ${selectedIndex === 5 ? "selected" : ""}`}>
-          <a
-            href="#"
-            onClick={() => handleClick("Hai cliccato Profilo!", 5)}
-            title="Stato"
-          >
-            <Image
-              className="img-fluid"
-              src="/images/profilo.png"
-              title="Profilo"
-              alt="Profilo"
-              width={30}
-              height={30}
-            />
-          </a>
-        </li>
+          );
+        })}
       </ul>
     </div>
   );

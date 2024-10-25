@@ -62,14 +62,16 @@ const Laterale: React.FC = () => {
 
   // Funzione per gestire il click sulla chat e selezionare la chat specifica
   const handleChatClick = (chat: ChatData) => {
-    setSelectedChat(chat); // Imposta la chat selezionata
-    setA(false); // Mostra la chat singola e toglie la Preview
+    if (selectedChat?.name === chat.name) {
+      setSelectedChat(null);
+    } else {
+      setSelectedChat(chat); // Imposta la chat selezionata
+    }
   };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setA(true); // Torna alla Preview e toglie la chat
         setSelectedChat(null); // Deseleziona la chat
       }
     };
@@ -178,13 +180,11 @@ const Laterale: React.FC = () => {
       </div>
 
       {/* Booleano per mostrare o la preview o la chat singola */}
-      {a ? (
+      {selectedChat ? (
+        <div className="messaggi">{<ChatSingola chat={selectedChat} />}</div>
+      ) : (
         <div className="contenuto">
           <Preview />
-        </div>
-      ) : (
-        <div className="messaggi">
-          {selectedChat && <ChatSingola chat={selectedChat} />}
         </div>
       )}
     </>

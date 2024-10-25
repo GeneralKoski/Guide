@@ -1,5 +1,5 @@
-import React from "react";
 import "@/styles/theme.scss";
+
 import Laterale from "@/components/laterale";
 import SideBar from "@/components/sidebar";
 
