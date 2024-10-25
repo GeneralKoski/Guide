@@ -4,6 +4,7 @@ import ChatSingola from "./chatsingola";
 import Preview from "./preview";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { LateraleButton } from "./LateraleButton";
+import { LateraleFilters } from "./LateraleFilters";
 
 interface Message {
   type: "mio" | "altri" | "nessuno";
@@ -129,6 +130,13 @@ const Laterale: React.FC = () => {
     },
   ];
 
+  const Filters = [
+    { id: "tutte", filterName: "Tutte" },
+    { id: "daleggere", filterName: "Da_Leggere" },
+    { id: "preferiti", filterName: "Preferiti" },
+    { id: "gruppi", filterName: "Gruppi" },
+  ];
+
   return (
     <>
       <div className="elenco">
@@ -143,7 +151,7 @@ const Laterale: React.FC = () => {
                   src={btn.src}
                   alt={btn.alt}
                   title={btn.title}
-                ></LateraleButton>
+                />
               );
             })}
           </ul>
@@ -169,18 +177,14 @@ const Laterale: React.FC = () => {
         {/* Filtri */}
         <div>
           <ul id="filtri">
-            <li>
-              <a href="#">Tutte</a>
-            </li>
-            <li>
-              <a href="#">Da_leggere</a>
-            </li>
-            <li>
-              <a href="#">Preferiti</a>
-            </li>
-            <li>
-              <a href="#">Gruppi</a>
-            </li>
+            {Filters.map((filter) => {
+              return (
+                <LateraleFilters
+                  id={filter.id}
+                  filterName={filter.filterName}
+                />
+              );
+            })}
           </ul>
         </div>
 
