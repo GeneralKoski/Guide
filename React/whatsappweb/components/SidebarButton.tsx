@@ -9,7 +9,6 @@ interface SidebarButtonProps {
   title: string;
   selected?: boolean;
   onClick: (id: string) => void;
-  children?: ReactNode;
 }
 
 export const SidebarButton = ({
@@ -18,7 +17,6 @@ export const SidebarButton = ({
   icon,
   alt,
   title,
-  children,
   onClick,
 }: SidebarButtonProps) => {
   return (
@@ -38,7 +36,6 @@ export const SidebarButton = ({
           height={35}
         />
       </div>
-      {children}
     </li>
   );
 };
