@@ -1,10 +1,9 @@
-/* Min-width 992px */
 @media (min-width: 728px) {
     .header {
-		padding-top: 4rem;
+        padding-top: 4rem;
         padding-bottom: 4rem;
         text-align: center;
-
+        
         .h1-large {
             font-size: 3.75rem;
             line-height: 4.625rem;
@@ -12,6 +11,7 @@
 	}
 }
 
+/* Min-width 992px */
 @media (min-width: 992px) {
 	.heading {
 		width: 33rem;
