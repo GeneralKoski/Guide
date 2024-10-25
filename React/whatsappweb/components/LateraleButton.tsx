@@ -1,16 +1,12 @@
-import clsx from "clsx";
 import Image from "next/image";
-import { ReactNode } from "react";
 
 interface LateraleButtonProps {
-  id: string;
   src: string;
   alt: string;
   title: string;
 }
 
 export const LateraleButton = ({
-  id,
   src,
   alt,
   title,

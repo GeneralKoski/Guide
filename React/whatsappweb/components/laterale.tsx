@@ -71,11 +71,9 @@ const Laterale: React.FC = () => {
 
   // Funzione per gestire il click sulla chat e selezionare la chat specifica
   const handleChatClick = (chat: ChatData) => {
-    if (selectedChat?.name === chat.name) {
-      setSelectedChat(null);
-    } else {
-      setSelectedChat(chat); // Imposta la chat selezionata
-    }
+    selectedChat?.name === chat.name
+      ? setSelectedChat(null)
+      : setSelectedChat(chat);
   };
 
   // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
@@ -117,13 +115,11 @@ const Laterale: React.FC = () => {
 
   const chatButtons = [
     {
-      id: "nuovachat",
       src: "/images/nuovachat.png",
       alt: "nuova chat",
       title: "Nuova chat",
     },
     {
-      id: "trepunti",
       src: "/images/trepunti.png",
       alt: "tre punti",
       title: "Tre punti",
@@ -131,10 +127,10 @@ const Laterale: React.FC = () => {
   ];
 
   const Filters = [
-    { id: "tutte", filterName: "Tutte" },
-    { id: "daleggere", filterName: "Da_Leggere" },
-    { id: "preferiti", filterName: "Preferiti" },
-    { id: "gruppi", filterName: "Gruppi" },
+    { filterName: "Tutte" },
+    { filterName: "Da Leggere" },
+    { filterName: "Preferiti" },
+    { filterName: "Gruppi" },
   ];
 
   return (
@@ -146,12 +142,7 @@ const Laterale: React.FC = () => {
           <ul>
             {chatButtons.map((btn) => {
               return (
-                <LateraleButton
-                  id={btn.id}
-                  src={btn.src}
-                  alt={btn.alt}
-                  title={btn.title}
-                />
+                <LateraleButton src={btn.src} alt={btn.alt} title={btn.title} />
               );
             })}
           </ul>
@@ -179,10 +170,12 @@ const Laterale: React.FC = () => {
           <ul id="filtri">
             {Filters.map((filter) => {
               return (
-                <LateraleFilters
-                  id={filter.id}
-                  filterName={filter.filterName}
-                />
+                <div
+                  style={{ display: "inline" }}
+                  onClick={() => alert(`Hai cliccato su ${filter.filterName}`)}
+                >
+                  <LateraleFilters filterName={filter.filterName} />
+                </div>
               );
             })}
           </ul>
@@ -222,7 +215,6 @@ const Laterale: React.FC = () => {
           ))}
         </div>
       </div>
-
       {/* Booleano per mostrare o la preview o la chat singola */}
       {selectedChat ? (
         <div className="messaggi">{<ChatSingola chat={selectedChat} />}</div>

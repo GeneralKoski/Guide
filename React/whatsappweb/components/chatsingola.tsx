@@ -3,7 +3,6 @@ import Image from "next/image";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
 import { RiCheckDoubleFill } from "react-icons/ri";
-import { PiTriangleFill } from "react-icons/pi";
 
 interface Message {
   type: "mio" | "altri" | "nessuno";
