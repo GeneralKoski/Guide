@@ -6,11 +6,7 @@ interface LateraleButtonProps {
   title: string;
 }
 
-export const LateraleButton = ({
-  src,
-  alt,
-  title,
-}: LateraleButtonProps) => {
+export const LateraleButton = ({ src, alt, title }: LateraleButtonProps) => {
   return (
     <li>
       <a href="#" onClick={() => alert(`Hai cliccato su ${title}`)}>
