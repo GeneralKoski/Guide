@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
 import { RiCheckDoubleFill } from "react-icons/ri";
+import { MessageChoices } from "./MessageChoices";
 
 interface Message {
   type: "mio" | "altri" | "nessuno";
@@ -54,6 +55,15 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
     };
   }, []);
 
+  const Choices = [
+    { choiceName: "Rispondi" },
+    { choiceName: "Reagisci" },
+    { choiceName: "Inoltra" },
+    { choiceName: "Fissa" },
+    { choiceName: "Importante" },
+    { choiceName: "Segnala" },
+    { choiceName: "Elimina" },
+  ];
   return (
     <>
       <div
@@ -128,27 +138,9 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
 
                 {activeIndex === index && (
                   <ul className="list-group">
-                    <li className="list-group-item border-0 text-white">
-                      Rispondi
-                    </li>
-                    <li className="list-group-item list-group-item-action border-0 text-white">
-                      Reagisci
-                    </li>
-                    <li className="list-group-item list-group-item-action border-0 text-white">
-                      Inoltra
-                    </li>
-                    <li className="list-group-item list-group-item-action border-0 text-white">
-                      Fissa
-                    </li>
-                    <li className="list-group-item list-group-item-action border-0 text-white">
-                      Importante
-                    </li>
-                    <li className="list-group-item list-group-item-action border-0 text-white">
-                      Segnala
-                    </li>
-                    <li className="list-group-item list-group-item-action border-0 text-white">
-                      Elimina
-                    </li>
+                    {Choices.map((choice) => {
+                      return <MessageChoices choiceName={choice.choiceName} />;
+                    })}
                   </ul>
                 )}
               </p>
