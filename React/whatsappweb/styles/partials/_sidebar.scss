@@ -24,14 +24,21 @@
 }
 
 
-.selected {
-    background-color: #56595c;
-    &:hover {
-        background-color: #56595c;
-    }
-}
+// .selected {
+//     background-color: #56595c;
+//     &:hover {
+//         background-color: #56595c;
+//     }
+// }
 
 .basso {
     position: absolute;
     bottom: 0%;
+}
+
+
+@media (max-height: 330px) {
+        .impostazioni {
+            display: none;
+        }
 }

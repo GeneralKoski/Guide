@@ -2,9 +2,10 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import ChatSingola from "./chatsingola";
 import Preview from "./preview";
+import { RiCheckDoubleFill } from "react-icons/ri";
 
 interface Message {
-  type: "mio" | "altri";
+  type: "mio" | "altri" | "nessuno";
   content: string;
   time: string;
 }
@@ -12,17 +13,26 @@ interface Message {
 interface ChatData {
   icon: string;
   name: string;
-  messages: Message[]; // Modifica per includere un array di messaggi
+  messages: Message[];
   access: string;
 }
 
 const Laterale: React.FC = () => {
+  // Prende tutte le chat disponibili nel file chats.json
   const [chats, setChats] = useState<ChatData[]>([]);
+  const [filteredChats, setFilteredChats] = useState<ChatData[]>([]); // Stato per le chat filtrate
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Stato per il termine di ricerca
+
+  // Gestione dell'errore, non obbligatorio
   const [error, setError] = useState<string | null>(null);
+
+  // Booleano per gestire se vedere la Preview "scarica Whatsapp" o la chat aperta con i messaggi
   const [a, setA] = useState<boolean>(true);
+
+  // Tiene conto della chat cliccata, da passare a <ChatSingola/> che con il parametro crea la sua impaginazione
   const [selectedChat, setSelectedChat] = useState<ChatData | null>(null);
 
-  // Funzione per cambiare l'orario in minuti per aiutare l'ordine in descrescente
+  // Funzione per cambiare l'orario in minuti per aiutare l'ordine delle chat in descrescente
   const parseTimeToMinutes = (time: string): number => {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
@@ -30,7 +40,7 @@ const Laterale: React.FC = () => {
 
   // Caricare i dati dal file .json
   useEffect(() => {
-    fetch("/chats.json")
+    fetch("chats.json")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Errore nel caricamento del file JSON");
@@ -49,6 +59,7 @@ const Laterale: React.FC = () => {
             );
           });
           setChats(sortedData);
+          setFilteredChats(sortedData); // Inizialmente, nessun filtro
         } else {
           throw new Error("Il formato del file JSON non è un array");
         }
@@ -56,35 +67,55 @@ const Laterale: React.FC = () => {
       .catch((error) => setError(error.message));
   }, []);
 
-  if (error) {
-    return <div>Errore: {error}</div>;
-  }
-
   // Funzione per gestire il click sulla chat e selezionare la chat specifica
   const handleChatClick = (chat: ChatData) => {
     setSelectedChat(chat); // Imposta la chat selezionata
     setA(false); // Mostra la chat singola e toglie la Preview
   };
 
+  // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setA(true); // Torna alla Preview e toglie la chat
-        setSelectedChat(null); // Deseleziona la chat
+        setSelectedChat(null); // Deseleziona la chat (non obbligatorio)
       }
+      event.stopPropagation();
     };
 
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
+  // Funzione per gestire il cambiamento dell'input e filtrare le chat
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    if (term === "") {
+      setFilteredChats(chats); // Mostra tutte le chat se il campo è vuoto
+    } else {
+      const filtered = chats.filter((chat) => {
+        const matchName = chat.name.toLowerCase().includes(term);
+        const matchMessage = chat.messages.some((message) =>
+          message.content.toLowerCase().includes(term)
+        );
+        return matchName || matchMessage;
+      });
+      setFilteredChats(filtered); // Aggiorna le chat filtrate
+    }
+  };
+
+  if (error) {
+    return <div>Errore: {error}</div>;
+  }
+
   return (
     <>
       <div className="elenco">
-        {/* Scritte in alto */}
+        {/* Chat, nuova chat e tre punti */}
         <div className="sezionechat">
           <h4>Chat</h4>
           <ul>
@@ -115,7 +146,7 @@ const Laterale: React.FC = () => {
           </ul>
         </div>
 
-        {/* La ricerca coi suoi filtri */}
+        {/* Input */}
         <div className="ricerca">
           <Image
             className="img-fluid lente"
@@ -124,16 +155,22 @@ const Laterale: React.FC = () => {
             width={20}
             height={20}
           />
-          <input type="text" placeholder="Cerca" />
+          <input
+            type="text"
+            placeholder="Cerca"
+            value={searchTerm}
+            onChange={handleInputChange} // Gestisce il cambiamento di input
+          />
         </div>
 
+        {/* Filtri */}
         <div>
           <ul id="filtri">
             <li>
               <a href="#">Tutte</a>
             </li>
             <li>
-              <a href="#">Da leggere</a>
+              <a href="#">Da_leggere</a>
             </li>
             <li>
               <a href="#">Preferiti</a>
@@ -144,13 +181,13 @@ const Laterale: React.FC = () => {
           </ul>
         </div>
 
-        {/* Inserisco tutte le chat dal file json */}
+        {/* Tutte le chat filtrate */}
         <div className="lechat">
-          {chats.map((chat) => (
+          {filteredChats.map((chat) => (
             <div
               className="chat"
-              key={chat.name} // Assicurati di avere una chiave unica per ogni chat
-              onClick={() => handleChatClick(chat)} // Passa la chat selezionata alla funzione
+              key={chat.name}
+              onClick={() => handleChatClick(chat)} // Passa la chat selezionata alla funzione che a sua volta compie altre azioni
             >
               <Image
                 className="img-fluid profilo"
@@ -162,13 +199,15 @@ const Laterale: React.FC = () => {
               <div>
                 <h4>{chat.name}</h4> <br />
                 <p className="chat-message text-truncate">
-                  {/* Mostra l'ultimo messaggio con un limite di caratteri */}
-                  {chat.messages[chat.messages.length - 1].type === "mio"
-                    ? "Io: "
-                    : ""}
-                  {chat.messages[chat.messages.length - 1].content.slice(0, 60)}
+                  {chat.messages[chat.messages.length - 1].type === "mio" ? (
+                    <RiCheckDoubleFill size={18} color="#007FFF" />
+                  ) : (
+                    []
+                  )}
+                  {chat.messages[chat.messages.length - 1].content}
                 </p>
               </div>
+
               <span className="chat-time">
                 {chat.messages[chat.messages.length - 1].time}
               </span>

@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { GoChevronDown } from "react-icons/go";
+import { RiCheckDoubleFill } from "react-icons/ri";
+import { PiTriangleFill } from "react-icons/pi";
 
-// Definizione dei tipi per i messaggi e la chat
 interface Message {
-  type: "mio" | "altri";
+  type: "mio" | "altri" | "nessuno";
   content: string;
   time: string;
 }
@@ -18,29 +21,42 @@ interface ChatSingolaProps {
 }
 
 const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
+  // Gestione della ScrollBar
   const messagesRef = useRef<HTMLDivElement | null>(null);
-  const [inputValue, setInputValue] = useState<string>("");
-
-  // Funzione per scrollare automaticamente in fondo
-  const scrollToBottom = () => {
+  useEffect(() => {
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
     }
-  };
-
-  // Effetto che scrolla in fondo quando i messaggi cambiano
-  useEffect(() => {
-    scrollToBottom();
   }, [chat.messages]);
 
-  // Funzione per gestire il cambio di input
+  // Gestione del Microfono o Freccia
+  const [inputValue, setInputValue] = useState<string>("");
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value); // Aggiorna lo stato dell'input
+    setInputValue(e.target.value);
   };
+
+  // Gestione della lista "rispondi" ecc.
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const handleChevronClick = (index: number) => {
+    setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+
+  // Chiudi il Chevron cliccando 1 sulla tastiera
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "1") {
+        setActiveIndex(null);
+      }
+      event.stopPropagation();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
-      {/* SEZIONE IN ALTO DOVE STANNO LE INFORMAZIONI DELL'UTENTE */}
       <div
         className="sezione-utente"
         onClick={() => alert("Sei andato nelle informazioni dell'utente")}
@@ -74,30 +90,87 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
         </span>
       </div>
 
-      {/* SEZIONE AL CENTRO DOVE STA L'ELENCO DEI VARI MESSAGGI */}
+      {/* I messaggi */}
       <div className="sezione-messaggi" ref={messagesRef}>
-        {chat.messages.map((message, index) => (
-          <div
-            key={index}
-            className={
-              message.type === "mio" ? "messaggio-mio" : "messaggio-altro"
-            }
-          >
-            <p>
-              {message.content}
-              <span className="orario">{message.time}</span>
-            </p>
-          </div>
-        ))}
+        {chat.messages.map((message, index) => {
+          // Verifica se è il primo messaggio di una sequenza
+          const MettoPisellino =
+            index === 0 || chat.messages[index - 1].type !== message.type;
+
+          return (
+            <div
+              key={index}
+              className={
+                message.type === "mio"
+                  ? "messaggio-mio"
+                  : message.type === "altri"
+                  ? "messaggio-altro"
+                  : "nessuno"
+              }
+            >
+              <p>
+                {MettoPisellino && <p className="pisellino"></p>}
+                {message.content}
+                <span className="orario">
+                  {message.time}
+                  {message.type === "mio" ? (
+                    <RiCheckDoubleFill size={18} color="#007FFF" />
+                  ) : (
+                    []
+                  )}
+                </span>
+
+                <span className="chevron rounded-5 rounded-top-0">
+                  <GoChevronDown
+                    size={24}
+                    onClick={() => handleChevronClick(index)}
+                  />
+                </span>
+
+                {activeIndex === index && (
+                  <ul className="list-group">
+                    <li className="list-group-item border-0 text-white">
+                      Rispondi
+                    </li>
+                    <li className="list-group-item list-group-item-action border-0 text-white">
+                      Reagisci
+                    </li>
+                    <li className="list-group-item list-group-item-action border-0 text-white">
+                      Inoltra
+                    </li>
+                    <li className="list-group-item list-group-item-action border-0 text-white">
+                      Fissa
+                    </li>
+                    <li className="list-group-item list-group-item-action border-0 text-white">
+                      Importante
+                    </li>
+                    <li className="list-group-item list-group-item-action border-0 text-white">
+                      Segnala
+                    </li>
+                    <li className="list-group-item list-group-item-action border-0 text-white">
+                      Elimina
+                    </li>
+                  </ul>
+                )}
+              </p>
+
+              <span
+                className="emoji"
+                onClick={() => alert("Hai cliccato l'Emoji")}
+              >
+                <MdOutlineEmojiEmotions size={24} />
+              </span>
+            </div>
+          );
+        })}
       </div>
 
-      {/* SEZIONE IN BASSO DOVE SI SCRIVE IL MESSAGGIO */}
       <div className="sezione-manda-messaggi">
         <Image
           className="img-fluid invertito"
           src="/images/smile.png"
           alt="Smile"
-          onClick={() => alert("Hai cliccato per vedere le Emoji")}
+          onClick={() => alert("Hai cliccato l'Emoji")}
           width={40}
           height={40}
         />
@@ -110,7 +183,6 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
           height={40}
         />
 
-        {/* Input per il messaggio */}
         <input
           type="text"
           placeholder="Scrivi un messaggio"
@@ -118,7 +190,6 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
           onChange={handleInputChange}
         />
 
-        {/* Icona microfono o invio, a seconda dello stato dell'input */}
         {inputValue ? (
           <Image
             className="img-fluid invertito"

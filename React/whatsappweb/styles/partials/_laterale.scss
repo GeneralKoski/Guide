@@ -1,6 +1,6 @@
 .elenco {
     max-height: auto;
-    min-width: 550px;
+    max-width: 550px;
     background-color: #0b141a;
     border-right: 1px solid #646464;
     border-left: 1px solid #646464;
@@ -58,7 +58,7 @@
       }
     }
     ul#filtri li {
-        display: inline;
+        display: inline-block;
         font-size: smaller;
         background-color: #2a2f32;
         border: 1px solid #2a2f32;
@@ -75,7 +75,8 @@
         }
     }
     .lechat {
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       &::-webkit-scrollbar {
         width: 7px;
       }
@@ -106,7 +107,7 @@
       .profilo {
         border-radius: 50%;
         display: inline;
-        min-width: 50px;
+        min-width: 60px;
         max-width: 60px;
         min-height: 60px;
         max-height: 60px;
@@ -128,7 +129,7 @@
         display: inline-block;
         font-size: 12px;
         color: #8696a0;
-        max-width: 390px;
+        max-width: 350px;
         max-height: 1rem;
         overflow: hidden;
       }
@@ -141,6 +142,18 @@
     }
   }
 
+@media (max-width: 1150px) {
+  .elenco {
+    max-width: 400px !important;
+    min-width: none;
+    .chat-message {
+      max-width: 200px !important;
+    }
+  }
+}
 
-  
-
+@media (max-height: 500px) {
+  .ricerca {
+    margin-top: 20px;
+  }
+}

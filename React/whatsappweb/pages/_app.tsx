@@ -8,7 +8,7 @@ function MyApp() {
     <div className="app">
       <SideBar />
       <Laterale />
-      {/* <Preview /> qui non serve perchè apro o questa o <ChatSingola /> in base al barametro booleano dichiarato in "laterale" */}
+      {/* <Preview /> qui non serve perchè apro o questa o <ChatSingola /> in base al parametro booleano dichiarato in "laterale" */}
       {/* <ChatSingola />  */}
     </div>
   );

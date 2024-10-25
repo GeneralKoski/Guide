@@ -128,7 +128,7 @@
         "name": "Fratellone",
         "messages": [{
             "type":"mio", 
-            "content": "Ti ha già detto la mamma?", 
+            "content": "Mamma è a casa?", 
             "time": "13:13"
         }],        
         "icon": "/images/fratello.avif",
@@ -190,9 +190,9 @@
     },{
         "name": "Torneo di calcio",
         "messages": [{
-            "type":"altri", 
-            "content": "Ciao a tutti, vi avviso che il torneo inizierà tra 2 giorni",
-            "time": "20:20"
+            "type":"nessuno", 
+            "content": "",
+            "time": ""
         }],
         "icon": "/images/torneocalcio.jpg",
         "access": "22:00"
