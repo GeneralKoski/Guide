@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import ChatSingola from "./chatsingola";
 import Preview from "./preview";
 import { RiCheckDoubleFill } from "react-icons/ri";
+import { LateraleButton } from "./LateraleButton";
 
 interface Message {
   type: "mio" | "altri" | "nessuno";
@@ -25,9 +26,6 @@ const Laterale: React.FC = () => {
 
   // Gestione dell'errore, non obbligatorio
   const [error, setError] = useState<string | null>(null);
-
-  // Booleano per gestire se vedere la Preview "scarica Whatsapp" o la chat aperta con i messaggi
-  const [a, setA] = useState<boolean>(true);
 
   // Tiene conto della chat cliccata, da passare a <ChatSingola/> che con il parametro crea la sua impaginazione
   const [selectedChat, setSelectedChat] = useState<ChatData | null>(null);
@@ -66,21 +64,25 @@ const Laterale: React.FC = () => {
       })
       .catch((error) => setError(error.message));
   }, []);
+  if (error) {
+    return <div>Errore: {error}</div>;
+  }
 
   // Funzione per gestire il click sulla chat e selezionare la chat specifica
   const handleChatClick = (chat: ChatData) => {
-    setSelectedChat(chat); // Imposta la chat selezionata
-    setA(false); // Mostra la chat singola e toglie la Preview
+    if (selectedChat?.name === chat.name) {
+      setSelectedChat(null);
+    } else {
+      setSelectedChat(chat); // Imposta la chat selezionata
+    }
   };
 
   // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setA(true); // Torna alla Preview e toglie la chat
-        setSelectedChat(null); // Deseleziona la chat (non obbligatorio)
+        setSelectedChat(null); // Deseleziona la chat
       }
-      event.stopPropagation();
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -112,6 +114,21 @@ const Laterale: React.FC = () => {
     return <div>Errore: {error}</div>;
   }
 
+  const chatButtons = [
+    {
+      id: "nuovachat",
+      src: "/images/nuovachat.png",
+      alt: "nuova chat",
+      title: "Nuova chat",
+    },
+    {
+      id: "trepunti",
+      src: "/images/trepunti.png",
+      alt: "tre punti",
+      title: "Tre punti",
+    },
+  ];
+
   return (
     <>
       <div className="elenco">
@@ -119,30 +136,16 @@ const Laterale: React.FC = () => {
         <div className="sezionechat">
           <h4>Chat</h4>
           <ul>
-            <li>
-              <a href="#" onClick={() => alert("Hai cliccato su Nuova Chat!")}>
-                <Image
-                  className="img-fluid inverso"
-                  src="/images/nuovachat.png"
-                  alt="Nuova chat"
-                  title="Nuova chat"
-                  width={30}
-                  height={30}
-                />
-              </a>
-            </li>
-            <li>
-              <a href="#" onClick={() => alert("Hai cliccato sui Tre Puntini")}>
-                <Image
-                  className="img-fluid inverso"
-                  src="/images/trepunti.png"
-                  alt="Trepunti"
-                  title="Tre puntini"
-                  width={30}
-                  height={30}
-                />
-              </a>
-            </li>
+            {chatButtons.map((btn) => {
+              return (
+                <LateraleButton
+                  id={btn.id}
+                  src={btn.src}
+                  alt={btn.alt}
+                  title={btn.title}
+                ></LateraleButton>
+              );
+            })}
           </ul>
         </div>
 
@@ -217,13 +220,11 @@ const Laterale: React.FC = () => {
       </div>
 
       {/* Booleano per mostrare o la preview o la chat singola */}
-      {a ? (
+      {selectedChat ? (
+        <div className="messaggi">{<ChatSingola chat={selectedChat} />}</div>
+      ) : (
         <div className="contenuto">
           <Preview />
-        </div>
-      ) : (
-        <div className="messaggi">
-          {selectedChat && <ChatSingola chat={selectedChat} />}
         </div>
       )}
     </>
