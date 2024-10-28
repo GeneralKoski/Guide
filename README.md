@@ -1,3 +1,3 @@
 # Guide
 
-### Esercizi fatti durante le guide e proposti da Francesco
+### Esercizi fatti durante le guide
