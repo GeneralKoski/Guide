@@ -1,7 +1,7 @@
 import React from "react";
 import "@/styles/theme.scss";
-import Laterale from "@/components/laterale";
-import SideBar from "@/components/sidebar";
+import Laterale from "@/components/Laterale";
+import SideBar from "@/components/Sidebar";
 
 function MyApp() {
   return (

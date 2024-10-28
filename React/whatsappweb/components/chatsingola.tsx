@@ -9,6 +9,7 @@ interface Message {
   type: "mio" | "altri" | "nessuno";
   content: string;
   time: string;
+  seen: "yes" | "no";
 }
 
 interface ChatSingolaProps {
@@ -105,7 +106,6 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
           // Verifica se è il primo messaggio di una sequenza
           const MettoPisellino =
             index === 0 || chat.messages[index - 1].type !== message.type;
-
           return (
             <div
               key={index}
@@ -122,7 +122,9 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
                 {message.content}
                 <span className="orario">
                   {message.time}
-                  {message.type === "mio" ? (
+                  {message.type === "mio" && message.seen === "no" ? (
+                    <RiCheckDoubleFill size={18} color="grey" />
+                  ) : message.type === "mio" ? (
                     <RiCheckDoubleFill size={18} color="#007FFF" />
                   ) : (
                     []
@@ -139,7 +141,7 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
                 {activeIndex === index && (
                   <ul className="list-group">
                     {Choices.map((choice) => {
-                      return <MessageChoices choiceName={choice.choiceName} />;
+                      return <MessageChoices choiceName={choice.choiceName} />; //è la tendina che sbuca quando schiacci sul chevron
                     })}
                   </ul>
                 )}

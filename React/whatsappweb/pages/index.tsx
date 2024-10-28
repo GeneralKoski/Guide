@@ -1,5 +1,5 @@
-import Laterale from "@/components/laterale";
-import SideBar from "@/components/sidebar";
+import Laterale from "@/components/Laterale";
+import SideBar from "@/components/Sidebar";
 import { NextPage } from "next";
 import Head from "next/head";
 

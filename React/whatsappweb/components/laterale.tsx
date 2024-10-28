@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import ChatSingola from "./chatsingola";
-import Preview from "./preview";
+import ChatSingola from "./Chatsingola";
+import Preview from "./Preview";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { LateraleButton } from "./LateraleButton";
 import { LateraleFilters } from "./LateraleFilters";
@@ -10,6 +10,7 @@ interface Message {
   type: "mio" | "altri" | "nessuno";
   content: string;
   time: string;
+  seen: "yes" | "no";
 }
 
 interface ChatData {
@@ -74,6 +75,20 @@ const Laterale: React.FC = () => {
     selectedChat?.name === chat.name
       ? setSelectedChat(null)
       : setSelectedChat(chat);
+
+    seenChanger(chat.messages);
+  };
+
+  const seenChanger = (messaggi: Message[]) => {
+    for (let i = messaggi.length - 1; i >= 0; i--) {
+      if (messaggi[i].type === "mio") {
+        break;
+      }
+      if (messaggi[i].type === "altri" && messaggi[i].seen === "no") {
+        messaggi[i].seen = "yes";
+      }
+    }
+    return;
   };
 
   // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
@@ -109,6 +124,20 @@ const Laterale: React.FC = () => {
     }
   };
 
+  // Conto i messaggi ancora da visualizzare
+  const countNotSeenMessages = (messaggi: Message[]): number => {
+    let n = 0;
+    for (let i = messaggi.length - 1; i >= 0; i--) {
+      if (messaggi[i].type === "mio") {
+        break;
+      }
+      if (messaggi[i].type === "altri" && messaggi[i].seen === "no") {
+        n++;
+      }
+    }
+    return n;
+  };
+
   if (error) {
     return <div>Errore: {error}</div>;
   }
@@ -126,7 +155,7 @@ const Laterale: React.FC = () => {
     },
   ];
 
-  const Filters = [
+  const filters = [
     { filterName: "Tutte" },
     { filterName: "Da Leggere" },
     { filterName: "Preferiti" },
@@ -168,7 +197,7 @@ const Laterale: React.FC = () => {
         {/* Filtri */}
         <div>
           <ul id="filtri">
-            {Filters.map((filter) => {
+            {filters.map((filter) => {
               return (
                 <div
                   style={{ display: "inline" }}
@@ -198,19 +227,34 @@ const Laterale: React.FC = () => {
               />
               <div>
                 <h4>{chat.name}</h4> <br />
+                {/* Gestisco i casi in cui il messaggio è mio ed è visto/non visto */}
                 <p className="chat-message text-truncate">
-                  {chat.messages[chat.messages.length - 1].type === "mio" ? (
+                  {chat.messages[chat.messages.length - 1].type === "mio" &&
+                  chat.messages[chat.messages.length - 1].seen === "yes" ? (
                     <RiCheckDoubleFill size={18} color="#007FFF" />
+                  ) : chat.messages[chat.messages.length - 1].type === "mio" &&
+                    chat.messages[chat.messages.length - 1].seen === "no" ? (
+                    <RiCheckDoubleFill size={18} color="grey" />
                   ) : (
                     []
                   )}
                   {chat.messages[chat.messages.length - 1].content}
                 </p>
+                {/* Gestisco la visualizzazione del pallino dei messaggi non visti in laterale*/}
               </div>
-
-              <span className="chat-time">
-                {chat.messages[chat.messages.length - 1].time}
-              </span>
+              {chat.messages[chat.messages.length - 1].type === "altri" &&
+              chat.messages[chat.messages.length - 1].seen === "no" ? (
+                <span className="chat-time">
+                  {chat.messages[chat.messages.length - 1].time} <br />
+                  <span className="chat-tosee">
+                    {countNotSeenMessages(chat.messages)}
+                  </span>
+                </span>
+              ) : (
+                <span className="chat-time">
+                  {chat.messages[chat.messages.length - 1].time}
+                </span>
+              )}
             </div>
           ))}
         </div>
