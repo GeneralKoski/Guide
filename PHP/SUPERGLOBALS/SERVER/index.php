@@ -1,0 +1,15 @@
+<?php
+/**
+ * Le più usate
+ * REMOTE_ADDR
+ * , PHP_SELF,
+ *  SCRIPT_FILENAME,
+ * REQUEST_URI,
+ *  HTTP_USER_AGENT,
+ * QUERY_STRING,
+ *  REQUEST_METHOD,
+ * DOCUMENT_ROOT
+ */
+var_dump($_SERVER['REMOTE_ADDR']);
+var_dump($_SERVER['HTTP_USER_AGENT']);
+echo $_SERVER['REQUEST_URI'];
