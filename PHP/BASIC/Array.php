@@ -1,15 +1,15 @@
 <?php
-$cities = ["Piacenza", "Milano", "Austin", "Tokyo"];
+$cities = ['Piacenza', 'Milano', 'Austin', 'Tokyo'];
 $accounts['accountnumber'] = 0; // Nelle quadre, come posizione, posso usare anche una stringa. Ora il valore 0 è mantenuto 
                                 // non nell'indice di posizione n dell'array ma nella posizione di stringa x, posso controllare stampando il suo valore
 print_r($accounts['accountnumber']);
-echo "\n";
+echo '\n';
 
 
 $arr = ['cities'];
-$arr['cities'] = ['MILAN', "TURIN"];
+$arr['cities'] = ['MILAN', 'TURIN'];
 echo $arr['cities'][1];
-echo "\n";
+echo '\n';
 
 
 // Count
@@ -18,7 +18,7 @@ $altroarray = [
     'city' => 'Piacenza',
     'lastName' => null
 ];
-echo $altroarray['lastName'] ?? "N/A\n"; // Se il valore nella posizione 'lastName' è null, stampa N/A. Vedi meglio nel file "Confronto.php" riga 48
+echo $altroarray['lastName'] ?? 'N/A\n'; // Se il valore nella posizione 'lastName' è null, stampa N/A. Vedi meglio nel file 'Confronto.php' riga 48
 echo count($cities); // Conta il numero di oggetti che ci sono
 
 
