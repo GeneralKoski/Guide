@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <film>
+        <title>Batman</title>
+        <year>1989</year>
+        <director>Tim Burton</director>
+        <plot>The Dark Knight of Gotham City begins his war on crime with his first major enemy being the clownishly homicidal Joker.</plot>
+    </film>
+    <film>
+        <title>The StarWars Adventures</title>
+        <year>2016</year>
+        <director>Tim Burton</director>
+        <plot>Slitting the Battalion into four companies, Thunder Company, under the command of Captain Mandeville.</plot>
+    </film>
+</root>

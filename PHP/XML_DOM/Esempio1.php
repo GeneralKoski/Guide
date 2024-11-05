@@ -1,5 +1,5 @@
 <?php
-
+// Creo un array di valori (film in questo caso), ciclo al suo interno e salvo tutti i valori all'interno di un file XML. Alla fine salvo il file col suo nome, che se non esiste lo genererà
 $films = [
     [
         'title' => 'Batman',
@@ -33,4 +33,5 @@ foreach ($films as $film) {
 }
 $dom->appendChild($root);
 header("Content-type:text/xml");
+$dom->save("mymovies.xml");
 echo $dom->saveXML();
