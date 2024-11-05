@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <script>
+    var postsJson = '[{"userId": 1,"id": 1,' +
+                    '"title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",' +
+                    '"body": "quia et suscipitsuscipit recusandae consequuntur expedita et cum' +
+                    'totamnostrum rerum est autem sunt rem eveniet architecto"}]';
+    
+// Con parse io trasformo la variabile postsJson (che è una stringa) in un JSON.
+    var posts = JSON.parse(postsJson);
+    var post = posts[0]
+    console.log("Titolo: \n" + post.title);
+
+// Con stringify io trasformo la variabile postsJson (che è un JSON) in una Stringa.
+    var secondJson = JSON.stringify(posts);
+    console.log(secondJson)
+  </script>
+</head>
+<body>
+
+</body>
+</html>

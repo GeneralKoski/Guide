@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <style>
+  li{
+      padding:5px;
+  }
+  </style>
+<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+<script>
+  $( function(){
+    var root = 'https://jsonplaceholder.typicode.com';
+    $.ajax({
+      url: root + '/posts',
+      method: 'GET'
+    }).then(function(data) {
+      var ul = document.createElement('ul');
+      for (var i =0; i<data.length; i++ ){
+        var post = data[i];
+        var li = document.createElement('li');
+        li.innerHTML = post.title;
+        ul.appendChild(li);
+      }
+      document.body.appendChild(ul)
+    });
+  });
+</script>  
+</head>
+<body>
+
+</body>
+</html>
