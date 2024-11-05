@@ -33,5 +33,5 @@ foreach ($films as $film) {
 }
 $dom->appendChild($root);
 header("Content-type:text/xml");
-$dom->save("mymovies.xml");
+$dom->save("Crea_Salva.xml");
 echo $dom->saveXML();
