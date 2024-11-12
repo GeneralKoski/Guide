@@ -1,5 +1,5 @@
 <?php
-abstract class Car {
+abstract class Padre {
     protected $speed = 0;
     abstract protected function speedUp(int $v);
     public function getSpeed() {
@@ -7,14 +7,14 @@ abstract class Car {
     }
 
 }
-class myCar extends Car {
+class Figlia extends Padre {
     protected $speed = 0;
     public function speedUp(int $v)  {
         $this->speed += $v;
     }
 }
 
-$car = new myCar();
-$car->speedUp(30);
-var_dump($car);
-echo $car->getSpeed(); // Posso richiamarla dalla classe astratta
+$figlia = new Figlia();
+$figlia->speedUp(30);
+var_dump($figlia);
+echo $figlia->getSpeed(); // Posso richiamarla dalla classe astratta
