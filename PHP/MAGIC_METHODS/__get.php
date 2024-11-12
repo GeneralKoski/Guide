@@ -15,7 +15,7 @@ class Request {
     public function __get($name) {
         echo "Passando da __get\n";
         return isset($this->data[$name]) ? $this->data[$name] : null;
-    }    
+    }
 }
 
 $obj = new Request();
