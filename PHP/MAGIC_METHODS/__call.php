@@ -16,7 +16,6 @@ class Request {
         $var = strtolower(str_replace('get', '', $name));
         return isset($this->data[$var]) ? $this->data[$var] : null;
     }
-    
 }
 
 $obj = new Request();
