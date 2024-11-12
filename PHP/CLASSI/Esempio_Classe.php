@@ -40,8 +40,15 @@ class Truck extends Auto {
         parent::__construct($extColor, $intColor);
         $this->clacson = $clacson;
     }
+    
+    public function getColor() {
+        return 'Il colore del camion è: '.parent::getColor();
+    }
+    public function getSecondcolor() {
+        return '<br>Il colore secondario del camion è: '.parent::getSecondcolor();
+    }
     public function getClacson() {
-        return $this->clacson;
+        return '<br>Ha un clacson di tipo: '.$this->clacson;
     }
 
     public function setClacson($clacson) {
@@ -58,4 +65,6 @@ $auto->setColor('Blu');
 var_dump($auto->getColor());
 echo '<br>';
 $fordTruck = new Truck('black','white', 'clown');
-echo 'Il colore del camion è: '.$fordTruck->getColor().'<br>Il colore secondario del camion è: '.$fordTruck->getSecondcolor().'<br>Ha un clacson di tipo: '.$fordTruck->getClacson();
+
+// Prende le funzioni di getColor e getSecondColor in override nella classe Truck. Se non fossero dichiarate userebbe quelle del genitore e basta
+echo $fordTruck->getColor().$fordTruck->getSecondcolor().$fordTruck->getClacson(); 
