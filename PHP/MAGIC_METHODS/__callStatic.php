@@ -1,5 +1,5 @@
 <?php
-// Se nell'URL della pagina aggiungi ?name=nome&age=123 ecc. nella REQUEST, prende i valori passati li
+// Se nell'URL della pagina aggiungi ?name=nome nella REQUEST prende i valori passati li
     
 class Request {
     protected $data;
