@@ -1,0 +1,23 @@
+{
+    "name": "martin/composer-example",
+    "description": "A test project for composer",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Martin\\ComposerExample\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "GeneralKoski",
+            "email": "mtrajkovski1@outlook.com"
+        }
+    ],
+    "require": {
+        "psr/log": "^3.0",
+        "intervention/image": "^3.9"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.24"
+    }
+}
