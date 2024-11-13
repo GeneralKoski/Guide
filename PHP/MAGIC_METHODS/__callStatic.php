@@ -1,25 +1,31 @@
 <?php
-// Se nell'URL della pagina aggiungi ?name=nome nella REQUEST prende i valori passati li
-    
-class Request {
+class Request
+{
     protected $data;
-    public function __construct() {
+
+    public function __construct()
+    {
         echo "Passando dal costruttore\n";
-        if(!empty($_REQUEST) && empty(self::$data)) {
+        if (!empty($_REQUEST) && empty($this->data)) {
             $this->data = $_REQUEST;
         }
     }
-    public function getData() {
+
+    public function getData()
+    {
         return $this->data;
     }
-    public static function __callStatic($name, $args) {
-        var_dump(func_get_args());
+
+    public static function __callStatic($name, $args)
+    {
+        var_dump($name, $args);  // Mostra il nome del metodo chiamato e gli argomenti passati
         $obj = new static();
         switch ($name) {
             case 'all':
                 return $obj->getData();
         }
-    }    
+    }
 }
 
-var_dump(Request::all('name'));
+// Testando con la richiesta GET
+var_dump(Request::all());  // Questo chiama il metodo statico "all" e restituisce i dati
