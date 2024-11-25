@@ -8,6 +8,7 @@ interface SidebarButtonProps {
   title: string;
   selected?: boolean;
   onClick: (id: string) => void;
+  className?: string; // Aggiungi className qui
 }
 
 export const SidebarButton = ({
@@ -17,6 +18,7 @@ export const SidebarButton = ({
   alt,
   title,
   onClick,
+  className, // Accetta la className
 }: SidebarButtonProps) => {
   return (
     <li
@@ -27,7 +29,7 @@ export const SidebarButton = ({
     >
       <div onClick={() => onClick(id)}>
         <Image
-          className="img-fluid inverso"
+          className={clsx("img-fluid", "inverso", className)} // Aggiungi className
           src={icon}
           alt={alt}
           title={title}
