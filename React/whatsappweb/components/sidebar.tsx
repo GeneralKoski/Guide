@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SidebarButton } from "./SidebarButton";
 
-const SideBar: React.FC = () => {
+interface ID {
+  id: string;
+  username: string;
+}
+const SideBar: React.FC<ID> = ({ id, username }) => {
+  const idUserAttuale = id;
+  const nomeUserAttuale = username;
   const [selectedId, setSelectedId] = useState<string>("chat");
 
   const handleClick = (message: string, id: string) => {
     alert(message + " " + id);
     setSelectedId(id);
   };
+
+  const [pfp, setPfp] = useState<string>("/images/default_icon.jpg");
+  useEffect(() => {
+    fetch(
+      `http://localhost:3000/getLoggedUserpfp.php?user_id="${idUserAttuale}"`
+    )
+      .then((response) => response.text())
+      .then((data) => {
+        console.log("L'ID dello user Loggato è: " + idUserAttuale);
+        console.log("URL foto profilo dell'utente loggato: ", data);
+        setPfp(data ? data : "/images/default_icon.jpg");
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+      });
+  }, [idUserAttuale]);
 
   const topItems = [
     { id: "chat", icon: "/images/chat.png", alt: "chat", title: "Chat" },
@@ -35,7 +57,7 @@ const SideBar: React.FC = () => {
     },
     {
       id: "profilo",
-      icon: "/images/profilo.png",
+      icon: pfp,
       alt: "profilo",
       title: "Profilo",
     },
@@ -68,6 +90,7 @@ const SideBar: React.FC = () => {
               title={item.title}
               selected={selectedId === item.id}
               onClick={(index) => handleClick("Hai cliccato", index)}
+              className={item.id == "profilo" ? "profile-image" : ""} // Passa la classe per l'immagine del profilo
             />
           );
         })}

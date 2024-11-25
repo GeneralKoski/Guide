@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import "@/styles/theme.scss";
-import Laterale from "@/components/Laterale";
 import SideBar from "@/components/Sidebar";
+import Laterale from "@/components/Laterale";
+import LoginPage from "@/components/LoginPage";
 
 function MyApp() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [id, setId] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+
+  const setUserData = (id: string, username: string) => {
+    setId(id);
+    setUsername(username);
+  };
+
   return (
     <div className="app">
-      <SideBar />
-      <Laterale />
-      {/* <Preview /> qui non serve perchè apro o questa o <ChatSingola /> in base al parametro booleano dichiarato in "laterale" */}
-      {/* <ChatSingola />  */}
+      {isAuthenticated ? (
+        <>
+          <SideBar id={id} username={username} />
+          <Laterale id={id} username={username} />
+        </>
+      ) : (
+        <LoginPage
+          setIsAuthenticated={setIsAuthenticated}
+          setUserData={setUserData}
+        />
+      )}
     </div>
   );
 }

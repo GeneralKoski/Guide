@@ -2,33 +2,141 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
-import { RiCheckDoubleFill } from "react-icons/ri";
+import { RiCheckDoubleFill, RiH4 } from "react-icons/ri";
 import { MessageChoices } from "./MessageChoices";
 
 interface Message {
-  type: "mio" | "altri" | "nessuno";
+  id: string;
+  username: string;
   content: string;
-  time: string;
+  sent_at: string;
   seen: "yes" | "no";
+  chat_type: "single" | "group";
+  message_type: string;
+  media_content: string;
 }
 
 interface ChatSingolaProps {
-  chat: {
-    icon: string;
-    name: string;
-    access: string;
-    messages: Message[];
-  };
+  username: string;
+  icon: string;
+  last_access: string;
+  name: string;
+  type: "single" | "group";
 }
 
-const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
+interface Settings {
+  user_id: string;
+  username: string;
+  setting_name: string;
+  setting_value: string;
+}
+
+interface ChatSingolaID {
+  selectedChat: string | null;
+}
+
+interface ID {
+  id: string;
+  username: string;
+}
+
+const ChatSingola: React.FC<ChatSingolaID & ID> = ({
+  selectedChat,
+  id,
+  username,
+}) => {
+  const idUserAttuale = id;
+  const nomeUserAttuale = username;
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  useEffect(() => {
+    if (selectedChat) {
+      fetch(
+        `http://localhost:3000/selectAllMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Messaggi ricevuti:", data);
+          setMessages(data);
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    }
+  }, [selectedChat]);
+
+  const [user, setUser] = useState<ChatSingolaProps>();
+  useEffect(() => {
+    if (selectedChat) {
+      fetch(
+        `http://localhost:3000/selectUserDetails.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("User ricevuti:", data);
+          setUser(data[0]);
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    }
+  }, [selectedChat]);
+
+  const [settings, setSettings] = useState<Settings[] | 0>(0);
+  useEffect(() => {
+    if (selectedChat) {
+      fetch(`http://localhost:3000/getChatSettings.php?chat_id=${selectedChat}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Settings della chat selezionate:", data);
+          setSettings(data.length > 0 ? data : 0);
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    }
+  }, [selectedChat]);
+
+  const conferma_lettura = (): string => {
+    if (settings === 0) {
+      return "yes";
+    }
+
+    for (const setting of settings) {
+      if (
+        setting.setting_name === "conferme_lettura" &&
+        setting.setting_value === "no"
+      ) {
+        return "no";
+      }
+    }
+
+    return "yes";
+  };
+
+  const ultimo_accesso = (): string => {
+    if (settings == 0) {
+      return "no";
+    }
+
+    for (const setting of settings) {
+      if (
+        setting.setting_name === "ultimo_accesso" &&
+        setting.setting_value === "no"
+      ) {
+        return "no";
+      }
+    }
+    return "yes";
+  };
+
   // Gestione della ScrollBar
   const messagesRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+      messagesRef.current!.scrollTop = messagesRef.current!.scrollHeight;
     }
-  }, [chat.messages]);
+  }, [messages]);
 
   // Gestione del Microfono o Freccia
   const [inputValue, setInputValue] = useState<string>("");
@@ -56,6 +164,22 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
     };
   }, []);
 
+  const getInitials = (name: string): string => {
+    const words = name.split(" ");
+
+    return words.map((word) => word[0].toUpperCase()).join("");
+  };
+
+  // Funzione per generare un colore unico passando il nome dell'utente
+  const generateColor = (name: string) => {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const color = (hash & 0x00ffffff).toString(16).toUpperCase(); // Prendi solo l'RGB
+    return `#${"00000".substring(0, 6 - color.length) + color}`; // Completa con 0 per evitare colori troppo chiari
+  };
+
   const Choices = [
     { choiceName: "Rispondi" },
     { choiceName: "Reagisci" },
@@ -71,16 +195,42 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
         className="sezione-utente"
         onClick={() => alert("Sei andato nelle informazioni dell'utente")}
       >
-        <Image
-          className="img-fluid profilo"
-          src={chat.icon}
-          alt={chat.name}
-          width={70}
-          height={70}
-        />
+        {user && user.name == "" ? (
+          <Image
+            className="img-fluid profilo"
+            src={user.icon}
+            alt={getInitials(user.username)}
+            width={70}
+            height={70}
+          />
+        ) : user && user.name != "" ? (
+          <Image
+            className="img-fluid profilo"
+            width={70}
+            height={70}
+            src={"/images/default_icon.jpg"}
+            alt={getInitials(user.name)}
+          />
+        ) : (
+          []
+        )}
         <div>
-          <h4>{chat.name}</h4> <br />
-          <p className="accesso">{chat.access}</p>
+          {user?.name == "" ? (
+            <h4>
+              {user?.username} <br />
+            </h4>
+          ) : (
+            <h4>
+              {user?.name}
+              <br />
+            </h4>
+          )}
+
+          <p className="accesso">
+            {ultimo_accesso() === "yes" && user?.type == "single"
+              ? user?.last_access.slice(11, 16)
+              : []}
+          </p>
         </div>
         <span className="icone-utente">
           <Image
@@ -102,42 +252,63 @@ const ChatSingola: React.FC<ChatSingolaProps> = ({ chat }) => {
 
       {/* I messaggi */}
       <div className="sezione-messaggi" ref={messagesRef}>
-        {chat.messages.map((message, index) => {
+        {messages.map((message, index) => {
           // Verifica se è il primo messaggio di una sequenza
           const MettoPisellino =
-            index === 0 || chat.messages[index - 1].type !== message.type;
+            index === 0 || messages[index - 1].id !== message.id;
           return (
             <div
               key={index}
               className={
-                message.type === "mio"
+                message.content == ""
+                  ? "nessuno"
+                  : message.id == idUserAttuale
                   ? "messaggio-mio"
-                  : message.type === "altri"
-                  ? "messaggio-altro"
-                  : "nessuno"
+                  : "messaggio-altro"
               }
             >
               <p>
                 {MettoPisellino && <p className="pisellino"></p>}
-                {message.content}
-                <span className="orario">
-                  {message.time}
-                  {message.type === "mio" && message.seen === "no" ? (
-                    <RiCheckDoubleFill size={18} color="grey" />
-                  ) : message.type === "mio" ? (
-                    <RiCheckDoubleFill size={18} color="#007FFF" />
-                  ) : (
-                    []
-                  )}
-                </span>
+                {message.id != idUserAttuale && message.chat_type == "group" ? (
+                  <small>
+                    <b style={{ color: generateColor(message.username) }}>
+                      {message.username} <br />
+                    </b>
+                  </small>
+                ) : (
+                  []
+                )}
 
+                {message.message_type == "message" ? (
+                  message.content
+                ) : (
+                  <>
+                    <img src={message.content} alt="Immagine" /> <br />
+                    <span>{message.media_content}</span>
+                  </>
+                )}
+                {}
+                <span className="orario">
+                  {message.sent_at.slice(11, 16)}
+
+                  {/* Gestione conferma di lettura */}
+                  {conferma_lettura() === "yes" ? (
+                    message.id === idUserAttuale && message.seen === "yes" ? (
+                      <RiCheckDoubleFill size={18} color="#007FFF" />
+                    ) : message.id === idUserAttuale &&
+                      message.seen === "no" ? (
+                      <RiCheckDoubleFill size={18} color="grey" />
+                    ) : null
+                  ) : message.id === idUserAttuale ? (
+                    <RiCheckDoubleFill size={18} color="grey" />
+                  ) : null}
+                </span>
                 <span className="chevron rounded-5 rounded-top-0">
                   <GoChevronDown
                     size={24}
                     onClick={() => handleChevronClick(index)}
                   />
                 </span>
-
                 {activeIndex === index && (
                   <ul className="list-group">
                     {Choices.map((choice) => {

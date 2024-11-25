@@ -6,89 +6,90 @@ import { RiCheckDoubleFill } from "react-icons/ri";
 import { LateraleButton } from "./LateraleButton";
 import { LateraleFilters } from "./LateraleFilters";
 
-interface Message {
-  type: "mio" | "altri" | "nessuno";
-  content: string;
-  time: string;
-  seen: "yes" | "no";
-}
-
 interface ChatData {
   icon: string;
-  name: string;
-  messages: Message[];
-  access: string;
+  chat_name: string;
+  last_message_content: string;
+  seen: "yes" | "no";
+  chat_id: string;
+  last_message_sender_id: string;
+  sent_at: string;
+  message_type: string;
+  chat_type: string;
 }
 
-const Laterale: React.FC = () => {
-  // Prende tutte le chat disponibili nel file chats.json
-  const [chats, setChats] = useState<ChatData[]>([]);
+interface Settings {
+  setting_name: string;
+  setting_value: string;
+  user_id: string;
+  username: string;
+}
+
+interface ID {
+  id: string;
+  username: string;
+}
+
+const Laterale: React.FC<ID> = ({ id, username }) => {
+  const idUserAttuale = id;
+  const nomeUserAttuale = username;
+
+  // Gestisco il filterchat nella ricerca
   const [filteredChats, setFilteredChats] = useState<ChatData[]>([]); // Stato per le chat filtrate
   const [searchTerm, setSearchTerm] = useState<string>(""); // Stato per il termine di ricerca
 
-  // Gestione dell'errore, non obbligatorio
-  const [error, setError] = useState<string | null>(null);
+  // Tiene conto della chat cliccata, da passare a <ChatSingola/> che con il settingetro crea la sua impaginazione
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
-  // Tiene conto della chat cliccata, da passare a <ChatSingola/> che con il parametro crea la sua impaginazione
-  const [selectedChat, setSelectedChat] = useState<ChatData | null>(null);
-
-  // Funzione per cambiare l'orario in minuti per aiutare l'ordine delle chat in descrescente
-  const parseTimeToMinutes = (time: string): number => {
-    const [hours, minutes] = time.split(":").map(Number);
-    return hours * 60 + minutes;
-  };
-
-  // Caricare i dati dal file .json
+  // Prende tutte le chat disponibili nel file chats.json
+  const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   useEffect(() => {
-    fetch("chats.json")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Errore nel caricamento del file JSON");
-        }
-        return response.json();
-      })
+    fetch(`http://localhost:3000/selectAllChats.php?user_id=${idUserAttuale}`)
+      .then((response) => response.json()) // Converto in json
       .then((data) => {
-        if (Array.isArray(data)) {
-          // Ordino i dati per orario dell'ultimo messaggio
-          const sortedData = data.sort((a, b) => {
-            const lastMessageA = a.messages[a.messages.length - 1];
-            const lastMessageB = b.messages[b.messages.length - 1];
-            return (
-              parseTimeToMinutes(lastMessageB.time) -
-              parseTimeToMinutes(lastMessageA.time)
-            );
-          });
-          setChats(sortedData);
-          setFilteredChats(sortedData); // Inizialmente, nessun filtro
-        } else {
-          throw new Error("Il formato del file JSON non è un array");
-        }
+        console.log("Chat ricevute:", data); // Verifica i dati
+        setUsers(data); // Memorizza i dati utenti
+        setFilteredChats(data);
       })
-      .catch((error) => setError(error.message));
+      .catch((error) => {
+        console.error("Errore:", error);
+      });
   }, []);
-  if (error) {
-    return <div>Errore: {error}</div>;
-  }
 
-  // Funzione per gestire il click sulla chat e selezionare la chat specifica
-  const handleChatClick = (chat: ChatData) => {
-    selectedChat?.name === chat.name
-      ? setSelectedChat(null)
-      : setSelectedChat(chat);
+  const [settings, setSettings] = useState<Settings[] | 0>(0);
+  useEffect(() => {
+    fetch(`http://localhost:3000/getUsersSettings.php?user_id=${idUserAttuale}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Settings degli Utenti:", data);
+        setSettings(data);
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+      });
+  }, []);
 
-    seenChanger(chat.messages);
+  const conferma_lettura = (id: string): string => {
+    // Da cambiare il parametro passato user.chat_id, dovrebbe essere user.id
+    if (settings === 0) return "yes";
+    const setting = settings.find(
+      (setting) =>
+        setting.setting_name === "conferme_lettura" && setting.username === id
+    );
+    return setting && setting.setting_value === "no" ? "no" : "yes";
   };
 
-  const seenChanger = (messaggi: Message[]) => {
-    for (let i = messaggi.length - 1; i >= 0; i--) {
-      if (messaggi[i].type === "mio") {
-        break;
-      }
-      if (messaggi[i].type === "altri" && messaggi[i].seen === "no") {
-        messaggi[i].seen = "yes";
-      }
+  // Gestisco la chat selezionata e azzero il numero di messaggi da vedere
+  const handleChatClick = (id: React.SetStateAction<string | null>) => {
+    if (selectedChat === id) {
+      setSelectedChat(null);
+    } else {
+      setSelectedChat(id);
+      setUnseenMessages((prevState) => ({
+        ...prevState,
+        [String(id)]: 0,
+      }));
     }
-    return;
   };
 
   // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
@@ -105,42 +106,49 @@ const Laterale: React.FC = () => {
     };
   }, []);
 
-  // Funzione per gestire il cambiamento dell'input e filtrare le chat
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
+  // Faccio il fetch per ogni chat per i messaggi non visti
+  const [unseenMessages, setUnseenMessages] = useState<{
+    [key: string]: number;
+  }>({});
+  useEffect(() => {
+    users.forEach((user) => {
+      fetch(
+        `http://localhost:3000/notSeenMessagesPerChat.php?chat_id=${user.chat_id}&user_id=${idUserAttuale}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setUnseenMessages((prevState) => ({
+            ...prevState,
+            [user.chat_id]: data,
+          }));
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    });
+  }, [users]);
 
-    if (term === "") {
-      setFilteredChats(chats); // Mostra tutte le chat se il campo è vuoto
-    } else {
-      const filtered = chats.filter((chat) => {
-        const matchName = chat.name.toLowerCase().includes(term);
-        const matchMessage = chat.messages.some((message) =>
-          message.content.toLowerCase().includes(term)
-        );
-        return matchName || matchMessage;
-      });
-      setFilteredChats(filtered); // Aggiorna le chat filtrate
-    }
+  // Per filtrare tra le chat al variare dell'input
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const searchValue = event.target.value.toLowerCase();
+  //   setSearchTerm(searchValue);
+
+  //   if (searchValue == "") {
+  //     setFilteredChats(users);
+  //   } else {
+  //     const filtered = users.filter((user) =>
+  //       user.chat_name.toLowerCase().includes(searchValue)
+  //     );
+  //     setFilteredChats(filtered);
+  //   }
+  // };
+
+  // Funzione per ottenere le iniziali
+  const getInitials = (name: string): string => {
+    const words = name.split(" ");
+
+    return words.map((word) => word[0].toUpperCase()).join("");
   };
-
-  // Conto i messaggi ancora da visualizzare
-  const countNotSeenMessages = (messaggi: Message[]): number => {
-    let n = 0;
-    for (let i = messaggi.length - 1; i >= 0; i--) {
-      if (messaggi[i].type === "mio") {
-        break;
-      }
-      if (messaggi[i].type === "altri" && messaggi[i].seen === "no") {
-        n++;
-      }
-    }
-    return n;
-  };
-
-  if (error) {
-    return <div>Errore: {error}</div>;
-  }
 
   const chatButtons = [
     {
@@ -176,7 +184,6 @@ const Laterale: React.FC = () => {
             })}
           </ul>
         </div>
-
         {/* Input */}
         <div className="ricerca">
           <Image
@@ -190,10 +197,9 @@ const Laterale: React.FC = () => {
             type="text"
             placeholder="Cerca"
             value={searchTerm}
-            onChange={handleInputChange} // Gestisce il cambiamento di input
+            // onChange={handleInputChange} // Gestisce il cambiamento di input
           />
         </div>
-
         {/* Filtri */}
         <div>
           <ul id="filtri">
@@ -210,58 +216,107 @@ const Laterale: React.FC = () => {
           </ul>
         </div>
 
-        {/* Tutte le chat filtrate */}
+        {/* Carico le chat */}
         <div className="lechat">
-          {filteredChats.map((chat) => (
+          {filteredChats.map((user) => (
             <div
               className="chat"
-              key={chat.name}
-              onClick={() => handleChatClick(chat)} // Passa la chat selezionata alla funzione che a sua volta compie altre azioni
+              key={user.last_message_sender_id}
+              onClick={() => handleChatClick(user.chat_id)}
             >
               <Image
                 className="img-fluid profilo"
-                src={chat.icon}
-                alt={chat.name}
                 width={70}
                 height={70}
+                src={user.icon ? user.icon : "/images/default_icon.jpg"}
+                alt={getInitials(user.chat_name)}
               />
               <div>
-                <h4>{chat.name}</h4> <br />
-                {/* Gestisco i casi in cui il messaggio è mio ed è visto/non visto */}
+                <h4>{user.chat_name}</h4> <br />
                 <p className="chat-message text-truncate">
-                  {chat.messages[chat.messages.length - 1].type === "mio" &&
-                  chat.messages[chat.messages.length - 1].seen === "yes" ? (
+                  {user.chat_type == "single" ? (
+                    conferma_lettura(user.chat_name) == "yes" &&
+                    conferma_lettura(nomeUserAttuale) == "yes" ? (
+                      user.last_message_sender_id === idUserAttuale &&
+                      user.seen === "yes" ? (
+                        <RiCheckDoubleFill size={18} color="#007FFF" />
+                      ) : user.last_message_sender_id === idUserAttuale &&
+                        user.seen === "no" ? (
+                        <RiCheckDoubleFill size={18} color="grey" />
+                      ) : (
+                        []
+                      )
+                    ) : user.last_message_sender_id === idUserAttuale ? (
+                      <RiCheckDoubleFill size={18} color="grey" />
+                    ) : (
+                      []
+                    )
+                  ) : user.last_message_sender_id === idUserAttuale &&
+                    user.seen === "yes" ? (
                     <RiCheckDoubleFill size={18} color="#007FFF" />
-                  ) : chat.messages[chat.messages.length - 1].type === "mio" &&
-                    chat.messages[chat.messages.length - 1].seen === "no" ? (
+                  ) : user.last_message_sender_id === idUserAttuale &&
+                    user.seen === "no" ? (
                     <RiCheckDoubleFill size={18} color="grey" />
                   ) : (
-                    []
+                    "User " + user.last_message_sender_id + ": "
                   )}
-                  {chat.messages[chat.messages.length - 1].content}
+                  {user.message_type == "message" ? (
+                    user.last_message_sender_id == idUserAttuale ? (
+                      "Tu: " + user.last_message_content
+                    ) : (
+                      user.last_message_content
+                    )
+                  ) : (
+                    <>
+                      <img
+                        src="/images/ImagePreview.jpg"
+                        alt="Immagine"
+                        style={{ height: 20, width: 20, borderRadius: 5 }}
+                      />
+                      <span>
+                        {user.last_message_content != ""
+                          ? " " + user.last_message_content
+                          : " Foto"}
+                      </span>
+                    </>
+                  )}
                 </p>
-                {/* Gestisco la visualizzazione del pallino dei messaggi non visti in laterale*/}
               </div>
-              {chat.messages[chat.messages.length - 1].type === "altri" &&
-              chat.messages[chat.messages.length - 1].seen === "no" ? (
-                <span className="chat-time">
-                  {chat.messages[chat.messages.length - 1].time} <br />
-                  <span className="chat-tosee">
-                    {countNotSeenMessages(chat.messages)}
+              <div>
+                {user.last_message_sender_id !== idUserAttuale ? (
+                  <span className="chat-time">
+                    {user.sent_at.slice(11, 16)} <br />
+                    <span
+                      className={
+                        unseenMessages[user.chat_id] !== 0 ? "chat-tosee" : ""
+                      }
+                    >
+                      {unseenMessages[user.chat_id] !== 0
+                        ? unseenMessages[user.chat_id]
+                        : ""}
+                    </span>
                   </span>
-                </span>
-              ) : (
-                <span className="chat-time">
-                  {chat.messages[chat.messages.length - 1].time}
-                </span>
-              )}
+                ) : (
+                  <span className="chat-time">
+                    {user.sent_at.slice(11, 16)} <br />
+                  </span>
+                )}
+              </div>
             </div>
           ))}
         </div>
       </div>
       {/* Booleano per mostrare o la preview o la chat singola */}
       {selectedChat ? (
-        <div className="messaggi">{<ChatSingola chat={selectedChat} />}</div>
+        <div className="messaggi">
+          {
+            <ChatSingola
+              selectedChat={selectedChat}
+              id={idUserAttuale}
+              username={nomeUserAttuale}
+            />
+          }
+        </div>
       ) : (
         <div className="contenuto">
           <Preview />
