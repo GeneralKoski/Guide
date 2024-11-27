@@ -57,6 +57,17 @@ function insertUserSettings($user_id, $setting_name, $setting_value, mysqli $con
     }
 }
 
+function insertGroupChatMessage($chat_id, $message_id, $seen_by_user, $seen, mysqli $conn)
+{
+    $sql = 'INSERT INTO GroupChatMessages (chat_id, message_id, seen_by_user, seen) VALUES ';
+    $sql .= " ('$chat_id','$message_id', '$seen_by_user', '$seen') ";
+
+    $res = $conn->query($sql);
+    if (!$res) {
+        echo $conn->error . '<br>';
+    }
+}
+
 // insertUsers('Papà', '', '2024-11-20 20:00:00.000000', $mysqli);
 
 // insertChats('Gymbro con Valentina Nappi', 'single', $mysqli); 
@@ -68,3 +79,6 @@ function insertUserSettings($user_id, $setting_name, $setting_value, mysqli $con
 
 // insertUserSettings("19", 'ultimo_accesso', 'yes', $mysqli);
 // insertUserSettings("19", 'conferme_lettura', 'yes', $mysqli);
+
+// insertGroupChatMessage(12, 70, 8, 'yes', $mysqli);
+// insertGroupChatMessage(12, 70, 16, 'yes', $mysqli);

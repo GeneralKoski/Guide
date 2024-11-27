@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 require_once 'connection.php';
 
-function selectAllMessages(mysqli $conn)
+function selectAllSingleMessages(mysqli $conn)
 {
     // Query per trovare tutti i messaggi della chat specifica
     $chat_id = isset($_GET['chat_id']) ? $_GET['chat_id'] : '';
@@ -27,7 +27,7 @@ function selectAllMessages(mysqli $conn)
         LEFT JOIN ChatUsers cu ON cu.user_id = u.id AND cu.chat_id = c.id
         
         -- Impongo la condizione del vedere i messaggi dopo la data di aggiunta alla chat in caso di chat di gruppo
-        WHERE m.chat_id = $chat_id AND m.sent_at > (SELECT cu2.added_at FROM ChatUsers cu2 WHERE cu2.chat_id = $chat_id AND cu2.user_id = $user_id)
+        WHERE c.type = 'single' AND m.chat_id = $chat_id AND m.sent_at > (SELECT cu2.added_at FROM ChatUsers cu2 WHERE cu2.chat_id = $chat_id AND cu2.user_id = $user_id)
         ORDER BY m.sent_at ASC;
 ";
     $res = $conn->query($sql);
@@ -46,7 +46,8 @@ function selectAllMessages(mysqli $conn)
         echo "Nessun risultato trovato.<br>";
     }
 
+    // print_r($results);
     echo json_encode($results);  // Contverto i risultati in JSON
 }
 
-selectAllMessages($mysqli);
+selectAllSingleMessages($mysqli);

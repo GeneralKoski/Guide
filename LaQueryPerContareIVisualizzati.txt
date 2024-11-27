@@ -1,0 +1,6 @@
+SELECT
+		(IF(
+    		(SELECT COUNT(*) as visti FROM GroupChatMessages gcm WHERE gcm.seen = 'yes' AND message_id = 49) =
+    		(SELECT COUNT(*) as users FROM ChatUsers cu WHERE cu.chat_id = 7 AND cu.user_id != 5),
+            'yes', 'no'))
+         as visualizzato;
