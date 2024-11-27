@@ -16,3 +16,5 @@ function getLoggedUserpfp(mysqli $conn)
         echo "false";
     }
 }
+
+getLoggedUserpfp($mysqli);
