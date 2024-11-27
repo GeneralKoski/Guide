@@ -119,14 +119,16 @@
         }
 
         .pisellino {
-          height: 10px;
-          width: 30px;
-          display: block;
-          position: absolute;
-          top: 0%;
-          left: 96%;
-          border: none;
-          border-top-right-radius: 50%;
+          display: inline-block; 
+          position: absolute; 
+          width: 15px; 
+          height: 20px; 
+          top: 0%; 
+          left: 98%; 
+          border: none; 
+          background-color: inherit; 
+          border-top-right-radius: 50%; 
+          border-bottom-right-radius: 50px;
         }
 
         .chevron {
@@ -144,7 +146,7 @@
       .messaggio-altro {
         margin-left: 1rem;
         margin-top: 2px;
-        width: 90%;
+        width: 100%;
         float: left;
         clear: left;
         height: auto;
@@ -195,13 +197,16 @@
           opacity: 1;
         }
         .pisellino {
-          display: block;
-          position: absolute;
-          top: -1%;
-          left: -1.8%;
-          border: none;
-          background-color: inherit;
-          border-top-left-radius: 50%;
+          display: inline-block; 
+          position: absolute; 
+          width: 15px; 
+          height: 20px; 
+          top: -1%; 
+          left: -1%; 
+          border: none; 
+          background-color: inherit; 
+          border-top-left-radius: 50%; 
+          border-bottom-left-radius: 50px; 
         }
       }
 
@@ -268,7 +273,24 @@
   }
 }
 
-
+.data {
+  width: 100%;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  .datedivider { 
+    width: 12%;
+    border-radius: 20px; 
+    padding: 5px; 
+    border: 1px solid black; 
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+    text-align: center; 
+    background-color: #303639; 
+    color: #bfc9ce; 
+  } 
+}
 
 .contenuto {
   width: 100%;

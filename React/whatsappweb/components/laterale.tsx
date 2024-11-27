@@ -33,6 +33,7 @@ interface ID {
 const Laterale: React.FC<ID> = ({ id, username }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
+  const today = "2024-11-23 00:00:00";
 
   // Gestisco il filterchat nella ricerca
   const [filteredChats, setFilteredChats] = useState<ChatData[]>([]); // Stato per le chat filtrate
@@ -40,6 +41,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
 
   // Tiene conto della chat cliccata, da passare a <ChatSingola/> che con il settingetro crea la sua impaginazione
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
+  const [selectedChatType, setSelectedChatType] = useState<string | null>(null);
 
   // Prende tutte le chat disponibili nel file chats.json
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
@@ -69,22 +71,28 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
       });
   }, []);
 
-  const conferma_lettura = (id: string): string => {
+  const conferma_lettura = (username: string): string => {
     // Da cambiare il parametro passato user.chat_id, dovrebbe essere user.id
     if (settings === 0) return "yes";
     const setting = settings.find(
       (setting) =>
-        setting.setting_name === "conferme_lettura" && setting.username === id
+        setting.setting_name === "conferme_lettura" &&
+        setting.username === username
     );
     return setting && setting.setting_value === "no" ? "no" : "yes";
   };
 
   // Gestisco la chat selezionata e azzero il numero di messaggi da vedere
-  const handleChatClick = (id: React.SetStateAction<string | null>) => {
+  const handleChatClick = (
+    id: React.SetStateAction<string | null>,
+    type: React.SetStateAction<string | null>
+  ) => {
     if (selectedChat === id) {
       setSelectedChat(null);
+      setSelectedChatType(null);
     } else {
       setSelectedChat(id);
+      setSelectedChatType(type);
       setUnseenMessages((prevState) => ({
         ...prevState,
         [String(id)]: 0,
@@ -112,42 +120,71 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   }>({});
   useEffect(() => {
     users.forEach((user) => {
-      fetch(
-        `http://localhost:3000/notSeenMessagesPerChat.php?chat_id=${user.chat_id}&user_id=${idUserAttuale}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          setUnseenMessages((prevState) => ({
-            ...prevState,
-            [user.chat_id]: data,
-          }));
-        })
-        .catch((error) => {
-          console.error("Errore:", error);
-        });
+      if (user.chat_type == "single") {
+        fetch(
+          `http://localhost:3000/notSeenMessagesPerChatSingle.php?chat_id=${user.chat_id}&user_id=${idUserAttuale}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            setUnseenMessages((prevState) => ({
+              ...prevState,
+              [user.chat_id]: data,
+            }));
+          })
+          .catch((error) => {
+            console.error("Errore:", error);
+          });
+      } else if (user.chat_type == "group") {
+        fetch(
+          `http://localhost:3000/notSeenMessagesPerChatGroup.php?chat_id=${user.chat_id}&user_id=${idUserAttuale}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            setUnseenMessages((prevState) => ({
+              ...prevState,
+              [user.chat_id]: data,
+            }));
+          })
+          .catch((error) => {
+            console.error("Errore:", error);
+          });
+      }
     });
   }, [users]);
 
-  // Per filtrare tra le chat al variare dell'input
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const searchValue = event.target.value.toLowerCase();
-  //   setSearchTerm(searchValue);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const searchValue = event.target.value.toLowerCase();
+    setSearchTerm(searchValue);
 
-  //   if (searchValue == "") {
-  //     setFilteredChats(users);
-  //   } else {
-  //     const filtered = users.filter((user) =>
-  //       user.chat_name.toLowerCase().includes(searchValue)
-  //     );
-  //     setFilteredChats(filtered);
-  //   }
-  // };
+    const filtered = users.filter((user) =>
+      user.chat_name
+        ? user.chat_name.toLowerCase().includes(searchValue)
+        : false
+    );
+    setFilteredChats(filtered);
+  };
 
   // Funzione per ottenere le iniziali
   const getInitials = (name: string): string => {
     const words = name.split(" ");
 
     return words.map((word) => word[0].toUpperCase()).join("");
+  };
+
+  const isNotToday = (sentAt: string): string => {
+    const messageDate = new Date(sentAt);
+
+    const todayMidnight = new Date(today);
+
+    const yesterdayMidnight = new Date(todayMidnight);
+    yesterdayMidnight.setDate(todayMidnight.getDate() - 1);
+
+    if (messageDate >= yesterdayMidnight && messageDate < todayMidnight) {
+      return "ieri";
+    } else if (messageDate <= yesterdayMidnight) {
+      return "prima";
+    }
+    return "";
   };
 
   const chatButtons = [
@@ -177,9 +214,14 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
         <div className="sezionechat">
           <h4>Chat</h4>
           <ul>
-            {chatButtons.map((btn) => {
+            {chatButtons.map((btn, id) => {
               return (
-                <LateraleButton src={btn.src} alt={btn.alt} title={btn.title} />
+                <LateraleButton
+                  key={id}
+                  src={btn.src}
+                  alt={btn.alt}
+                  title={btn.title}
+                />
               );
             })}
           </ul>
@@ -197,20 +239,21 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
             type="text"
             placeholder="Cerca"
             value={searchTerm}
-            // onChange={handleInputChange} // Gestisce il cambiamento di input
+            onChange={handleInputChange} // Gestisce il cambiamento di input
           />
         </div>
         {/* Filtri */}
         <div>
           <ul id="filtri">
-            {filters.map((filter) => {
+            {filters.map((filter, id) => {
               return (
-                <div
+                <li
+                  key={id}
                   style={{ display: "inline" }}
                   onClick={() => alert(`Hai cliccato su ${filter.filterName}`)}
                 >
                   <LateraleFilters filterName={filter.filterName} />
-                </div>
+                </li>
               );
             })}
           </ul>
@@ -221,8 +264,8 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
           {filteredChats.map((user) => (
             <div
               className="chat"
-              key={user.last_message_sender_id}
-              onClick={() => handleChatClick(user.chat_id)}
+              key={user.chat_id}
+              onClick={() => handleChatClick(user.chat_id, user.chat_type)}
             >
               <Image
                 className="img-fluid profilo"
@@ -285,7 +328,12 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
               <div>
                 {user.last_message_sender_id !== idUserAttuale ? (
                   <span className="chat-time">
-                    {user.sent_at.slice(11, 16)} <br />
+                    {isNotToday(user.sent_at) == "ieri"
+                      ? "ieri"
+                      : isNotToday(user.sent_at) == "prima"
+                      ? user.sent_at.slice(0, 10)
+                      : user.sent_at.slice(11, 16)}
+                    <br />
                     <span
                       className={
                         unseenMessages[user.chat_id] !== 0 ? "chat-tosee" : ""
@@ -298,7 +346,11 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
                   </span>
                 ) : (
                   <span className="chat-time">
-                    {user.sent_at.slice(11, 16)} <br />
+                    {isNotToday(user.sent_at) == "ieri"
+                      ? "ieri"
+                      : isNotToday(user.sent_at) == "prima"
+                      ? user.sent_at.slice(0, 10)
+                      : user.sent_at.slice(11, 16)}
                   </span>
                 )}
               </div>
@@ -312,6 +364,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
           {
             <ChatSingola
               selectedChat={selectedChat}
+              selectedChatType={selectedChatType}
               id={idUserAttuale}
               username={nomeUserAttuale}
             />

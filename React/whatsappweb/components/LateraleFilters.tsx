@@ -3,9 +3,5 @@ interface LateraleFiltersProps {
 }
 
 export const LateraleFilters = ({ filterName }: LateraleFiltersProps) => {
-  return (
-    <li>
-      <a href="#">{filterName}</a>
-    </li>
-  );
+  return <a href="#">{filterName}</a>;
 };

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import "@/styles/theme.scss";
+import LoginPage from "@/components/LoginPage";
 import SideBar from "@/components/Sidebar";
 import Laterale from "@/components/Laterale";
-import LoginPage from "@/components/LoginPage";
+import React, { useState } from "react";
+import "@/styles/theme.scss";
 
 function MyApp() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,7 +18,11 @@ function MyApp() {
     <div className="app">
       {isAuthenticated ? (
         <>
-          <SideBar id={id} username={username} />
+          <SideBar
+            setIsAuthenticated={setIsAuthenticated}
+            id={id}
+            username={username}
+          />
           <Laterale id={id} username={username} />
         </>
       ) : (

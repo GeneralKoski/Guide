@@ -33,6 +33,7 @@ interface Settings {
 
 interface ChatSingolaID {
   selectedChat: string | null;
+  selectedChatType: string | null;
 }
 
 interface ID {
@@ -42,17 +43,49 @@ interface ID {
 
 const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   selectedChat,
+  selectedChatType,
   id,
   username,
 }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [isAdmin, setIsAdmin] = useState<string>("false");
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:3000/selectAllMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:3000/isChatAdmin.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+      )
+        .then((response) => response.text())
+        .then((data) => {
+          console.log("E' Admin?: ", data);
+          setIsAdmin(data);
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    }
+  }, [idUserAttuale, selectedChat]);
+
+  const today = "2024-11-23 00:00:00";
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  useEffect(() => {
+    if (selectedChat && selectedChatType == "single") {
+      fetch(
+        `http://localhost:3000/selectAllSingleMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Messaggi ricevuti:", data);
+          setMessages(data);
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    } else if (selectedChat && selectedChatType == "group") {
+      fetch(
+        `http://localhost:3000/selectAllGroupMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -180,6 +213,31 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
     return `#${"00000".substring(0, 6 - color.length) + color}`; // Completa con 0 per evitare colori troppo chiari
   };
 
+  const isSameDay = (date1: string, date2: string): boolean => {
+    const d1 = new Date(date1);
+    const d2 = new Date(date2);
+    return d1.toDateString() === d2.toDateString();
+  };
+
+  const isNotToday = (sent_at: string, previousDate: string): string => {
+    const messageDate = new Date(sent_at);
+    const todayMidnight = new Date(today);
+    const yesterdayMidnight = new Date(todayMidnight);
+    yesterdayMidnight.setDate(todayMidnight.getDate() - 1);
+
+    if (previousDate && isSameDay(sent_at, previousDate)) {
+      return ""; // Non scrivere la data se è lo stesso giorno del messaggio precedente
+    } else if (
+      messageDate >= yesterdayMidnight &&
+      messageDate < todayMidnight
+    ) {
+      return "IERI";
+    } else if (messageDate < yesterdayMidnight) {
+      return messageDate.toLocaleDateString();
+    }
+    return "OGGI";
+  };
+
   const Choices = [
     { choiceName: "Rispondi" },
     { choiceName: "Reagisci" },
@@ -253,78 +311,98 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       {/* I messaggi */}
       <div className="sezione-messaggi" ref={messagesRef}>
         {messages.map((message, index) => {
+          // Prendo il messaggio precedente che mi serve per gestire le scritte "OGGI", "IERI" o "XX-XX-XX XX:XX:XX"
+          const previousMessageSentAt =
+            index > 0 ? messages[index - 1].sent_at : "";
+
+          const displayDate = isNotToday(
+            message.sent_at,
+            previousMessageSentAt
+          );
           // Verifica se è il primo messaggio di una sequenza
           const MettoPisellino =
             index === 0 || messages[index - 1].id !== message.id;
           return (
-            <div
-              key={index}
-              className={
-                message.content == ""
-                  ? "nessuno"
-                  : message.id == idUserAttuale
-                  ? "messaggio-mio"
-                  : "messaggio-altro"
-              }
-            >
-              <p>
-                {MettoPisellino && <p className="pisellino"></p>}
-                {message.id != idUserAttuale && message.chat_type == "group" ? (
-                  <small>
-                    <b style={{ color: generateColor(message.username) }}>
-                      {message.username} <br />
-                    </b>
-                  </small>
-                ) : (
-                  []
-                )}
-
-                {message.message_type == "message" ? (
-                  message.content
-                ) : (
-                  <>
-                    <img src={message.content} alt="Immagine" /> <br />
-                    <span>{message.media_content}</span>
-                  </>
-                )}
-                {}
-                <span className="orario">
-                  {message.sent_at.slice(11, 16)}
-
-                  {/* Gestione conferma di lettura */}
-                  {conferma_lettura() === "yes" ? (
-                    message.id === idUserAttuale && message.seen === "yes" ? (
-                      <RiCheckDoubleFill size={18} color="#007FFF" />
-                    ) : message.id === idUserAttuale &&
-                      message.seen === "no" ? (
-                      <RiCheckDoubleFill size={18} color="grey" />
-                    ) : null
-                  ) : message.id === idUserAttuale ? (
-                    <RiCheckDoubleFill size={18} color="grey" />
-                  ) : null}
-                </span>
-                <span className="chevron rounded-5 rounded-top-0">
-                  <GoChevronDown
-                    size={24}
-                    onClick={() => handleChevronClick(index)}
-                  />
-                </span>
-                {activeIndex === index && (
-                  <ul className="list-group">
-                    {Choices.map((choice) => {
-                      return <MessageChoices choiceName={choice.choiceName} />; //è la tendina che sbuca quando schiacci sul chevron
-                    })}
-                  </ul>
-                )}
-              </p>
-
-              <span
-                className="emoji"
-                onClick={() => alert("Hai cliccato l'Emoji")}
+            <>
+              {displayDate && (
+                <div className="data">
+                  <div className="datedivider">{displayDate}</div>
+                </div>
+              )}
+              <div
+                key={index}
+                className={
+                  message.content == ""
+                    ? "nessuno"
+                    : message.username == nomeUserAttuale
+                    ? "messaggio-mio"
+                    : "messaggio-altro"
+                }
               >
-                <MdOutlineEmojiEmotions size={24} />
-              </span>
-            </div>
+                <p>
+                  {MettoPisellino && <span className="pisellino"></span>}
+                  {message.username != nomeUserAttuale &&
+                  message.chat_type == "group" ? (
+                    <small>
+                      <b style={{ color: generateColor(message.username) }}>
+                        {message.username} <br />
+                      </b>
+                    </small>
+                  ) : (
+                    []
+                  )}
+                  {message.message_type == "message" ? (
+                    message.content
+                  ) : (
+                    <>
+                      <img src={message.content} alt="Immagine" /> <br />
+                      <span>{message.media_content}</span>
+                    </>
+                  )}
+                  <span className="orario">
+                    {message.sent_at.slice(11, 16)}
+
+                    {/* Gestione conferma di lettura */}
+                    {conferma_lettura() === "yes" ? (
+                      message.username === nomeUserAttuale &&
+                      message.seen === "yes" ? (
+                        <RiCheckDoubleFill size={18} color="#007FFF" />
+                      ) : message.username === nomeUserAttuale &&
+                        message.seen === "no" ? (
+                        <RiCheckDoubleFill size={18} color="grey" />
+                      ) : null
+                    ) : message.username === nomeUserAttuale ? (
+                      <RiCheckDoubleFill size={18} color="grey" />
+                    ) : null}
+                  </span>
+                  <span className="chevron rounded-5 rounded-top-0">
+                    <GoChevronDown
+                      size={24}
+                      onClick={() => handleChevronClick(index)}
+                    />
+                  </span>
+                  {activeIndex === index && (
+                    <ul className="list-group">
+                      {Choices.map((choice) => {
+                        return (
+                          <MessageChoices
+                            isAdmin={isAdmin}
+                            choiceName={choice.choiceName}
+                            chatType={message.chat_type}
+                          />
+                        ); //è la tendina che sbuca quando schiacci sul chevron
+                      })}
+                    </ul>
+                  )}
+                </p>
+                <span
+                  className="emoji"
+                  onClick={() => alert("Hai cliccato l'Emoji")}
+                >
+                  <MdOutlineEmojiEmotions size={24} />
+                </span>
+              </div>
+            </>
           );
         })}
       </div>

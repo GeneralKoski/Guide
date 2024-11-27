@@ -8,7 +8,7 @@ interface SidebarButtonProps {
   title: string;
   selected?: boolean;
   onClick: (id: string) => void;
-  className?: string; // Aggiungi className qui
+  className?: string;
 }
 
 export const SidebarButton = ({
@@ -18,7 +18,7 @@ export const SidebarButton = ({
   alt,
   title,
   onClick,
-  className, // Accetta la className
+  className,
 }: SidebarButtonProps) => {
   return (
     <li
@@ -26,17 +26,16 @@ export const SidebarButton = ({
       style={{
         background: selected ? "#56595c" : "transparent",
       }}
+      onClick={() => onClick(id)}
     >
-      <div onClick={() => onClick(id)}>
-        <Image
-          className={clsx("img-fluid", "inverso", className)} // Aggiungi className
-          src={icon}
-          alt={alt}
-          title={title}
-          width={35}
-          height={35}
-        />
-      </div>
+      <Image
+        className={clsx("img-fluid", className)}
+        src={icon}
+        alt={alt}
+        title={title}
+        height={35}
+        width={35}
+      />
     </li>
   );
 };

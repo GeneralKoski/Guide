@@ -2,17 +2,23 @@ import React, { useEffect, useState } from "react";
 import { SidebarButton } from "./SidebarButton";
 
 interface ID {
+  setIsAuthenticated: (value: boolean) => void;
   id: string;
   username: string;
 }
-const SideBar: React.FC<ID> = ({ id, username }) => {
+const SideBar: React.FC<ID> = ({ setIsAuthenticated, id, username }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
   const [selectedId, setSelectedId] = useState<string>("chat");
 
-  const handleClick = (message: string, id: string) => {
-    alert(message + " " + id);
-    setSelectedId(id);
+  const handleClick = (id: string) => {
+    if (id === "logout") {
+      alert(`Hai effettuato il ${id}`);
+      setIsAuthenticated(false);
+    } else {
+      alert(`Hai cliccato ${id}`);
+      setSelectedId(id);
+    }
   };
 
   const [pfp, setPfp] = useState<string>("/images/default_icon.jpg");
@@ -22,8 +28,6 @@ const SideBar: React.FC<ID> = ({ id, username }) => {
     )
       .then((response) => response.text())
       .then((data) => {
-        console.log("L'ID dello user Loggato è: " + idUserAttuale);
-        console.log("URL foto profilo dell'utente loggato: ", data);
         setPfp(data ? data : "/images/default_icon.jpg");
       })
       .catch((error) => {
@@ -59,37 +63,45 @@ const SideBar: React.FC<ID> = ({ id, username }) => {
       id: "profilo",
       icon: pfp,
       alt: "profilo",
-      title: "Profilo",
+      title: nomeUserAttuale || "Profilo",
+    },
+    {
+      id: "logout",
+      icon: "/images/logout.png",
+      alt: "logout",
+      title: "Logout",
     },
   ];
 
   return (
     <div className="containerside">
-      <ul className="icon-group top-icons">
+      <ul className="icon-group">
         {topItems.map((item) => {
           return (
             <SidebarButton
+              key={item.id}
               id={item.id}
               icon={item.icon}
               alt={item.alt}
               title={item.title}
               selected={selectedId === item.id}
-              onClick={(id) => handleClick("Hai cliccato", id)}
+              onClick={(id) => handleClick(id)}
             ></SidebarButton>
           );
         })}
       </ul>
 
-      <ul className="basso">
+      <ul className="icon-group basso">
         {bottomItems.map((item) => {
           return (
             <SidebarButton
+              key={item.id}
               id={item.id}
               icon={item.icon}
               alt={item.alt}
               title={item.title}
               selected={selectedId === item.id}
-              onClick={(index) => handleClick("Hai cliccato", index)}
+              onClick={(id) => handleClick(id)}
               className={item.id == "profilo" ? "profile-image" : ""} // Passa la classe per l'immagine del profilo
             />
           );

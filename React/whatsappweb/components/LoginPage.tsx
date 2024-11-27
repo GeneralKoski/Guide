@@ -19,13 +19,16 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    if (!username || !password) {
+      setError("Inserisci sia Username che password.");
+      return;
+    }
     fetch(
       `http://localhost:3000/loginUsers.php?username="${username}"&password="${password}"`
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log("Risposta dalla fetch:", data);
+        console.log("I dati dell'utente loggato sono:", data);
         if (data.length > 0) {
           const foundUser = data.find(
             (u: User) => u.username === username && u.password === password
@@ -34,8 +37,6 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
           if (foundUser) {
             setIsAuthenticated(true);
             setUserData(foundUser.id, foundUser.username); // Passa l'ID e lo username
-          } else {
-            setError("Username o password non validi.");
           }
         }
       })
@@ -46,7 +47,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
   };
 
   return (
-    <div style={{ width: "100%", backgroundColor: "#FCF5E6" }}>
+    <div>
       <span className="whatsapp">
         <Image
           src="/images/wa-wordmark.png"

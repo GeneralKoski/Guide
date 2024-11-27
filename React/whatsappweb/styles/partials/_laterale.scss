@@ -57,7 +57,7 @@
       }
     }
     ul#filtri li {
-        display: inline-block;
+        display: inline-block !important;
         font-size: smaller;
         background-color: #2a2f32;
         border: 1px solid #2a2f32;
@@ -157,6 +157,9 @@
     min-width: none;
     .chat-message {
       max-width: 200px !important;
+    }
+    li {
+      width: 35% !important;
     }
   }
 }
