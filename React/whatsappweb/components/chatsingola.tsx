@@ -50,6 +50,8 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const idUserAttuale = id;
   const nomeUserAttuale = username;
 
+  const today = "2024-11-23 00:00:00";
+
   const [isAdmin, setIsAdmin] = useState<string>("false");
   useEffect(() => {
     if (selectedChat) {
@@ -66,8 +68,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
         });
     }
   }, [idUserAttuale, selectedChat]);
-
-  const today = "2024-11-23 00:00:00";
 
   const [messages, setMessages] = useState<Message[]>([]);
   useEffect(() => {
@@ -175,6 +175,31 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const [inputValue, setInputValue] = useState<string>("");
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+  };
+
+  const handleMessageSent = (inputValue: string) => {
+    // Seleziona un valore predefinito se `selectedChat` è null
+    const chatId = selectedChat ?? "";
+
+    fetch("http://localhost:3000/insertMessage.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        chat_id: chatId,
+        user_id: idUserAttuale,
+        content: inputValue,
+      }),
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        console.log("Risposta del server:", data);
+        alert("Hai mandato il messaggio");
+      })
+      .catch((error) => {
+        console.error("Errore durante l'invio del messaggio:", error);
+      });
   };
 
   // Gestione della lista "rispondi" ecc.
@@ -437,7 +462,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
             className="img-fluid invertito"
             src="/images/send.png"
             alt="Manda messaggio"
-            onClick={() => alert("Hai cliccato per mandare un messaggio")}
+            onClick={() => handleMessageSent(inputValue)}
             width={40}
             height={40}
           />

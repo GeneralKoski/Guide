@@ -58,6 +58,10 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
       });
   }, []);
 
+  fetch(
+    `http://localhost:3000/notseenmessagesperchat.php?user_id=${idUserAttuale}`
+  );
+
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
     fetch(`http://localhost:3000/getUsersSettings.php?user_id=${idUserAttuale}`)
