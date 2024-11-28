@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface LoginProps {
   setIsAuthenticated: (auth: boolean) => void;
-  setUserData: (id: string, username: string) => void;
+  setUserData: (id: string, username: string, icon: string) => void;
 }
 
 interface User {
@@ -24,7 +24,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
       return;
     }
     fetch(
-      `http://localhost:3000/loginUsers.php?username="${username}"&password="${password}"`
+      `http://localhost:3000/loginUser.php?username="${username}"&password="${password}"`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -36,7 +36,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
 
           if (foundUser) {
             setIsAuthenticated(true);
-            setUserData(foundUser.id, foundUser.username); // Passa l'ID e lo username
+            setUserData(foundUser.id, foundUser.username, foundUser.icon); // Passa l'ID, lo username e l'icona
           }
         }
       })

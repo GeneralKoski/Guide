@@ -5,10 +5,12 @@ interface ID {
   setIsAuthenticated: (value: boolean) => void;
   id: string;
   username: string;
+  icon: string;
 }
-const SideBar: React.FC<ID> = ({ setIsAuthenticated, id, username }) => {
+const SideBar: React.FC<ID> = ({ setIsAuthenticated, id, username, icon }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
+  const iconaUserAttuale = icon;
   const [selectedId, setSelectedId] = useState<string>("chat");
 
   const handleClick = (id: string) => {
@@ -20,20 +22,6 @@ const SideBar: React.FC<ID> = ({ setIsAuthenticated, id, username }) => {
       setSelectedId(id);
     }
   };
-
-  const [pfp, setPfp] = useState<string>("/images/default_icon.jpg");
-  useEffect(() => {
-    fetch(
-      `http://localhost:3000/getLoggedUserpfp.php?user_id="${idUserAttuale}"`
-    )
-      .then((response) => response.text())
-      .then((data) => {
-        setPfp(data ? data : "/images/default_icon.jpg");
-      })
-      .catch((error) => {
-        console.error("Errore:", error);
-      });
-  }, [idUserAttuale]);
 
   const topItems = [
     { id: "chat", icon: "/images/chat.png", alt: "chat", title: "Chat" },
@@ -61,7 +49,7 @@ const SideBar: React.FC<ID> = ({ setIsAuthenticated, id, username }) => {
     },
     {
       id: "profilo",
-      icon: pfp,
+      icon: iconaUserAttuale,
       alt: "profilo",
       title: nomeUserAttuale || "Profilo",
     },

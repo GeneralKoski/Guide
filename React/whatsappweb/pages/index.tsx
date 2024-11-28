@@ -9,10 +9,12 @@ const Home: NextPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [id, setId] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [icon, setIcon] = useState<string>("");
 
-  const setUserData = (id: string, username: string) => {
+  const setUserData = (id: string, username: string, icon: string) => {
     setId(id);
     setUsername(username);
+    setIcon(icon);
   };
   return (
     <div>
@@ -29,6 +31,7 @@ const Home: NextPage = () => {
               setIsAuthenticated={setIsAuthenticated}
               id={id}
               username={username}
+              icon={icon}
             />
             <Laterale id={id} username={username} />
           </>

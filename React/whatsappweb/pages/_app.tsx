@@ -8,10 +8,12 @@ function MyApp() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [id, setId] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [icon, setIcon] = useState<string>("");
 
-  const setUserData = (id: string, username: string) => {
+  const setUserData = (id: string, username: string, icon: string) => {
     setId(id);
     setUsername(username);
+    setIcon(icon);
   };
 
   return (
@@ -22,6 +24,7 @@ function MyApp() {
             setIsAuthenticated={setIsAuthenticated}
             id={id}
             username={username}
+            icon={icon}
           />
           <Laterale id={id} username={username} />
         </>

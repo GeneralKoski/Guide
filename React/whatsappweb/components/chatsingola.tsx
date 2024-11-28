@@ -50,7 +50,8 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const idUserAttuale = id;
   const nomeUserAttuale = username;
 
-  const today = "2024-11-23 00:00:00";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const [isAdmin, setIsAdmin] = useState<string>("false");
   useEffect(() => {
@@ -97,6 +98,49 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
         });
     }
   }, [selectedChat]);
+
+  // Per fetchare ogni secondo
+  // const [messages, setMessages] = useState<Message[]>([]);
+  // useEffect(() => {
+  //   if (!selectedChat) return;
+
+  //   const fetchMessages = () => {
+  //     if (selectedChatType === "single") {
+  //       fetch(
+  //         `http://localhost:3000/selectAllSingleMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+  //       )
+  //         .then((response) => response.json())
+  //         .then((data) => {
+  //           console.log("Messaggi ricevuti (singola chat):", data);
+  //           setMessages(data);
+  //         })
+  //         .catch((error) => {
+  //           console.error(
+  //             "Errore nel caricamento dei messaggi singola chat:",
+  //             error
+  //           );
+  //         });
+  //     } else if (selectedChatType === "group") {
+  //       fetch(
+  //         `http://localhost:3000/selectAllGroupMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+  //       )
+  //         .then((response) => response.json())
+  //         .then((data) => {
+  //           console.log("Messaggi ricevuti (chat di gruppo):", data);
+  //           setMessages(data);
+  //         })
+  //         .catch((error) => {
+  //           console.error(
+  //             "Errore nel caricamento dei messaggi chat di gruppo:",
+  //             error
+  //           );
+  //         });
+  //     }
+  //   };
+  //   fetchMessages();
+  //   const intervalId = setInterval(fetchMessages, 1000);
+  //   return () => clearInterval(intervalId);
+  // }, [selectedChat, selectedChatType, idUserAttuale]);
 
   const [user, setUser] = useState<ChatSingolaProps>();
   useEffect(() => {
@@ -178,7 +222,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   };
 
   const handleMessageSent = (inputValue: string) => {
-    // Seleziona un valore predefinito se `selectedChat` è null
     const chatId = selectedChat ?? "";
 
     fetch("http://localhost:3000/insertMessage.php", {
@@ -195,8 +238,8 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       .then((response) => response.text())
       .then((data) => {
         console.log("Risposta del server:", data);
-        alert("Hai mandato il messaggio");
       })
+      .then(() => setInputValue(""))
       .catch((error) => {
         console.error("Errore durante l'invio del messaggio:", error);
       });

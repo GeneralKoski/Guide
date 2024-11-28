@@ -33,7 +33,8 @@ interface ID {
 const Laterale: React.FC<ID> = ({ id, username }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
-  const today = "2024-11-23 00:00:00";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   // Gestisco il filterchat nella ricerca
   const [filteredChats, setFilteredChats] = useState<ChatData[]>([]); // Stato per le chat filtrate
@@ -57,10 +58,6 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
         console.error("Errore:", error);
       });
   }, []);
-
-  fetch(
-    `http://localhost:3000/notseenmessagesperchat.php?user_id=${idUserAttuale}`
-  );
 
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
@@ -97,10 +94,10 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
     } else {
       setSelectedChat(id);
       setSelectedChatType(type);
-      setUnseenMessages((prevState) => ({
-        ...prevState,
-        [String(id)]: 0,
-      }));
+      // setUnseenMessages((prevState) => ({
+      //   ...prevState,
+      //   [String(id)]: 0,
+      // }));
     }
   };
 
@@ -118,43 +115,32 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
     };
   }, []);
 
-  // Faccio il fetch per ogni chat per i messaggi non visti
-  const [unseenMessages, setUnseenMessages] = useState<{
-    [key: string]: number;
-  }>({});
+  // EFFICIENTE
+  // Faccio una fetch singola per avere un array con tutti i valori dei messaggi non visti per chat
+  const [unseenMessages2, setUnseenMessages2] = useState<
+    {
+      chat_id: string;
+      non_letti: string;
+    }[]
+  >([]);
   useEffect(() => {
-    users.forEach((user) => {
-      if (user.chat_type == "single") {
-        fetch(
-          `http://localhost:3000/notSeenMessagesPerChatSingle.php?chat_id=${user.chat_id}&user_id=${idUserAttuale}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            setUnseenMessages((prevState) => ({
-              ...prevState,
-              [user.chat_id]: data,
-            }));
-          })
-          .catch((error) => {
-            console.error("Errore:", error);
-          });
-      } else if (user.chat_type == "group") {
-        fetch(
-          `http://localhost:3000/notSeenMessagesPerChatGroup.php?chat_id=${user.chat_id}&user_id=${idUserAttuale}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            setUnseenMessages((prevState) => ({
-              ...prevState,
-              [user.chat_id]: data,
-            }));
-          })
-          .catch((error) => {
-            console.error("Errore:", error);
-          });
-      }
-    });
-  }, [users]);
+    fetch(
+      `http://localhost:3000/notSeenMessagesPerChat.php?user_id=${idUserAttuale}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("unseenmessages2: ", data);
+        setUnseenMessages2(data);
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+      });
+  }, []);
+
+  const findUnseen = (chatID: string) => {
+    const notRead = unseenMessages2.find((msg) => msg.chat_id == chatID);
+    return notRead ? notRead.non_letti : 0;
+  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const searchValue = event.target.value.toLowerCase();
@@ -177,7 +163,6 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
 
   const isNotToday = (sentAt: string): string => {
     const messageDate = new Date(sentAt);
-
     const todayMidnight = new Date(today);
 
     const yesterdayMidnight = new Date(todayMidnight);
@@ -340,11 +325,11 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
                     <br />
                     <span
                       className={
-                        unseenMessages[user.chat_id] !== 0 ? "chat-tosee" : ""
+                        findUnseen(user.chat_id) != "0" ? "chat-tosee" : ""
                       }
                     >
-                      {unseenMessages[user.chat_id] !== 0
-                        ? unseenMessages[user.chat_id]
+                      {findUnseen(user.chat_id) != "0"
+                        ? findUnseen(user.chat_id)
                         : ""}
                     </span>
                   </span>
