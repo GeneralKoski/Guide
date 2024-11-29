@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { SidebarButton } from "./SidebarButton";
+import Cookies from "js-cookie";
 
 interface ID {
   setIsAuthenticated: (value: boolean) => void;
-  id: string;
   username: string;
   icon: string;
 }
-const SideBar: React.FC<ID> = ({ setIsAuthenticated, id, username, icon }) => {
-  const idUserAttuale = id;
+const SideBar: React.FC<ID> = ({ setIsAuthenticated, username, icon }) => {
   const nomeUserAttuale = username;
   const iconaUserAttuale = icon;
   const [selectedId, setSelectedId] = useState<string>("chat");
 
   const handleClick = (id: string) => {
     if (id === "logout") {
+      Cookies.remove("Username");
+      Cookies.remove("Password");
       alert(`Hai effettuato il ${id}`);
       setIsAuthenticated(false);
     } else {

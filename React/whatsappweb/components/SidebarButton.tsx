@@ -20,6 +20,7 @@ export const SidebarButton = ({
   onClick,
   className,
 }: SidebarButtonProps) => {
+  const imageSrc = icon || "/images/default_icon.jpg";
   return (
     <li
       className={clsx(`icone`)}
@@ -30,7 +31,7 @@ export const SidebarButton = ({
     >
       <Image
         className={clsx("img-fluid", className)}
-        src={icon}
+        src={imageSrc}
         alt={alt}
         title={title}
         height={35}

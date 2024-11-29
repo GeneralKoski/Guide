@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
-import { RiCheckDoubleFill, RiH4 } from "react-icons/ri";
+import { RiCheckDoubleFill } from "react-icons/ri";
 import { MessageChoices } from "./MessageChoices";
 
 interface Message {
@@ -264,6 +264,20 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  // Manda il messaggio premento INVIO
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        handleMessageSent(inputValue);
+      }
+      event.stopPropagation();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [inputValue]);
 
   const getInitials = (name: string): string => {
     const words = name.split(" ");

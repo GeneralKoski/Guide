@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface LoginProps {
   setIsAuthenticated: (auth: boolean) => void;
@@ -10,12 +11,51 @@ interface User {
   id: string;
   username: string;
   password: string;
+  icon: string;
 }
 
 const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState<any>("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const cookieUsername = Cookies.get("Username");
+  const cookiePassword = Cookies.get("Password");
+
+  useEffect(() => {
+    if (cookieUsername && cookiePassword) {
+      fetch("http://localhost:3000/loginUser.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          username: cookieUsername,
+          password: cookiePassword,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Utente loggato dai cookie con successo: ", data);
+          if (data.length > 0) {
+            const foundUser = data.find(
+              (u: User) =>
+                u.username === cookieUsername && u.password === cookiePassword
+            );
+
+            if (foundUser) {
+              setIsAuthenticated(true);
+              setUserData(foundUser.id, foundUser.username, foundUser.icon); // Passa l'ID, lo username e l'icona
+            }
+          } else {
+            setError("Username o password non validi.");
+          }
+        })
+        .catch((error) => {
+          console.error("Errore nella fetch con i cookie:", error);
+          setError("Username o password non validi.");
+        });
+    }
+  }, [cookieUsername, cookiePassword]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,18 +63,31 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
       setError("Inserisci sia Username che password.");
       return;
     }
-    fetch(
-      `http://localhost:3000/loginUser.php?username="${username}"&password="${password}"`
-    )
+    fetch("http://localhost:3000/loginUser.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        username: username,
+        password: password,
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
-        console.log("I dati dell'utente loggato sono:", data);
+        console.log("Utente loggato con successo");
         if (data.length > 0) {
           const foundUser = data.find(
-            (u: User) => u.username === username && u.password === password
+            (u: User) => u.username == username && u.password == password
           );
 
           if (foundUser) {
+            Cookies.set("Username", foundUser.username, {
+              expires: 1 / 24 / 60,
+            });
+            Cookies.set("Password", foundUser.password, {
+              expires: 1 / 24 / 60,
+            });
             setIsAuthenticated(true);
             setUserData(foundUser.id, foundUser.username, foundUser.icon); // Passa l'ID, lo username e l'icona
           }

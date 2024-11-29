@@ -22,7 +22,6 @@ function MyApp() {
         <>
           <SideBar
             setIsAuthenticated={setIsAuthenticated}
-            id={id}
             username={username}
             icon={icon}
           />

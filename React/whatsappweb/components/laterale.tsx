@@ -44,7 +44,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [selectedChatType, setSelectedChatType] = useState<string | null>(null);
 
-  // Prende tutte le chat disponibili nel file chats.json
+  // Prende tutte le chat disponibili
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   useEffect(() => {
     fetch(`http://localhost:3000/selectAllChats.php?user_id=${idUserAttuale}`)
@@ -58,6 +58,26 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
         console.error("Errore:", error);
       });
   }, []);
+
+  // Per fetchare ogni secondo
+  // const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
+  // useEffect(() => {
+  //   const fetchChats = () => {
+  //     fetch(`http://localhost:3000/selectAllChats.php?user_id=${idUserAttuale}`)
+  //       .then((response) => response.json()) // Converto in json
+  //       .then((data) => {
+  //         console.log("Chat ricevute:", data); // Verifica i dati
+  //         setUsers(data); // Memorizza i dati utenti
+  //         setFilteredChats(data);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Errore:", error);
+  //       });
+  //   };
+  //   fetchChats();
+  //   const intervalId = setInterval(fetchChats, 1000);
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
@@ -84,20 +104,44 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   };
 
   // Gestisco la chat selezionata e azzero il numero di messaggi da vedere
-  const handleChatClick = (
-    id: React.SetStateAction<string | null>,
-    type: React.SetStateAction<string | null>
-  ) => {
+  const handleChatClick = (id: string, type: string) => {
     if (selectedChat === id) {
       setSelectedChat(null);
       setSelectedChatType(null);
     } else {
       setSelectedChat(id);
       setSelectedChatType(type);
-      // setUnseenMessages((prevState) => ({
-      //   ...prevState,
-      //   [String(id)]: 0,
-      // }));
+
+      findUnseen(id) == 0
+        ? ""
+        : // Aggiorna lo stato dei messaggi non letti nel frontend
+          setUnseenMessages((prevUnseen) =>
+            prevUnseen.map((chat) =>
+              chat.chat_id === id ? { ...chat, non_letti: "0" } : chat
+            )
+          );
+
+      findUnseen(id) == 0
+        ? ""
+        : // Funzione per aggiornare il db al click della chat
+          fetch("http://localhost:3000/updateSeenMessages.php", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: idUserAttuale,
+              chat_id: id,
+              chat_type: type,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Messaggi non letti aggiornati", data);
+            })
+            .catch((error) => {
+              console.error("Errore:", error);
+            });
     }
   };
 
@@ -117,7 +161,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
 
   // EFFICIENTE
   // Faccio una fetch singola per avere un array con tutti i valori dei messaggi non visti per chat
-  const [unseenMessages2, setUnseenMessages2] = useState<
+  const [unseenMessages, setUnseenMessages] = useState<
     {
       chat_id: string;
       non_letti: string;
@@ -129,8 +173,12 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log("unseenmessages2: ", data);
-        setUnseenMessages2(data);
+        if (data.length > 0) {
+          console.log("Not seen messages: ", data);
+          setUnseenMessages(data);
+        } else {
+          console.log("Tutti i messaggi sono stati visualizzati");
+        }
       })
       .catch((error) => {
         console.error("Errore:", error);
@@ -138,7 +186,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   }, []);
 
   const findUnseen = (chatID: string) => {
-    const notRead = unseenMessages2.find((msg) => msg.chat_id == chatID);
+    const notRead = unseenMessages.find((msg) => msg.chat_id == chatID);
     return notRead ? notRead.non_letti : 0;
   };
 

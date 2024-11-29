@@ -29,7 +29,6 @@ const Home: NextPage = () => {
           <>
             <SideBar
               setIsAuthenticated={setIsAuthenticated}
-              id={id}
               username={username}
               icon={icon}
             />
