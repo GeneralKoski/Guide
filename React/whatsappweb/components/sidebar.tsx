@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { SidebarButton } from "./SidebarButton";
-import Cookies from "js-cookie";
 
 interface ID {
   setIsAuthenticated: (value: boolean) => void;
@@ -14,10 +13,19 @@ const SideBar: React.FC<ID> = ({ setIsAuthenticated, username, icon }) => {
 
   const handleClick = (id: string) => {
     if (id === "logout") {
-      Cookies.remove("Username");
-      Cookies.remove("Password");
-      alert(`Hai effettuato il ${id}`);
-      setIsAuthenticated(false);
+      fetch("http://localhost:3000/logoutUser.php", {
+        method: "POST", // O usa GET se non invii dati
+        credentials: "include", // Include i cookie di sessione
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.message);
+          setIsAuthenticated(false); // Imposta come non autenticato
+        })
+        .catch((error) => {
+          console.error("Errore nel logout:", error);
+          alert("Errore durante il logout.");
+        });
     } else {
       alert(`Hai cliccato ${id}`);
       setSelectedId(id);
