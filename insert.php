@@ -35,10 +35,11 @@ function insertMessages($chat_id, $user_id, $content, $seen, mysqli $conn)
     }
 }
 
-function insertUsers($username, $icon, $last_access, mysqli $conn)
+function insertUsers($username, $password, $icon, mysqli $conn)
 {
-    $sql = 'INSERT INTO Users (username, icon, last_access) VALUES ';
-    $sql .= " ('$username','$icon', '$last_access') ";
+    $password = password_hash($password, PASSWORD_ARGON2I);
+    $sql = 'INSERT INTO Users (username, password, icon, last_access) VALUES ';
+    $sql .= " ('$username', '$password', '$icon', NOW()) ";
 
     $res = $conn->query($sql);
     if (!$res) {
@@ -68,7 +69,9 @@ function insertGroupChatMessage($chat_id, $message_id, $seen_by_user, $seen, mys
     }
 }
 
-// insertUsers('Papà', '', '2024-11-20 20:00:00.000000', $mysqli);
+
+
+// insertUsers('Profilo di prova', 'Prova', '/images/prova', $mysqli);
 
 // insertChats('Gymbro con Valentina Nappi', 'single', $mysqli); 
 
