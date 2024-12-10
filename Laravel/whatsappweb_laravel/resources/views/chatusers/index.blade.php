@@ -2,12 +2,16 @@
     <table>
         <tr>
             <th>ID</th>
-            <th>Username</th>
+            <th>User_id</th>
+            <th>Chat_id</th>
+            <th>Added_at</th>
         </tr>
-        @foreach ($users as $user)
+        @foreach ($chatusers as $chatuser)
             <tr>
-                <td>{{ $user->id }}</td>
-                <td>{{ $user->username }}</td>
+                <td>{{ $chatuser->id }}</td>
+                <td>{{ $chatuser->user_id }}</td>
+                <td>{{ $chatuser->chat_id }}</td>
+                <td>{{ $chatuser->added_at }}</td>
             </tr>
         @endforeach
     </table>

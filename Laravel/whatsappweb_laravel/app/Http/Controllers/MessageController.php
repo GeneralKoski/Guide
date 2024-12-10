@@ -12,8 +12,8 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $users = Message::all();
-        return view('messages.index', ['users' => $users]);
+        $messages = Message::all();
+        return view('messages.index', ['messages' => $messages]);
     }
 
     /**

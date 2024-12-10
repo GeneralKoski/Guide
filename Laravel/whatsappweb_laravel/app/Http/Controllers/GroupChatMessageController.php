@@ -12,8 +12,8 @@ class GroupChatMessageController extends Controller
      */
     public function index()
     {
-        $users = GroupChatMessage::all();
-        return view('groupchatmessages.index', ['users' => $users]);
+        $groupchatmessages = GroupChatMessage::all();
+        return view('groupchatmessages.index', ['groupchatmessages' => $groupchatmessages]);
     }
 
     /**

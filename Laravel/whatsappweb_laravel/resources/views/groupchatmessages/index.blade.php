@@ -2,12 +2,18 @@
     <table>
         <tr>
             <th>ID</th>
-            <th>Username</th>
+            <th>Chat_id</th>
+            <th>Message_id</th>
+            <th>Seen_by_user</th>
+            <th>Seen?</th>
         </tr>
-        @foreach ($users as $user)
+        @foreach ($groupchatmessages as $groupchatmessage)
             <tr>
-                <td>{{ $user->id }}</td>
-                <td>{{ $user->username }}</td>
+                <td>{{ $groupchatmessage->id }}</td>
+                <td>{{ $groupchatmessage->chat_id }}</td>
+                <td>{{ $groupchatmessage->message_id }}</td>
+                <td>{{ $groupchatmessage->seen_by_user }}</td>
+                <td>{{ $groupchatmessage->seen }}</td>
             </tr>
         @endforeach
     </table>

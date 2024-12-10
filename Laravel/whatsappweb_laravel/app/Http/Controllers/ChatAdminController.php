@@ -12,8 +12,8 @@ class ChatAdminController extends Controller
      */
     public function index()
     {
-        $users = ChatAdmin::all();
-        return view('chatadmins.index', ['users' => $users]);
+        $admins = ChatAdmin::all();
+        return view('chatadmins.index', ['admins' => $admins]);
     }
 
     /**

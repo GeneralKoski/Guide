@@ -12,8 +12,8 @@ class MediaController extends Controller
      */
     public function index()
     {
-        $users = Media::all();
-        return view('medias.index', ['users' => $users]);
+        $medias = Media::all();
+        return view('medias.index', ['medias' => $medias]);
     }
 
     /**

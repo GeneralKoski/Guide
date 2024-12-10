@@ -12,8 +12,8 @@ class UserSettingController extends Controller
      */
     public function index()
     {
-        $users = UserSetting::all();
-        return view('usersettings.index', ['users' => $users]);
+        $usersettings = UserSetting::all();
+        return view('usersettings.index', ['usersettings' => $usersettings]);
     }
 
     /**

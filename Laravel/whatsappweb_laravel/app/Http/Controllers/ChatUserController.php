@@ -12,8 +12,8 @@ class ChatUserController extends Controller
      */
     public function index()
     {
-        $users = ChatUser::all();
-        return view('chatusers.index', ['users' => $users]);
+        $chatusers = ChatUser::all();
+        return view('chatusers.index', ['chatusers' => $chatusers]);
     }
 
     /**
