@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GroupChatMessage;
 use Illuminate\Http\Request;
 
 class GroupChatMessageController extends Controller
@@ -11,7 +12,8 @@ class GroupChatMessageController extends Controller
      */
     public function index()
     {
-        //
+        $users = GroupChatMessage::all();
+        return view('groupchatmessages.index', ['users' => $users]);
     }
 
     /**

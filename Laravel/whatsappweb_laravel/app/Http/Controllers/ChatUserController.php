@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatUser;
 use Illuminate\Http\Request;
 
 class ChatUserController extends Controller
@@ -11,7 +12,8 @@ class ChatUserController extends Controller
      */
     public function index()
     {
-        //
+        $users = ChatUser::all();
+        return view('chatusers.index', ['users' => $users]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserSetting;
 use Illuminate\Http\Request;
 
 class UserSettingController extends Controller
@@ -11,7 +12,8 @@ class UserSettingController extends Controller
      */
     public function index()
     {
-        //
+        $users = UserSetting::all();
+        return view('usersettings.index', ['users' => $users]);
     }
 
     /**
