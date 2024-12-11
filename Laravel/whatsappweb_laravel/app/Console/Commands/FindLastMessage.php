@@ -2,17 +2,16 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Chat;
 use Illuminate\Console\Command;
 
-class SendEmails extends Command
+class FindLastMessage extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:send-emails';
+    protected $signature = 'app:find-last-message';
 
     /**
      * The console command description.
@@ -26,6 +25,6 @@ class SendEmails extends Command
      */
     public function handle()
     {
-        Chat::find(1)->lastMessage();
+        //
     }
 }

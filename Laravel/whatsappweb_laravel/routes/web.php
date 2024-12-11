@@ -25,25 +25,16 @@ Route::resource('user', UserController::class);
 Route::resource('usersetting', UserSettingController::class);
 
 Route::middleware([CorsMiddleware::class])->get('/is-chat-admin', [ChatAdminController::class, 'checkIfAdmin']);
-Route::middleware([CorsMiddleware::class])->get('/selectAllSingleMessages', [MessageController::class, 'selectSingleMessages']);
-Route::middleware([CorsMiddleware::class])->get('/selectUserDetails', [UserController::class, 'userDetails']);
+Route::middleware([CorsMiddleware::class])->get('/select-all-single-messages', [MessageController::class, 'selectSingleMessages']); // DA TRASFORMARE
+Route::middleware([CorsMiddleware::class])->get('/select-all-group-messages', [MessageController::class, 'selectGroupMessages']); // DA TRASFORMARE
+Route::middleware([CorsMiddleware::class])->get('/select-user-details', [UserController::class, 'userDetails']);
+Route::middleware([CorsMiddleware::class])->get('/get-chat-settings', [UserSettingController::class, 'chatSettings']);
+// Route::middleware([CorsMiddleware::class])->post('/insert-message', [MessageController::class, 'insertMessage']); // METODO POST DA VEDERE
+Route::middleware([CorsMiddleware::class])->get('/select-all-chats', [ChatController::class, 'allChats']); // DA TRASFORMARE
+Route::middleware([CorsMiddleware::class])->get('/not-seen-messages-per-chat', [MessageController::class, 'notSeenMessages']);
+Route::middleware([CorsMiddleware::class])->get('/get-users-settings', [UserSettingController::class, 'usersSettings']); // DA FARE
+// Route::middleware([CorsMiddleware::class])->get('/update-seen-messages', [MessageController::class, 'updateSeen']); // METODO PATCH DA VEDERE
 
-
-
-
-
-
-// Tutte le fetch da gestire:
-// http://localhost:3000/isChatAdmin.php?chat_id=${selectedChat}&user_id=${idUserAttuale} METODO GET FATTA
-// http: //localhost:3000/selectAllSingleMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale} METODO GET
-// http: //localhost:3000/selectAllGroupMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale} METODO GET
-// http: //localhost:3000/selectUserDetails.php?chat_id=${selectedChat}&user_id=${idUserAttuale} METODO GET FATTA
-// http: //localhost:3000/getChatSettings.php?chat_id=${selectedChat} METODO GET
-// http: //localhost:3000/insertMessage.php METODO POST
-// http: //localhost:3000/selectAllChats.php?user_id=${idUserAttuale} METODO GET
-// http: //localhost:3000/getUsersSettings.php?user_id=${idUserAttuale} METODO GET
-// http: //localhost:3000/updateSeenMessages.php METODO PUT/PATCH
-// http: //localhost:3000/notSeenMessagesPerChat.php?user_id=${idUserAttuale} METODO GET
 
 
 // Da gestire con gli aiuti che esistono già in laravel: RIGUARDA IL TUTORIAL SU YOUTUBE
