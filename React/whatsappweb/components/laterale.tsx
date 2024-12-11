@@ -47,7 +47,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   // Prende tutte le chat disponibili
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   useEffect(() => {
-    fetch(`http://localhost:3000/selectAllChats.php?user_id=${idUserAttuale}`)
+    fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`)
       .then((response) => response.json()) // Converto in json
       .then((data) => {
         console.log("Chat ricevute:", data); // Verifica i dati
@@ -169,7 +169,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   >([]);
   useEffect(() => {
     fetch(
-      `http://localhost:3000/notSeenMessagesPerChat.php?user_id=${idUserAttuale}`
+      `http://localhost:8000/not-seen-messages-per-chat?user_id=${idUserAttuale}`
     )
       .then((response) => response.json())
       .then((data) => {

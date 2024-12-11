@@ -146,7 +146,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/selectUserDetails?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/select-user-details?chat_id=${selectedChat}&user_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -162,7 +162,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
     if (selectedChat) {
-      fetch(`http://localhost:3000/getChatSettings.php?chat_id=${selectedChat}`)
+      fetch(`http://localhost:8000/get-chat-settings?chat_id=${selectedChat}`)
         .then((response) => response.json())
         .then((data) => {
           console.log("Settings della chat selezionate:", data);
