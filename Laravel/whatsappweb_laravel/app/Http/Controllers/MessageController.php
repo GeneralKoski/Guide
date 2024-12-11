@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -14,6 +15,12 @@ class MessageController extends Controller
     {
         $messages = Message::all();
         return view('messages.index', ['messages' => $messages]);
+    }
+
+    public function selectSingleMessages(Request $request)
+    {
+        $chatId = $request->input('chat_id');
+        $userId = $request->input('user_id');
     }
 
     /**

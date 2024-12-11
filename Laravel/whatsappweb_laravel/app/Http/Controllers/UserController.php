@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -16,6 +17,27 @@ class UserController extends Controller
         return view('users.index', ['users' => $users]);
     }
 
+    public function userDetails(Request $request)
+    {
+        $chatId = $request->input('chat_id');
+        $userId = $request->input('user_id');
+
+        $details =
+            DB::table('Users as u')
+            ->select(
+                'u.username',
+                'u.icon',
+                DB::raw("IF(c.type = 'group', NULL, u.last_access) AS last_access"),
+                DB::raw("IF(c.type = 'group', c.name, '') AS name"),
+                'c.type'
+            )
+            ->join('ChatUsers as cu', 'u.id', '=', 'cu.user_id')
+            ->join('Chats as c', 'c.id', '=', 'cu.chat_id')
+            ->where('cu.user_id', '!=', $userId)
+            ->where('cu.chat_id', '=', $chatId)
+            ->get();
+        return response()->json($details);
+    }
     /**
      * Show the form for creating a new resource.
      */
