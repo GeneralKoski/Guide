@@ -57,7 +57,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/isChatAdmin?Achat_id=${selectedChat}&Auser_id=${idUserAttuale}`
+        `http://localhost:8000/is-chat-admin?Achat_id=${selectedChat}&Auser_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
