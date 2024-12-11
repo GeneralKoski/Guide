@@ -57,12 +57,12 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:3000/isChatAdmin.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/isChatAdmin?Achat_id=${selectedChat}&Auser_id=${idUserAttuale}`
       )
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((data) => {
-          console.log("E' Admin?: ", data);
-          setIsAdmin(data);
+          console.log("E' Admin?: ", data.isAdmin);
+          setIsAdmin(data.isAdmin);
         })
         .catch((error) => {
           console.error("Errore:", error);
@@ -146,7 +146,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:3000/selectUserDetails.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/selectUserDetails?chat_id=${selectedChat}&user_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
