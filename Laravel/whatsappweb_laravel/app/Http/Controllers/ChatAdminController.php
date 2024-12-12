@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChatUserIDS;
 use App\Models\ChatAdmin;
 use Illuminate\Http\Request;
 
@@ -16,10 +17,10 @@ class ChatAdminController extends Controller
         return view('chatadmins.index', ['admins' => $admins]);
     }
 
-    public function checkIfAdmin(Request $request)
+    public function checkIfAdmin(ChatUserIDS $request)
     {
-        $AchatId = $request->input('Achat_id');
-        $AuserId = $request->input('Auser_id');
+        $AchatId = $request->input('chat_id');
+        $AuserId = $request->input('user_id');
 
         $isAdmin = ChatAdmin::where('Achat_id', '=', $AchatId)
             ->where('Auser_id', '=', $AuserId)

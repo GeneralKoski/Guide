@@ -15,11 +15,11 @@ class Chat extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(ChatUser::class);
     }
 
-    // public function lastMessage()
-    // {
-    //     return $this->hasOne(Message::class);
-    // }
+    public function groupmessages()
+    {
+        return $this->hasMany(GroupChatMessage::class);
+    }
 }

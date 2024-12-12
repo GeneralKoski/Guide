@@ -32,7 +32,7 @@ Route::middleware([CorsMiddleware::class])->get('/get-chat-settings', [UserSetti
 // Route::middleware([CorsMiddleware::class])->post('/insert-message', [MessageController::class, 'insertMessage']); // METODO POST DA VEDERE
 Route::middleware([CorsMiddleware::class])->get('/select-all-chats', [ChatController::class, 'allChats']); // DA TRASFORMARE
 Route::middleware([CorsMiddleware::class])->get('/not-seen-messages-per-chat', [MessageController::class, 'notSeenMessages']);
-Route::middleware([CorsMiddleware::class])->get('/get-users-settings', [UserSettingController::class, 'usersSettings']); // DA FARE
+Route::middleware([CorsMiddleware::class])->get('/get-users-settings', [UserSettingController::class, 'usersSettings']); // DA TRASFORMARE
 // Route::middleware([CorsMiddleware::class])->get('/update-seen-messages', [MessageController::class, 'updateSeen']); // METODO PATCH DA VEDERE
 
 

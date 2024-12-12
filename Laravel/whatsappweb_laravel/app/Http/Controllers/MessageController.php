@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\InsertMessageRequest;
+use App\Http\Requests\ChatUserContent;
+use App\Http\Requests\ChatUserIDS;
+use App\Http\Requests\InsertMessage;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,12 +21,14 @@ class MessageController extends Controller
     }
 
     public function updateSeen(Request $request) {}
-    public function selectSingleMessages(Request $request)
+    public function selectSingleMessages(ChatUserIDS $request)
     {
         $chatId = $request->input('chat_id');
         $userId = $request->input('user_id');
 
-        $singleMessages = DB::select("SELECT u.id, u.username, m.type as message_type, m.sent_at, m.content as media_content, c.type as chat_type, cu.added_at,
+        DB::enableQueryLog();
+
+        $singleMessagesRAW = DB::select("SELECT u.id, u.username, m.type as message_type, m.sent_at, m.content as media_content, c.type as chat_type, cu.added_at,
 
         CASE
             WHEN m.type = 'media' THEN (
@@ -46,10 +50,10 @@ class MessageController extends Controller
         WHERE c.type = 'single' AND m.chat_id = $chatId AND m.sent_at > (SELECT cu2.added_at FROM ChatUsers cu2 WHERE cu2.chat_id = $chatId AND cu2.user_id = $userId)
         ORDER BY m.sent_at ASC;");
 
-        return response()->json($singleMessages);
+        return response()->json($singleMessagesRAW);
     }
 
-    public function selectGroupMessages(Request $request)
+    public function selectGroupMessages(ChatUserIDS $request)
     {
         $chatId = $request->input('chat_id');
         $userId = $request->input('user_id');
@@ -82,7 +86,7 @@ class MessageController extends Controller
         return response()->json($groupMessages);
     }
 
-    public function insertMessage(InsertMessageRequest $request)
+    public function insertMessage(InsertMessage $request)
     {
         $chat_id = $request->input('chat_id');
         $user_id = $request->input('user_id');
