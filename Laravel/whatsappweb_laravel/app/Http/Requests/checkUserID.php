@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChatUserIDS extends FormRequest
+class checkUserID extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,6 @@ class ChatUserIDS extends FormRequest
     public function rules(): array
     {
         return [
-            'chat_id' => ['required', 'integer'],
             'user_id' => ['required', 'integer'],
         ];
     }

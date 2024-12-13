@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChatUserContent;
-use App\Http\Requests\ChatUserIDS;
+use App\Http\Requests\checkUserChatIDS;
+use App\Http\Requests\checkUserID;
 use App\Http\Requests\InsertMessage;
+use App\Http\Requests\updateSeen;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,13 +21,39 @@ class MessageController extends Controller
         return view('messages.index', ['messages' => $messages]);
     }
 
-    public function updateSeen(Request $request) {}
-    public function selectSingleMessages(ChatUserIDS $request)
+    public function updateSeen(updateSeen $request)
+    {
+        $userId = $request->input('user_id');
+        $chatId = $request->input('chat_id');
+        $chatType = $request->input('chat_type');
+
+        if ($chatType == "single") {
+            $this->updateSeenSingle($userId, $chatId);
+        } else {
+            $this->updateSeenGroup($userId, $chatId);
+        }
+    }
+
+    public function updateSeenSingle($userId, $chatId)
+    {
+        $updatesSingle = DB::table('Messages')
+            ->where('chat_id', '=', $chatId)
+            ->where('user_id', '!=', $userId)
+            ->where('seen', '=', 'no')
+            ->update(['seen' => 'yes']);
+    }
+    public function updateSeenGroup($userId, $chatId)
+    {
+        $updatesGroup = DB::table('GroupChatMessages')
+            ->where('chat_id', '=', $chatId)
+            ->where('seen_by_user', '=', $userId)
+            ->where('seen', '=', 'no')
+            ->update(['seen' => 'yes']);
+    }
+    public function selectSingleMessages(checkUserChatIDS $request)
     {
         $chatId = $request->input('chat_id');
         $userId = $request->input('user_id');
-
-        DB::enableQueryLog();
 
         $singleMessagesRAW = DB::select("SELECT u.id, u.username, m.type as message_type, m.sent_at, m.content as media_content, c.type as chat_type, cu.added_at,
 
@@ -53,7 +80,7 @@ class MessageController extends Controller
         return response()->json($singleMessagesRAW);
     }
 
-    public function selectGroupMessages(ChatUserIDS $request)
+    public function selectGroupMessages(checkUserChatIDS $request)
     {
         $chatId = $request->input('chat_id');
         $userId = $request->input('user_id');
@@ -107,7 +134,7 @@ class MessageController extends Controller
         }
     }
 
-    public function notSeenMessages(Request $request)
+    public function notSeenMessages(checkUserID $request)
     {
         $user_id = $request->input('user_id');
 

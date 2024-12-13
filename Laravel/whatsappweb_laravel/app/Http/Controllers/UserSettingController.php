@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\checkChatID;
+use App\Http\Requests\checkUserID;
 use App\Models\UserSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +19,7 @@ class UserSettingController extends Controller
         return view('usersettings.index', ['usersettings' => $usersettings]);
     }
 
-    public function usersSettings(Request $request)
+    public function usersSettings(checkUserID $request)
     {
         $user_id = $request->input('user_id');
 
@@ -41,7 +43,7 @@ class UserSettingController extends Controller
         return response()->json($usersSettings);
     }
 
-    public function chatSettings(Request $request)
+    public function chatSettings(checkChatID $request)
     {
         $chat_id = $request->input('chat_id');
         $chatsSettings = DB::table('UserSettings as us')->select('us.user_id', 'us.setting_name', 'us.setting_value', 'u.username')

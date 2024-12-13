@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChatUserIDS;
+use App\Http\Requests\checkUserChatIDS;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +18,7 @@ class UserController extends Controller
         return view('users.index', ['users' => $users]);
     }
 
-    public function userDetails(ChatUserIDS $request)
+    public function userDetails(checkUserChatIDS $request)
     {
         $chatId = $request->input('chat_id');
         $userId = $request->input('user_id');

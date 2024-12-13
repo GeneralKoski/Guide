@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChatUserContent extends FormRequest
+class updateSeen extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,9 @@ class ChatUserContent extends FormRequest
     public function rules(): array
     {
         return [
-            'chat_id' => ['required', 'integer', 'not_in:7,12'],
-            'user_id' => ['required', 'integer'],
-            'content' => ['required', 'string', 'max:100'],
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'chat_id.not_in' => 'Messaggi non possono essere inviati nelle chat 7 e 12 perchè non le ho gestite.',
+            'user_id' => 'required|string',
+            'chat_id' => 'required|string',
+            'chat_type' => 'required|string',
         ];
     }
 }

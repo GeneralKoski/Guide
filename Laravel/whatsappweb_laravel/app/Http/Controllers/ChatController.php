@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\checkUserID;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 class ChatController extends Controller
 {
@@ -17,8 +20,11 @@ class ChatController extends Controller
         return view('chats.index', ['chats' => $chats]);
     }
 
-    public function allChats(Request $request)
+    public function allChats(checkUserID $request)
     {
+        // if (!Auth::check()) {
+        //     return response()->json(['message' => 'Non autenticato'], 401);
+        // }
         $user_id = $request->input('user_id');
 
         $chats = DB::select("SELECT c.id as chat_id, c.type as chat_type,
