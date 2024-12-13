@@ -13,10 +13,14 @@ const SideBar: React.FC<ID> = ({ setIsAuthenticated, username, icon }) => {
 
   const handleClick = (id: string) => {
     if (id === "logout") {
-      fetch("http://localhost:3000/logoutUser.php", {
-        method: "POST", // O usa GET se non invii dati
-        credentials: "include", // Include i cookie di sessione
-      })
+      // fetch("http://localhost:8000/logout-user", {
+      //   method: "POST", // O usa GET se non invii dati
+      //   credentials: "include", // Include i cookie di sessione
+      //   headers: {
+      //     Accept: "application/json", // Indica che ti aspetti una risposta JSON
+      //   },
+      // })
+      fetch("http://localhost:8000/logout-user")
         .then((response) => response.json())
         .then((data) => {
           console.log(data.message);

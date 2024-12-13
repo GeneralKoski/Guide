@@ -57,7 +57,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/is-chat-admin?Achat_id=${selectedChat}&Auser_id=${idUserAttuale}`
+        `http://localhost:8000/is-chat-admin?chat_id=${selectedChat}&user_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -74,7 +74,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat && selectedChatType == "single") {
       fetch(
-        `http://localhost:3000/selectAllSingleMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -86,7 +86,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
         });
     } else if (selectedChat && selectedChatType == "group") {
       fetch(
-        `http://localhost:3000/selectAllGroupMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/select-all-group-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -107,7 +107,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   //   const fetchMessages = () => {
   //     if (selectedChatType === "single") {
   //       fetch(
-  //         `http://localhost:3000/selectAllSingleMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+  //         `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
   //       )
   //         .then((response) => response.json())
   //         .then((data) => {
@@ -122,7 +122,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   //         });
   //     } else if (selectedChatType === "group") {
   //       fetch(
-  //         `http://localhost:3000/selectAllGroupMessages.php?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+  //         `http://localhost:8000/select-all-group-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
   //       )
   //         .then((response) => response.json())
   //         .then((data) => {
@@ -224,17 +224,20 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const handleMessageSent = (inputValue: string) => {
     const chatId = selectedChat ?? "";
 
-    fetch("http://localhost:3000/insertMessage.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        chat_id: chatId,
-        user_id: idUserAttuale,
-        content: inputValue,
-      }),
-    })
+    // fetch("http://localhost:8000/insert-message", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   body: new URLSearchParams({
+    //     chat_id: chatId,
+    //     user_id: idUserAttuale,
+    //     content: inputValue,
+    //   }),
+    // })
+    fetch(
+      `http://localhost:8000/insert-message?chat_id=${chatId}&user_id=${idUserAttuale}&content=${inputValue}`
+    )
       .then((response) => response.text())
       .then((data) => {
         console.log("Risposta del server:", data);

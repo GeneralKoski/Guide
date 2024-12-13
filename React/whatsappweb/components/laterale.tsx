@@ -63,7 +63,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   // const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   // useEffect(() => {
   //   const fetchChats = () => {
-  //     fetch(`http://localhost:3000/selectAllChats.php?user_id=${idUserAttuale}`)
+  //     fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`)
   //       .then((response) => response.json()) // Converto in json
   //       .then((data) => {
   //         console.log("Chat ricevute:", data); // Verifica i dati
@@ -81,7 +81,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
 
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
-    fetch(`http://localhost:3000/getUsersSettings.php?user_id=${idUserAttuale}`)
+    fetch(`http://localhost:8000/get-users-settings?user_id=${idUserAttuale}`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Settings degli Utenti:", data);
@@ -124,7 +124,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
       findUnseen(id) == 0
         ? ""
         : // Funzione per aggiornare il db al click della chat
-          fetch("http://localhost:3000/updateSeenMessages.php", {
+          fetch("http://localhost:8000/update-seen-messages", {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
