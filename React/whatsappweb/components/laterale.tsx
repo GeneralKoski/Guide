@@ -28,11 +28,13 @@ interface Settings {
 interface ID {
   id: string;
   username: string;
+  token: string;
 }
 
-const Laterale: React.FC<ID> = ({ id, username }) => {
+const Laterale: React.FC<ID> = ({ id, username, token }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
+  const tokenUserAttuale = token;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -47,7 +49,12 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   // Prende tutte le chat disponibili
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   useEffect(() => {
-    fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`)
+    fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${tokenUserAttuale}`,
+      },
+    })
       .then((response) => response.json()) // Converto in json
       .then((data) => {
         console.log("Chat ricevute:", data); // Verifica i dati
@@ -81,7 +88,12 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
 
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
-    fetch(`http://localhost:8000/get-users-settings?user_id=${idUserAttuale}`)
+    fetch(`http://localhost:8000/get-users-settings?user_id=${idUserAttuale}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${tokenUserAttuale}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log("Settings degli Utenti:", data);
@@ -124,12 +136,14 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
       findUnseen(id) == 0
         ? ""
         : // Funzione per aggiornare il db al click della chat
-          fetch("http://localhost:8000/update-seen-messages", {
+          fetch("http://localhost:8000/api/update-seen-messages", {
             method: "PUT",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/json",
+              Authorization: `Bearer ${tokenUserAttuale}`,
             },
-            body: JSON.stringify({
+            body: new URLSearchParams({
               user_id: idUserAttuale,
               chat_id: id,
               chat_type: type,
@@ -169,7 +183,13 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
   >([]);
   useEffect(() => {
     fetch(
-      `http://localhost:8000/not-seen-messages-per-chat?user_id=${idUserAttuale}`
+      `http://localhost:8000/not-seen-messages-per-chat?user_id=${idUserAttuale}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenUserAttuale}`,
+        },
+      }
     )
       .then((response) => response.json())
       .then((data) => {
@@ -404,6 +424,7 @@ const Laterale: React.FC<ID> = ({ id, username }) => {
               selectedChatType={selectedChatType}
               id={idUserAttuale}
               username={nomeUserAttuale}
+              token={token}
             />
           }
         </div>

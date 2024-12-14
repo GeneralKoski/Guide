@@ -5,25 +5,34 @@ interface ID {
   setIsAuthenticated: (value: boolean) => void;
   username: string;
   icon: string;
+  token: string;
 }
-const SideBar: React.FC<ID> = ({ setIsAuthenticated, username, icon }) => {
+const SideBar: React.FC<ID> = ({
+  setIsAuthenticated,
+  username,
+  icon,
+  token,
+}) => {
   const nomeUserAttuale = username;
   const iconaUserAttuale = icon;
+  const tokenUserAttuale = token;
   const [selectedId, setSelectedId] = useState<string>("chat");
 
   const handleClick = (id: string) => {
     if (id === "logout") {
-      // fetch("http://localhost:8000/logout-user", {
-      //   method: "POST", // O usa GET se non invii dati
-      //   credentials: "include", // Include i cookie di sessione
-      //   headers: {
-      //     Accept: "application/json", // Indica che ti aspetti una risposta JSON
-      //   },
-      // })
-      fetch("http://localhost:8000/logout-user")
+      fetch("http://localhost:8000/api/logout-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${tokenUserAttuale}`,
+        },
+        credentials: "include",
+      })
         .then((response) => response.json())
         .then((data) => {
           console.log(data.message);
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("authTokenExpiration");
           setIsAuthenticated(false); // Imposta come non autenticato
         })
         .catch((error) => {

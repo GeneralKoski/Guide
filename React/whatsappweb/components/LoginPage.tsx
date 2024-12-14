@@ -3,14 +3,12 @@ import Image from "next/image";
 
 interface LoginProps {
   setIsAuthenticated: (auth: boolean) => void;
-  setUserData: (id: string, username: string, icon: string) => void;
-}
-
-interface User {
-  id: string;
-  username: string;
-  password: string;
-  icon: string;
+  setUserData: (
+    id: string,
+    username: string,
+    icon: string,
+    token: string
+  ) => void;
 }
 
 const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
@@ -18,25 +16,40 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // useEffect(() => {
-  //   fetch("http://localhost:8000/check-session", {
-  //     method: "GET",
-  //     credentials: "include", // Include i cookie per verificare la sessione
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       if (data.username) {
-  //         console.log("Sessione attiva:", data);
-  //         setIsAuthenticated(true);
-  //         setUserData(data.id, data.username, data.icon); // Setta i dati dell'utente
-  //       } else {
-  //         console.log(data.message); // Nessuna sessione attiva
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log("Errore nel controllo della sessione", error);
-  //     });
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const expirationTime = localStorage.getItem("authTokenExpiration");
+
+    if (token && expirationTime && Date.now() < parseInt(expirationTime)) {
+      fetch("http://localhost:8000/api/verify-token", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            setUserData(
+              data.user.id,
+              data.user.username,
+              data.user.icon,
+              token
+            );
+            setIsAuthenticated(true);
+          } else {
+            localStorage.removeItem("authToken");
+          }
+        })
+        .catch((error) => {
+          console.error("Errore nella verifica del token:", error);
+        });
+    } else {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("authTokenExpiration");
+      console.log("Nessun utente loggato");
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,38 +57,32 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
       setError("Inserisci sia Username che password.");
       return;
     }
-    // fetch("http://localhost:8000/login-user", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //     Accept: "application/json",
-    //   },
-    //   body: new URLSearchParams({
-    //     username: username,
-    //     password: password,
-    //   }),
-    //   credentials: "include",
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("Utente loggato con successo");
-    //     setIsAuthenticated(true);
-    //     setUserData(data.id, data.username, data.icon); // Passa l'ID, lo username e l'icona
-    //   })
-    //   .catch((error) => {
-    //     console.error("Errore nella fetch:", error);
-    //     setError("Username o password non validi.");
-    //   });
-    // };
-
-    fetch(
-      `http://localhost:8000/login-user?username=${username}&password=${password}`
-    )
-      .then((response) => response.json())
+    fetch("http://localhost:8000/api/login-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        username: username,
+        password: password,
+      }),
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.message || "Credenziali errate");
+          });
+        }
+        return response.json();
+      })
       .then((data) => {
         console.log("Utente loggato con successo");
+        localStorage.setItem("authToken", data.token);
+        const expirationTime = Date.now() + 60000;
+        localStorage.setItem("authTokenExpiration", expirationTime.toString());
         setIsAuthenticated(true);
-        setUserData(data.id, data.username, data.icon); // Passa l'ID, lo username e l'icona
+        setUserData(data.id, data.username, data.icon, data.token); // Passa l'ID, lo username, l'icona e il token personale
       })
       .catch((error) => {
         console.error("Errore nella fetch:", error);

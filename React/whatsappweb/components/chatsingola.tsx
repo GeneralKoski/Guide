@@ -39,6 +39,7 @@ interface ChatSingolaID {
 interface ID {
   id: string;
   username: string;
+  token: string;
 }
 
 const ChatSingola: React.FC<ChatSingolaID & ID> = ({
@@ -46,9 +47,11 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   selectedChatType,
   id,
   username,
+  token,
 }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
+  const tokenUserAttuale = token;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -57,7 +60,13 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/is-chat-admin?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/is-chat-admin?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenUserAttuale}`,
+          },
+        }
       )
         .then((response) => response.json())
         .then((data) => {
@@ -74,7 +83,13 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat && selectedChatType == "single") {
       fetch(
-        `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenUserAttuale}`,
+          },
+        }
       )
         .then((response) => response.json())
         .then((data) => {
@@ -86,7 +101,13 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
         });
     } else if (selectedChat && selectedChatType == "group") {
       fetch(
-        `http://localhost:8000/select-all-group-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/select-all-group-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenUserAttuale}`,
+          },
+        }
       )
         .then((response) => response.json())
         .then((data) => {
@@ -146,7 +167,13 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/select-user-details?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+        `http://localhost:8000/select-user-details?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenUserAttuale}`,
+          },
+        }
       )
         .then((response) => response.json())
         .then((data) => {
@@ -162,7 +189,12 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
     if (selectedChat) {
-      fetch(`http://localhost:8000/get-chat-settings?chat_id=${selectedChat}`)
+      fetch(`http://localhost:8000/get-chat-settings?chat_id=${selectedChat}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenUserAttuale}`,
+        },
+      })
         .then((response) => response.json())
         .then((data) => {
           console.log("Settings della chat selezionate:", data);
@@ -224,20 +256,18 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const handleMessageSent = (inputValue: string) => {
     const chatId = selectedChat ?? "";
 
-    // fetch("http://localhost:8000/insert-message", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //   },
-    //   body: new URLSearchParams({
-    //     chat_id: chatId,
-    //     user_id: idUserAttuale,
-    //     content: inputValue,
-    //   }),
-    // })
-    fetch(
-      `http://localhost:8000/insert-message?chat_id=${chatId}&user_id=${idUserAttuale}&content=${inputValue}`
-    )
+    fetch("http://localhost:8000/api/insert-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Bearer ${tokenUserAttuale}`,
+      },
+      body: new URLSearchParams({
+        chat_id: chatId,
+        user_id: idUserAttuale,
+        content: inputValue,
+      }),
+    })
       .then((response) => response.text())
       .then((data) => {
         console.log("Risposta del server:", data);
