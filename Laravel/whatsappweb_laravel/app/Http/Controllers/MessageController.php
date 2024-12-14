@@ -8,6 +8,9 @@ use App\Http\Requests\InsertMessage;
 use App\Http\Requests\updateSeen;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
@@ -41,6 +44,8 @@ class MessageController extends Controller
             ->where('user_id', '!=', $userId)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
+
+        return $updatesSingle ? "Cambiato" : "No bono";
     }
     public function updateSeenGroup($userId, $chatId)
     {
@@ -49,11 +54,17 @@ class MessageController extends Controller
             ->where('seen_by_user', '=', $userId)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
+        return $updatesGroup ? "Cambiato" : "No bono";
     }
     public function selectSingleMessages(checkUserChatIDS $request)
     {
         $chatId = $request->input('chat_id');
         $userId = $request->input('user_id');
+
+        $userAuth = Auth::user();
+        if ($userAuth->id != $userId) {
+            return response()->json(['message' => 'Ma dove pensi di andare'], 401);
+        }
 
         $singleMessagesRAW = DB::select("SELECT u.id, u.username, m.type as message_type, m.sent_at, m.content as media_content, c.type as chat_type, cu.added_at,
 
@@ -120,7 +131,7 @@ class MessageController extends Controller
         $content = $request->input('content');
 
         try {
-            Message::create([
+            $request->user()->messages()->create([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
                 'type' => 'message',

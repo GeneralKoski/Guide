@@ -22,10 +22,11 @@ class ChatController extends Controller
 
     public function allChats(checkUserID $request)
     {
-        // if (!Auth::check()) {
-        //     return response()->json(['message' => 'Non autenticato'], 401);
-        // }
         $user_id = $request->input('user_id');
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Ma dove pensi di andare'], 401);
+        }
 
         $chats = DB::select("SELECT c.id as chat_id, c.type as chat_type,
        CASE
