@@ -1,3 +1,18 @@
-- In basso a sinistra esce l'icona del blocco selezionato e nel caso di blocco con dimensione > 1x1 il tasto "ruota"
-- A sinistra si ha l'elenco delle mattonelle selezionabili con le loro icone
-- A destra si hanno i dettagli dell'utente (icon, ruolo...), i dettagli della città (felicità dei cittadini..)
+- In basso a sinistra esce l'icona del blocco selezionato e nel caso di blocco con dimensione > 1x1 il tasto "ruota";
+
+- Da implementare la funzione "ruota";
+
+- A sinistra si ha l'elenco delle mattonelle selezionabili con le loro icone;
+
+- L'icona cliccata diventa di tipo "disabled", se clicco un'altra icona, quella precedentemente disabilitata si riabilita e si
+    disattiva quella appena cliccata;
+
+- A destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei
+messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco delle mappe;
+
+- Da sistemare il fatto che se cancello qualcosa poi non mi fa più disegnare lì;
+
+- Vogliamo inizializzare il mondo come "erba" però è da sistemare il fatto che se clicco sopra l'erba con un edificio,
+    me lo faccia piazzare;
+
+- Da pensare a nuovi edifici
