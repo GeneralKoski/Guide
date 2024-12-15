@@ -12,7 +12,7 @@ const VISIBLE_TILES_Y = Math.ceil(window.innerHeight / TILE_SIZE);
 // Crea una matrice per memorizzare i tipi di mattonelle
 const mapTiles = Array.from({
     length: MAP_SIZE
-}, () => Array(MAP_SIZE).fill('BG'));
+}, () => Array(MAP_SIZE).fill('default'));
 
 // Imposta la dimensione del canvas pari alla dimensione dello schermo
 canvas.width = window.innerWidth;
@@ -32,10 +32,6 @@ drawMap(offsetX, offsetY);
 
 // Oggetto per definire le dimensioni degli edifici
 const buildingSizes = {
-    'CANCEL': {
-        width: 1,
-        height: 1
-    },
     'FACTORY': {
         width: 10,
         height: 3
@@ -44,31 +40,27 @@ const buildingSizes = {
         width: 5,
         height: 2
     },
-    'HUT': {
-        width: 1,
-        height: 1
-    },
 };
 
 // Funzione per ottenere il colore in base al tipo di mattonella
 function getTileColor(type) {
     switch (type) {
         case 'WATER':
-            return '#00bfff'; // Azzurro
+            return '#00BFFF'; // Azzurro
         case 'ROAD':
-            return '#7f7f7f'; // Grigio
+            return '#7F7F7F'; // Grigio
         case 'GRASS':
-            return '#00ff00'; // Verde
+            return '#00FF00'; // Verde
         case 'FACTORY':
-            return '#ff6600'; // Arancione
+            return '#FF6600'; // Arancione
         case 'HOUSE':
-            return '#ffff00'; // Giallo
+            return '#FFFF00'; // Giallo
         case 'HUT':
             return '#996600'; // Marrone
-        case 'BG':
-            return '#ffffff'; // Bianco
+        case 'CANCEL':
+            return '#FFFFFF'; // Bianco
         default:
-            return '#ffffff'; // Default (bianco)
+            return '#6DCF40'; // Verde
     }
 }
 
@@ -138,11 +130,50 @@ function drawMap(offsetX, offsetY) {
             ctx.fillStyle = color;
             ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
-            // Disegna il bordo solo se la casella è vuota ('BG')
-            // if (tileType === 'BG' || tileType === 'CANCEL') {
-                ctx.strokeStyle = '#f5f5f5';
-                ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-            // }
+            // Verifica le celle vicine
+            const leftTile = tileX > 0 ? mapTiles[tileX - 1][tileY] : null;
+            const rightTile = tileX < MAP_SIZE - 1 ? mapTiles[tileX + 1][tileY] : null;
+            const topTile = tileY > 0 ? mapTiles[tileX][tileY - 1] : null;
+            const bottomTile = tileY < MAP_SIZE - 1 ? mapTiles[tileX][tileY + 1] : null;
+
+            // Disegna il bordo solo agli estremi della sequenza di celle dello stesso tipo
+            ctx.strokeStyle = '#000000';
+
+            function shouldDrawBorder(adjTile) {
+                return adjTile !== 'GRASS' && adjTile !== 'default';
+            }
+
+            // Bordo a sinistra
+            if (leftTile !== tileType && shouldDrawBorder(leftTile)) {
+                ctx.beginPath();
+                ctx.moveTo(x * TILE_SIZE, y * TILE_SIZE);
+                ctx.lineTo(x * TILE_SIZE, (y + 1) * TILE_SIZE);
+                ctx.stroke();
+            }
+
+            // Bordo a destra
+            if (rightTile !== tileType && shouldDrawBorder(rightTile)) {
+                ctx.beginPath();
+                ctx.moveTo((x + 1) * TILE_SIZE, y * TILE_SIZE);
+                ctx.lineTo((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+                ctx.stroke();
+            }
+
+            // Bordo superiore
+            if (topTile !== tileType && shouldDrawBorder(topTile)) {
+                ctx.beginPath();
+                ctx.moveTo(x * TILE_SIZE, y * TILE_SIZE);
+                ctx.lineTo((x + 1) * TILE_SIZE, y * TILE_SIZE);
+                ctx.stroke();
+            }
+            
+            // Bordo inferiore
+            if (bottomTile !== tileType && shouldDrawBorder(bottomTile)) {
+                ctx.beginPath();
+                ctx.moveTo(x * TILE_SIZE, (y + 1) * TILE_SIZE);
+                ctx.lineTo((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+                ctx.stroke();
+            }
         }
     }
 }
@@ -153,6 +184,7 @@ function drawTileAtPosition(canvasX, canvasY) {
     const clickedTileY = Math.floor((canvasY / TILE_SIZE) + offsetY - 0.1);
 
     console.log(`Cella premuta: X=${clickedTileX}, Y=${clickedTileY}`);
+    console.log(`Il suo tipo è: ${mapTiles[clickedTileX][clickedTileY]}`);
 
     const selectedBuilding = selectedTileType;
 
@@ -168,10 +200,10 @@ function drawTileAtPosition(canvasX, canvasY) {
         }
     }
 
-    if (selectedBuilding && buildingSizes[selectedBuilding]) {
-        console.log("selectedBuilding:", selectedBuilding, typeof selectedBuilding);
-        console.log("buildingSizes[selectedBuilding]:", buildingSizes[selectedBuilding]);
+    console.log("selectedBuilding:", selectedBuilding, typeof selectedBuilding);
+    console.log("buildingSizes[selectedBuilding]:", buildingSizes[selectedBuilding]);
 
+    if (selectedBuilding && buildingSizes[selectedBuilding]) {
         const {
             width,
             height
@@ -187,7 +219,7 @@ function drawTileAtPosition(canvasX, canvasY) {
                     const tileY = clickedTileY + j;
 
                     if (tileX < MAP_SIZE && tileY < MAP_SIZE) {
-                        if (mapTiles[tileX][tileY] !== 'BG') {
+                        if (mapTiles[tileX][tileY] !== 'CANCEL' && mapTiles[tileX][tileY] !== 'GRASS' && mapTiles[tileX][tileY] !== 'default') {
                             // Se una cella è già occupata da un altro tipo di mattonella, blocca la costruzione
                             canBuild = false;
                             break;
@@ -209,15 +241,18 @@ function drawTileAtPosition(canvasX, canvasY) {
             }
         }
     } else if (selectedTileType) {
-        if (mapTiles[clickedTileX][clickedTileY] !== 'BG') {
-            return; // Se la casella è colorata, esce dalla funzione senza costruire nulla
+        if (selectedBuilding !== 'CANCEL') {
+            if (mapTiles[clickedTileX][clickedTileY] !== 'CANCEL' && mapTiles[clickedTileX][clickedTileY] !== 'GRASS' && mapTiles[clickedTileX][clickedTileY] !== 'default') {
+                return; // Se la casella è colorata, esce dalla funzione senza costruire nulla
+            }
         }
+        
         if (clickedTileX < MAP_SIZE && clickedTileY < MAP_SIZE) {
             mapTiles[clickedTileX][clickedTileY] = selectedTileType;
         }
     } else {
         if (clickedTileX < MAP_SIZE && clickedTileY < MAP_SIZE) {
-            mapTiles[clickedTileX][clickedTileY] = 'BG';
+            mapTiles[clickedTileX][clickedTileY] = 'CANCEL';
         }
     }
 

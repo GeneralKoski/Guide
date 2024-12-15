@@ -1,18 +1,28 @@
-- In basso a sinistra esce l'icona del blocco selezionato e nel caso di blocco con dimensione > 1x1 il tasto "ruota";
+DA FARE:
+- In basso a sinistra, da far vedere l'icona del bottone selezionato;
 
-- Da implementare la funzione "ruota";
-
-- A sinistra si ha l'elenco delle mattonelle selezionabili con le loro icone;
+- In basso a sinistra, da implementare la funzione "ruota" che compare solo se ho selezionato un bottone di icona con dimensione > 1x1;
 
 - L'icona cliccata diventa di tipo "disabled", se clicco un'altra icona, quella precedentemente disabilitata si riabilita e si
     disattiva quella appena cliccata;
 
-- A destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei
+- In alto a destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei
 messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco delle mappe;
 
+- Da pensare a nuovi edifici
+
+
+FATTO:
 - Da sistemare il fatto che se cancello qualcosa poi non mi fa più disegnare lì;
 
-- Vogliamo inizializzare il mondo come "erba" però è da sistemare il fatto che se clicco sopra l'erba con un edificio,
-    me lo faccia piazzare;
+- A sinistra si ha l'elenco delle mattonelle selezionabili con le loro icone;
 
-- Da pensare a nuovi edifici
+- Aggiunte icone in basso a sinistra;
+
+- Icone aggiunte, suddivise in colonne da 2. Aggiunta in basso 2 bottoni, a sinistra è da gestire mettendo come i.class il valore
+    dell'icona selezionata sopra
+
+- Inizializzato il mondo come "erba" e sistemato il fatto che se clicco sopra l'erba con un edificio, me lo fa piazzare;
+
+- Inizializzato mondo con colore "Erbaccia". Posso cancellare, aggiungere edifici grandi o singoli, cambiare da erbaccia ad erba
+    e ho fatto in modo che si possa piazzare edifici sopra l'erba senza il bisogno prima di cancellare.
