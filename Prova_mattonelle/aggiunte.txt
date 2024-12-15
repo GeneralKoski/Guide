@@ -16,3 +16,4 @@ messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco del
     me lo faccia piazzare;
 
 - Da pensare a nuovi edifici
+-Mangiare pasta
