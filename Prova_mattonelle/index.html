@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tile Map</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #tileCanvas {
+      display: block;
+      margin-left: 160px;
+    }
+
+    .controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .informations {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .controls button, .informations button {
+      display: block;
+      width: 120px;
+      height: 50px;
+      margin-bottom: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button id="cancel">Cancella</button>
+    <button id="factory">Fabbrica</button>
+    <button id="house">Casa</button>
+    <button id="hut">Capanna</button>
+    <button id="road">Strada</button>
+    <button id="water">Acqua</button>
+    <button id="grass">Erba</button>
+  </div>
+
+  <canvas id="tileCanvas"></canvas>
+  
+  <div class="informations">
+    <button id="username">Username</button>
+    <button id="factory">data1</button>
+    <button id="house">data2</button>
+    <button id="hut">data3</button>
+    <button id="road">data4</button>
+    <button id="water">data5</button>
+    <button id="grass">data6</button>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+</html>
