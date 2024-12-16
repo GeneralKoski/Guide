@@ -79,7 +79,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
       .then((data) => {
         console.log("Utente loggato con successo");
         localStorage.setItem("authToken", data.token);
-        const expirationTime = Date.now() + 60000;
+        const expirationTime = Date.now() + 12000000; // 60000 per un minuto
         localStorage.setItem("authTokenExpiration", expirationTime.toString());
         setIsAuthenticated(true);
         setUserData(data.id, data.username, data.icon, data.token); // Passa l'ID, lo username, l'icona e il token personale
