@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\checkUserChatIDS;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -20,8 +22,18 @@ class UserController extends Controller
 
     public function userDetails(checkUserChatIDS $request)
     {
-        $chatId = $request->input('chat_id');
-        $userId = $request->input('user_id');
+        $chat_id = $request->input('chat_id');
+        $user_id = $request->input('user_id');
+
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
+            return response()->json(['message' => "Non puoi vedere i dettagli dell'utente perchè non appartieni a questa chat"], 401);
+        }
 
         $details =
             DB::table('Users as u')
@@ -34,56 +46,9 @@ class UserController extends Controller
             )
             ->join('ChatUsers as cu', 'u.id', '=', 'cu.user_id')
             ->join('Chats as c', 'c.id', '=', 'cu.chat_id')
-            ->where('cu.user_id', '!=', $userId)
-            ->where('cu.chat_id', '=', $chatId)
+            ->where('cu.user_id', '!=', $user_id)
+            ->where('cu.chat_id', '=', $chat_id)
             ->get();
         return response()->json($details);
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        return view('users.show', ['user' => $user]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

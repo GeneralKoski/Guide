@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Requests\checkUserChatIDS;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
@@ -29,8 +30,10 @@ class Message extends Model
         return $this->hasMany(Chat::class);
     }
 
-    // public function lastMessage()
-    // {
-    //     return $this->hasOne(Message::class)->where();
-    // }
+    public static function hasChatId($chat_id, $user_id)
+    {
+        $chatusers = ChatUser::select('chat_id')->where('user_id', '=', $user_id)->get();
+        $isThere = $chatusers->contains('chat_id', $chat_id);
+        return $isThere ? true : false;
+    }
 }

@@ -13,6 +13,8 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function Laravel\Prompts\select;
+
 class MessageController extends Controller
 {
     /**
@@ -26,100 +28,152 @@ class MessageController extends Controller
 
     public function updateSeen(updateSeen $request)
     {
-        $userId = $request->input('user_id');
-        $chatId = $request->input('chat_id');
+        $user_id = $request->input('user_id');
+        $chat_id = $request->input('chat_id');
         $chatType = $request->input('chat_type');
 
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
+            return response()->json(['message' => 'Non puoi aggiornare i non visualizzati perchè non appartieni a questa chat'], 401);
+        }
+
         if ($chatType == "single") {
-            $this->updateSeenSingle($userId, $chatId);
+            $this->updateSeenSingle($user_id, $chat_id);
         } else {
-            $this->updateSeenGroup($userId, $chatId);
+            $this->updateSeenGroup($user_id, $chat_id);
         }
     }
 
-    public function updateSeenSingle($userId, $chatId)
+    public function updateSeenSingle($user_id, $chat_id)
     {
         $updatesSingle = DB::table('Messages')
-            ->where('chat_id', '=', $chatId)
-            ->where('user_id', '!=', $userId)
+            ->where('chat_id', '=', $chat_id)
+            ->where('user_id', '!=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
 
         return $updatesSingle ? "Cambiato" : "No bono";
     }
-    public function updateSeenGroup($userId, $chatId)
+    public function updateSeenGroup($user_id, $chat_id)
     {
         $updatesGroup = DB::table('GroupChatMessages')
-            ->where('chat_id', '=', $chatId)
-            ->where('seen_by_user', '=', $userId)
+            ->where('chat_id', '=', $chat_id)
+            ->where('seen_by_user', '=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
         return $updatesGroup ? "Cambiato" : "No bono";
     }
     public function selectSingleMessages(checkUserChatIDS $request)
     {
-        $chatId = $request->input('chat_id');
-        $userId = $request->input('user_id');
+        $chat_id = $request->input('chat_id');
+        $user_id = $request->input('user_id');
 
-        $userAuth = Auth::user();
-        if ($userAuth->id != $userId) {
-            return response()->json(['message' => 'Ma dove pensi di andare'], 401);
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
+            return response()->json(['message' => 'Non puoi vedere i messaggi perchè non appartieni a questa chat'], 401);
         }
 
-        $singleMessagesRAW = DB::select("SELECT u.id, u.username, m.type as message_type, m.sent_at, m.content as media_content, c.type as chat_type, cu.added_at,
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
 
-        CASE
-            WHEN m.type = 'media' THEN (
-                SELECT media.file_path
-                FROM Media media
-                WHERE media.message_id = m.id
-                LIMIT 1
+        $singleMessages = DB::table('Messages AS m')
+            ->select(
+                'u.id',
+                'u.username',
+                'm.sent_at',
+                'cu.added_at',
+                DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
+                           CASE WHEN m.type = 'media' THEN (
+                                    SELECT media.file_path
+                                    FROM Media media
+                                    WHERE media.message_id = m.id
+                                    LIMIT 1
+                                )
+                                ELSE m.content
+                            END AS content,
+                            IF (m.user_id = $user_id AND sent_at < (SELECT MAX(m1.sent_at) FROM Messages m1 WHERE user_id != $user_id AND chat_id = $chat_id), 'yes', seen) AS seen")
             )
-            ELSE m.content
-        END AS content,
+            ->join('Users AS u', 'u.id', '=', 'm.user_id')
+            ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
+            ->leftJoin('ChatUsers AS cu', function ($join) {
+                $join->on('cu.user_id', '=', 'u.id')
+                    ->on('cu.chat_id', '=', 'c.id');
+            })
+            ->where('c.type', '=', 'single')
+            ->where('m.chat_id', '=', $chat_id)
+            ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
+                $query->select('cu2.added_at')
+                    ->from('ChatUsers AS cu2')
+                    ->where('cu2.chat_id', '=', $chat_id)
+                    ->where('cu2.user_id', '=', $user_id);
+            })
+            ->orderBy('m.sent_at', 'ASC')
+            ->get();
 
-
-        IF (m.user_id = $userId AND sent_at < (SELECT MAX(m1.sent_at) FROM Messages m1 WHERE user_id != $userId AND chat_id = $chatId), 'yes', seen) as seen
-        FROM Messages m
-        JOIN Users u ON u.id = m.user_id
-        JOIN Chats c ON m.chat_id = c.id
-        LEFT JOIN ChatUsers cu ON cu.user_id = u.id AND cu.chat_id = c.id
-
-        WHERE c.type = 'single' AND m.chat_id = $chatId AND m.sent_at > (SELECT cu2.added_at FROM ChatUsers cu2 WHERE cu2.chat_id = $chatId AND cu2.user_id = $userId)
-        ORDER BY m.sent_at ASC;");
-
-        return response()->json($singleMessagesRAW);
+        return response()->json($singleMessages);
     }
 
     public function selectGroupMessages(checkUserChatIDS $request)
     {
-        $chatId = $request->input('chat_id');
-        $userId = $request->input('user_id');
+        $chat_id = $request->input('chat_id');
+        $user_id = $request->input('user_id');
 
-        $groupMessages = DB::select("SELECT u.id, u.username, m.type as message_type, m.sent_at, m.content as media_content, c.type as chat_type, cu.added_at, m.id,
-        CASE
-            WHEN m.type = 'media' THEN (
-                SELECT media.file_path
-                FROM Media media
-                WHERE media.message_id = m.id
-                LIMIT 1
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
+            return response()->json(['message' => 'Non puoi vedere i messaggi perchè non appartieni a questa chat'], 401);
+        }
+
+        $groupMessages = DB::table('Messages AS m')
+            ->select(
+                'u.id',
+                'u.username',
+                'm.sent_at',
+                'cu.added_at',
+                'm.id',
+                DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
+            CASE WHEN m.type = 'media' THEN (
+                    SELECT media.file_path
+                    FROM Media media
+                    WHERE media.message_id = m.id
+                    LIMIT 1
+                )
+                ELSE m.content
+            END AS content,
+
+            IF(
+                (SELECT COUNT(*) FROM GroupChatMessages gcm WHERE gcm.seen = 'yes' AND gcm.message_id = m.id) =
+                (SELECT COUNT(*) FROM ChatUsers cu WHERE cu.chat_id = m.chat_id AND cu.user_id != m.user_id),
+                'yes',
+                'no'
+            ) AS seen")
             )
-            ELSE m.content
-        END AS content,
-
-        IF(
-        (SELECT COUNT(*) FROM GroupChatMessages gcm WHERE gcm.seen = 'yes' AND gcm.message_id = m.id) =
-        (SELECT COUNT(*) FROM ChatUsers cu WHERE cu.chat_id = m.chat_id AND cu.user_id != m.user_id),
-        'yes',
-        'no'
-    ) as seen
-        FROM Messages m
-        JOIN Users u ON u.id = m.user_id
-        JOIN Chats c ON m.chat_id = c.id
-        LEFT JOIN ChatUsers cu ON cu.user_id = u.id AND cu.chat_id = c.id
-
-        WHERE m.chat_id = $chatId AND m.sent_at > (SELECT cu2.added_at FROM ChatUsers cu2 WHERE cu2.chat_id = $chatId AND cu2.user_id = $userId)
-        ORDER BY m.sent_at ASC;");
+            ->join('Users AS u', 'u.id', '=', 'm.user_id')
+            ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
+            ->leftJoin('ChatUsers AS cu', function ($join) {
+                $join->on('cu.user_id', '=', 'u.id')
+                    ->on('cu.chat_id', '=', 'c.id');
+            })
+            ->where('m.chat_id', '=', $chat_id)
+            ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
+                $query->select('cu2.added_at')
+                    ->from('ChatUsers as cu2')
+                    ->where('cu2.chat_id', '=', $chat_id)
+                    ->where('cu2.user_id', '=', $user_id);
+            })
+            ->orderBy('m.sent_at', 'ASC')
+            ->get();
 
         return response()->json($groupMessages);
     }
@@ -129,6 +183,16 @@ class MessageController extends Controller
         $chat_id = $request->input('chat_id');
         $user_id = $request->input('user_id');
         $content = $request->input('content');
+
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
+            return response()->json(['message' => 'Non puoi mandare il messaggio perchè non appartieni a questa chat'], 401);
+        }
 
         try {
             $request->user()->messages()->create([
@@ -149,6 +213,11 @@ class MessageController extends Controller
     {
         $user_id = $request->input('user_id');
 
+        $userAuth = Auth::user();
+        if ($userAuth->id != $user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
         $singleChats = DB::table('Chats')
             ->select('id')
             ->where('type', '=', 'single');
@@ -157,7 +226,7 @@ class MessageController extends Controller
             ->where('user_id', '=', $user_id);
 
         $notSeenMessages = DB::table('Messages')
-            ->select('chat_id', DB::raw('COUNT(*) as non_letti'))
+            ->select('chat_id', DB::raw('COUNT(*) AS non_letti'))
             ->where('seen', '=', 'no')
             ->whereIn('chat_id', $singleChats)
             ->whereIn('chat_id', $userChats)
@@ -165,7 +234,7 @@ class MessageController extends Controller
             ->groupBy('chat_id');
 
         $notSeenGCM = DB::table('GroupChatMessages')
-            ->select('chat_id', DB::raw('COUNT(*) as non_letti'))
+            ->select('chat_id', DB::raw('COUNT(*) AS non_letti'))
             ->where('seen_by_user', '=', $user_id)
             ->where('seen', '=', 'no')
             ->unionAll($notSeenMessages)
@@ -173,53 +242,5 @@ class MessageController extends Controller
             ->get();
 
         return response()->json($notSeenGCM);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\checkUserChatIDS;
 use App\Models\ChatAdmin;
+use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChatAdminController extends Controller
 {
@@ -19,61 +21,23 @@ class ChatAdminController extends Controller
 
     public function checkIfAdmin(checkUserChatIDS $request)
     {
-        $AchatId = $request->input('chat_id');
-        $AuserId = $request->input('user_id');
+        $Achat_id = $request->input('chat_id');
+        $Auser_id = $request->input('user_id');
 
-        $isAdmin = ChatAdmin::where('Achat_id', '=', $AchatId)
-            ->where('Auser_id', '=', $AuserId)
+        $userAuth = Auth::user();
+        if ($userAuth->id != $Auser_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
+        $isThere = Message::hasChatId($Achat_id, $Auser_id);
+        if (!$isThere) {
+            return response()->json(['message' => 'Non puoi vedere gli admin perchè non appartieni a questa chat'], 401);
+        }
+
+        $isAdmin = ChatAdmin::where('Achat_id', '=', $Achat_id)
+            ->where('Auser_id', '=', $Auser_id)
             ->exists();
 
         return $isAdmin ? ['isAdmin' => 'true'] : ['isAdmin' => 'false'];
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
