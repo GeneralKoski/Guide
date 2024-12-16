@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessageSent;
 use App\Http\Requests\checkUserChatIDS;
 use App\Http\Requests\checkUserID;
 use App\Http\Requests\InsertMessage;
@@ -199,7 +200,10 @@ class MessageController extends Controller
                 'seen' => 'no',
             ]);
 
-            return response('Messaggio inserito con successo.', 200);
+            return $this->selectSingleMessages(new checkUserChatIDS([
+                'chat_id' => $chat_id,
+                'user_id' => $user_id,
+            ]));
         } catch (\Exception $e) {
             return response('Errore nell\'inserimento del messaggio: ' . $e->getMessage(), 500);
         }
