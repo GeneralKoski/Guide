@@ -7,13 +7,8 @@ use App\Http\Requests\checkUserID;
 use App\Http\Requests\InsertMessage;
 use App\Http\Requests\updateSeen;
 use App\Models\Message;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
-use function Laravel\Prompts\select;
 
 class MessageController extends Controller
 {
@@ -195,7 +190,7 @@ class MessageController extends Controller
         }
 
         try {
-            $request->user()->messages()->create([
+            $message = $request->user()->messages()->create([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
                 'type' => 'message',
@@ -203,6 +198,7 @@ class MessageController extends Controller
                 'sent_at' => now(),
                 'seen' => 'no',
             ]);
+
             return response('Messaggio inserito con successo.', 200);
         } catch (\Exception $e) {
             return response('Errore nell\'inserimento del messaggio: ' . $e->getMessage(), 500);

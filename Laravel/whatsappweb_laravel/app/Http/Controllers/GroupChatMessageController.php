@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\GroupChatMessage;
-use Illuminate\Http\Request;
 
 class GroupChatMessageController extends Controller
 {

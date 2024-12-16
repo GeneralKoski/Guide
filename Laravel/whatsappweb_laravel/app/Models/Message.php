@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Requests\checkUserChatIDS;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model

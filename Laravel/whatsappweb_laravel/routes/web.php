@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ChatAdminController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\ChatUserController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;

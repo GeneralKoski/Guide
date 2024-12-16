@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\checkUserChatIDS;
 use App\Models\Message;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 

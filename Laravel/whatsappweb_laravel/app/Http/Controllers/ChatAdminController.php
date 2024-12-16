@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\checkUserChatIDS;
 use App\Models\ChatAdmin;
 use App\Models\Message;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ChatAdminController extends Controller
