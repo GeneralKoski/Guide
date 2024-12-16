@@ -6,6 +6,8 @@ messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco del
 
 - Da implementare che se la gomma clicca un oggetto di tipo edificio, lo cancella tutto senza doverlo cancellare a mano
 
+- Bisogna suddividere i file in cartelle, suddividendo per bene script e funzioni, includendole e richiamandole dove dovuto
+
 
 FATTO:
 - Da sistemare il fatto che se cancello qualcosa poi non mi fa più disegnare lì;
