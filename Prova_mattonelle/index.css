@@ -8,7 +8,7 @@ body {
       margin-left: 160px;
     }
 
-    .controls {
+    .controls, .selected{
       width: 140px;
     }
 
@@ -24,7 +24,7 @@ body {
       left: 10px;
     }
 
-    .controls button, .informations button {
+    .controls button, .informations button, .selected button {
       display: block;
       width: 60px;
       height: 50px;
@@ -34,6 +34,6 @@ body {
       cursor: pointer;
     }
 
-    .controls button:hover {
+    .controls button:hover, #rotate:hover {
         background-color: grey;
     }

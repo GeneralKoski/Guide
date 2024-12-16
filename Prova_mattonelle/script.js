@@ -5,8 +5,8 @@ const ctx = canvas.getContext('2d');
 
 // Definire le dimensioni della mappa e delle mattonelle
 const MAP_SIZE = 10000;
-const TILE_SIZE = 15; // Dimensione di ogni mattonella (in pixel)
-const VISIBLE_TILES_X = Math.ceil(window.innerWidth / TILE_SIZE - 21);
+const TILE_SIZE = 2; // Dimensione di ogni mattonella (in pixel)
+const VISIBLE_TILES_X = Math.ceil(window.innerWidth / TILE_SIZE - 180);
 const VISIBLE_TILES_Y = Math.ceil(window.innerHeight / TILE_SIZE);
 
 // Crea una matrice per memorizzare i tipi di mattonelle
@@ -21,7 +21,7 @@ canvas.height = window.innerHeight;
 let isDrawing = false; // Variabile per tracciare se il mouse è premuto
 
 // Variabile per memorizzare il tipo di mattonella selezionata
-let selectedTileType = '';
+let selectedTileType = 'ics';
 
 // Imposta una posizione di partenza per il "caricamento" della mappa
 let offsetX = 0;
@@ -30,15 +30,45 @@ let offsetY = 0;
 // Disegna la mappa inizialmente
 drawMap(offsetX, offsetY);
 
+const isABuilding = {
+    'FACTORY': "yes",
+    'HOUSE': "yes",
+    'HUT': "yes",
+};
+
 // Oggetto per definire le dimensioni degli edifici
 const buildingSizes = {
     'FACTORY': {
-        width: 10,
-        height: 3
+        width: 220,
+        height: 90
     },
     'HOUSE': {
+        width: 75,
+        height: 30
+    },
+    'ROAD': {
+        width: 15,
+        height: 15
+    },
+    'GRASS': {
+        width: 15,
+        height: 15
+    },
+    'HUT': {
+        width: 15,
+        height: 15
+    },
+    'WATER': {
+        width: 10,
+        height: 10
+    },
+    'CANCEL': {
         width: 5,
-        height: 2
+        height: 5
+    },
+    'ics': {
+        width: 0,
+        height: 0
     },
 };
 
@@ -59,12 +89,18 @@ function getTileColor(type) {
             return '#996600'; // Marrone
         case 'CANCEL':
             return '#FFFFFF'; // Bianco
+        case 'ics':
+            return 'transparent'; // Bianco
         default:
             return '#6DCF40'; // Verde
     }
 }
 
 // Gestisce la selezione del tipo di mattonella dai bottoni
+document.getElementById('ics').addEventListener('click', () => {
+    selectedTileType = 'ics';
+});
+
 document.getElementById('cancel').addEventListener('click', () => {
     selectedTileType = 'CANCEL';
 });
@@ -97,16 +133,16 @@ document.getElementById('grass').addEventListener('click', () => {
 window.addEventListener('keydown', function(e) {
     switch (e.key) {
         case 'ArrowUp':
-            offsetY = Math.max(0, offsetY - 20);
+            offsetY = Math.max(0, offsetY - 80);
             break;
         case 'ArrowDown':
-            offsetY = Math.min(MAP_SIZE - VISIBLE_TILES_Y, offsetY + 20);
+            offsetY = Math.min(MAP_SIZE - VISIBLE_TILES_Y, offsetY + 80);
             break;
         case 'ArrowLeft':
-            offsetX = Math.max(0, offsetX - 20);
+            offsetX = Math.max(0, offsetX - 80);
             break;
         case 'ArrowRight':
-            offsetX = Math.min(MAP_SIZE - VISIBLE_TILES_X, offsetX + 20);
+            offsetX = Math.min(MAP_SIZE - VISIBLE_TILES_X, offsetX + 80);
             break;
     }
 
@@ -140,7 +176,7 @@ function drawMap(offsetX, offsetY) {
             ctx.strokeStyle = '#000000';
 
             function shouldDrawBorder(adjTile) {
-                return adjTile !== 'GRASS' && adjTile !== 'default';
+                return adjTile !== 'GRASS' && adjTile !== 'default'; // && adjTile !== 'ics'
             }
 
             // Bordo a sinistra
@@ -180,38 +216,37 @@ function drawMap(offsetX, offsetY) {
 
 // Funzione per gestire la logica di disegno
 function drawTileAtPosition(canvasX, canvasY) {
-    const clickedTileX = Math.floor((canvasX / TILE_SIZE) + offsetX - 10.7);
-    const clickedTileY = Math.floor((canvasY / TILE_SIZE) + offsetY - 0.1);
+    canvasX = canvasX - 159; // Abbasso il valore del canvasX per via del margine sinistro di 160px
+    const clickedTileX = Math.floor((canvasX / TILE_SIZE) + offsetX);
+    const clickedTileY = Math.floor((canvasY / TILE_SIZE) + offsetY);
 
-    console.log(`Cella premuta: X=${clickedTileX}, Y=${clickedTileY}`);
-    console.log(`Il suo tipo è: ${mapTiles[clickedTileX][clickedTileY]}`);
+    // console.log(`Cella premuta: X=${clickedTileX}, Y=${clickedTileY}`);
+    // console.log(`Il suo tipo è: ${mapTiles[clickedTileX][clickedTileY]}`);
 
-    const selectedBuilding = selectedTileType;
-
-    if (selectedBuilding === 'FACTORY') {
+    if (selectedTileType === 'FACTORY') {
         if (clickedTileX > 9990 || clickedTileY > 9996) {
             return;
         }
     }
 
-    if (selectedBuilding === 'HOUSE') {
+    if (selectedTileType === 'HOUSE') {
         if (clickedTileX > 9995 || clickedTileY > 9997) {
             return;
         }
     }
 
-    console.log("selectedBuilding:", selectedBuilding, typeof selectedBuilding);
-    console.log("buildingSizes[selectedBuilding]:", buildingSizes[selectedBuilding]);
+    // console.log("selectedTileType:", selectedTileType, typeof selectedTileType);
+    // console.log("buildingSizes[selectedTileType]:", buildingSizes[selectedTileType]);
 
-    if (selectedBuilding && buildingSizes[selectedBuilding]) {
+    if (selectedTileType && buildingSizes[selectedTileType]) {
         const {
             width,
             height
-        } = buildingSizes[selectedBuilding];
+        } = buildingSizes[selectedTileType];
 
         let canBuild = true; // Variabile per controllare se è possibile costruire
 
-        if (selectedBuilding !== 'CANCEL') {
+        if (selectedTileType !== 'CANCEL') {
             // Controlla se tutte le celle nell'area dell'edificio sono libere
             for (let i = 0; i < width; i++) {
                 for (let j = 0; j < height; j++) {
@@ -219,11 +254,16 @@ function drawTileAtPosition(canvasX, canvasY) {
                     const tileY = clickedTileY + j;
 
                     if (tileX < MAP_SIZE && tileY < MAP_SIZE) {
-                        if (mapTiles[tileX][tileY] !== 'CANCEL' && mapTiles[tileX][tileY] !== 'GRASS' && mapTiles[tileX][tileY] !== 'default') {
+                        if (mapTiles[tileX][tileY] !== 'CANCEL' &&
+                            mapTiles[tileX][tileY] !== 'GRASS' &&
+                            mapTiles[tileX][tileY] !== 'default' &&
+                            isABuilding[mapTiles[tileX][tileY]]) {
                             // Se una cella è già occupata da un altro tipo di mattonella, blocca la costruzione
+                            // Inoltre gli edifici non possono construire "dentro se stessi"
                             canBuild = false;
                             break;
                         }
+                        
                     }
                 }
                 if (!canBuild) break; // Esce dal ciclo se ha trovato una cella occupata
@@ -235,24 +275,14 @@ function drawTileAtPosition(canvasX, canvasY) {
             for (let i = 0; i < width; i++) {
                 for (let j = 0; j < height; j++) {
                     if (clickedTileX + i < MAP_SIZE && clickedTileY + j < MAP_SIZE) {
-                        mapTiles[clickedTileX + i][clickedTileY + j] = selectedBuilding;
+                        mapTiles[clickedTileX + i][clickedTileY + j] = selectedTileType;
                     }
                 }
             }
         }
-    } else if (selectedTileType) {
-        if (selectedBuilding !== 'CANCEL') {
-            if (mapTiles[clickedTileX][clickedTileY] !== 'CANCEL' && mapTiles[clickedTileX][clickedTileY] !== 'GRASS' && mapTiles[clickedTileX][clickedTileY] !== 'default') {
-                return; // Se la casella è colorata, esce dalla funzione senza costruire nulla
-            }
-        }
-        
-        if (clickedTileX < MAP_SIZE && clickedTileY < MAP_SIZE) {
-            mapTiles[clickedTileX][clickedTileY] = selectedTileType;
-        }
     } else {
         if (clickedTileX < MAP_SIZE && clickedTileY < MAP_SIZE) {
-            mapTiles[clickedTileX][clickedTileY] = 'CANCEL';
+            mapTiles[clickedTileX][clickedTileY] = 'ics';
         }
     }
 

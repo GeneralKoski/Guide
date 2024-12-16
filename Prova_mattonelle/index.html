@@ -12,6 +12,7 @@
 <body>
   <div class="btn-group-vertical position-absolute top-0 start-0 p-2">
     <div class="row row-cols-2 g-2 controls">
+      <button id="ics"><i class="fa-solid fa-x"></i></button>
       <button id="cancel"><i class="fa-solid fa-eraser"></i></button>
       <button id="factory"><i class="fa-solid fa-industry"></i></button>
       <button id="house"><i class="fa-solid fa-house"></i></button>
@@ -23,8 +24,8 @@
   </div>
 
   <div class="btn-group-vertical position-absolute bottom-0 start-0 p-2">
-    <div class="row row-cols-2 g-2 controls">
-      <button id="selectedIcon">Bottone<br>selezionato</button>
+    <div class="row row-cols-2 g-2 selected">
+      <button id="selectedIcon" disabled><i></i></button>
       <button id="rotate"><i class="fa-solid fa-rotate"></i></button>
     </div>
   </div>
@@ -34,6 +35,47 @@
   <script src="script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+  </script>
+
+<!-- Script per fare class injection -->
+  <script>
+    document.querySelectorAll('.controls button').forEach(button => {
+      button.addEventListener('click', function() {
+        if (this.id !== 'ics') { 
+          const selectedIcon = document.querySelector('#selectedIcon i');
+          const iconClass = this.querySelector('i').className; // Ottieni la classe dell'icona del bottone cliccato
+          selectedIcon.className = iconClass; // Imposta la classe dell'icona selezionata
+        } else {
+          const selectedIcon = document.querySelector('#selectedIcon i');
+          selectedIcon.className = ''; // Imposta la classe dell'icona selezionata
+        }
+      });
+    });
+  </script>
+
+<!-- Gestione del disabilitato -->
+  <script>
+    let previousButton = null; // Memorizza il pulsante precedentemente cliccato
+
+    document.querySelectorAll('.controls button').forEach(button => {
+      button.addEventListener('click', function() {
+        // Se c'è un pulsante precedentemente cliccato, lo abilita
+        if (previousButton) {
+          previousButton.disabled = false;
+        }
+
+        // Disabilita il pulsante appena cliccato
+        if (this.id !== 'ics') { 
+          this.disabled = true;
+          previousButton = this; // Aggiorna il pulsante precedente
+          // Aggiorna l'icona selezionata
+          const selectedIcon = document.querySelector('#selectedIcon i');
+          const iconClass = this.querySelector('i').className; // Ottieni la classe dell'icona
+          selectedIcon.className = iconClass; // Imposta la classe dell'icona selezionata
+        }
+
+      });
+    });
   </script>
 </body>
 </html>
