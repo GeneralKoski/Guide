@@ -70,7 +70,12 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
   // const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   // useEffect(() => {
   //   const fetchChats = () => {
-  //     fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`)
+  //     fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${tokenUserAttuale}`,
+  //       },
+  //     })
   //       .then((response) => response.json()) // Converto in json
   //       .then((data) => {
   //         console.log("Chat ricevute:", data); // Verifica i dati

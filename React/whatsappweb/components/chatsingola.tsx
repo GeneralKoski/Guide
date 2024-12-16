@@ -128,7 +128,13 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   //   const fetchMessages = () => {
   //     if (selectedChatType === "single") {
   //       fetch(
-  //         `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
+  //         `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization: `Bearer ${tokenUserAttuale}`,
+  //           },
+  //         }
   //       )
   //         .then((response) => response.json())
   //         .then((data) => {
