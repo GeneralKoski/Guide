@@ -88,17 +88,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
       });
   }, []);
 
-  const conferma_lettura = (username: string): string => {
-    // Da cambiare il parametro passato user.chat_id, dovrebbe essere user.id
-    if (settings === 0) return "yes";
-    const setting = settings.find(
-      (setting) =>
-        setting.setting_name === "conferme_lettura" &&
-        setting.username === username
-    );
-    return setting && setting.setting_value === "no" ? "no" : "yes";
-  };
-
   // Gestisco la chat selezionata e azzero il numero di messaggi da vedere
   const handleChatClick = (id: string, type: string) => {
     if (selectedChat === id) {
@@ -116,46 +105,29 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
               chat.chat_id === id ? { ...chat, non_letti: "0" } : chat
             )
           );
-
-      findUnseen(id) == 0
-        ? ""
-        : // Funzione per aggiornare il db al click della chat
-          fetch("http://localhost:8000/api/update-seen-messages", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              Accept: "application/json",
-              Authorization: `Bearer ${tokenUserAttuale}`,
-            },
-            body: new URLSearchParams({
-              user_id: idUserAttuale,
-              chat_id: id,
-              chat_type: type,
-            }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Messaggi non letti aggiornati", data);
-            })
-            .catch((error) => {
-              console.error("Errore:", error);
-            });
+      // Funzione per aggiornare il db al click della chat
+      fetch("http://localhost:8000/api/update-seen-messages", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+          Authorization: `Bearer ${tokenUserAttuale}`,
+        },
+        body: new URLSearchParams({
+          user_id: idUserAttuale,
+          chat_id: id,
+          chat_type: type,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Messaggi non letti aggiornati", data);
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
     }
   };
-
-  // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setSelectedChat(null); // Deseleziona la chat
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
 
   // Faccio una fetch singola per avere un array con tutti i valori dei messaggi non visti per chat
   const [unseenMessages, setUnseenMessages] = useState<
@@ -205,6 +177,18 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
     setFilteredChats(filtered);
   };
 
+  const conferma_lettura = (username: string) => {
+    if (settings === 0) {
+      return true;
+    }
+    const setting = settings.find(
+      (setting) =>
+        setting.setting_name === "conferme_lettura" &&
+        setting.username === username
+    );
+    return setting && setting.setting_value === "yes";
+  };
+
   // Funzione per ottenere le iniziali
   const getInitials = (name: string): string => {
     const words = name.split(" ");
@@ -246,6 +230,20 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
     { filterName: "Preferiti" },
     { filterName: "Gruppi" },
   ];
+
+  // Funzione per uscire dalla chat quando si preme "esc" sulla tastiera
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelectedChat(null); // Deseleziona la chat
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
@@ -317,32 +315,21 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
               <div>
                 <h4>{user.chat_name}</h4> <br />
                 <p className="chat-message text-truncate">
-                  {user.chat_type == "single" ? (
-                    conferma_lettura(user.chat_name) == "yes" &&
-                    conferma_lettura(nomeUserAttuale) == "yes" ? (
-                      user.last_message_sender_id === idUserAttuale &&
-                      user.seen === "yes" ? (
-                        <RiCheckDoubleFill size={18} color="#007FFF" />
-                      ) : user.last_message_sender_id === idUserAttuale &&
-                        user.seen === "no" ? (
-                        <RiCheckDoubleFill size={18} color="grey" />
-                      ) : (
-                        []
-                      )
-                    ) : user.last_message_sender_id === idUserAttuale ? (
-                      <RiCheckDoubleFill size={18} color="grey" />
-                    ) : (
-                      []
-                    )
-                  ) : user.last_message_sender_id === idUserAttuale &&
+                  {user.chat_type == "single" &&
+                  user.last_message_sender_id === idUserAttuale ? (
+                    conferma_lettura(nomeUserAttuale) &&
+                    conferma_lettura(user.chat_name) &&
                     user.seen === "yes" ? (
-                    <RiCheckDoubleFill size={18} color="#007FFF" />
-                  ) : user.last_message_sender_id === idUserAttuale &&
-                    user.seen === "no" ? (
-                    <RiCheckDoubleFill size={18} color="grey" />
+                      <RiCheckDoubleFill size={18} color="#007FFF" />
+                    ) : (
+                      <RiCheckDoubleFill size={18} color="grey" />
+                    )
                   ) : (
+                    user.chat_type == "group" &&
+                    user.last_message_sender_id !== idUserAttuale &&
                     "User " + user.last_message_sender_id + ": "
                   )}
+
                   {user.message_type == "message" ? (
                     user.last_message_sender_id == idUserAttuale ? (
                       "Tu: " + user.last_message_content
@@ -357,23 +344,23 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
                         style={{ height: 20, width: 20, borderRadius: 5 }}
                       />
                       <span>
-                        {user.last_message_content != ""
-                          ? " " + user.last_message_content
-                          : " Foto"}
+                        {user.last_message_content == ""
+                          ? " Foto"
+                          : " " + user.last_message_content}
                       </span>
                     </>
                   )}
                 </p>
               </div>
               <div>
-                {user.last_message_sender_id !== idUserAttuale ? (
-                  <span className="chat-time">
-                    {isNotToday(user.sent_at) == "ieri"
-                      ? "ieri"
-                      : isNotToday(user.sent_at) == "prima"
-                      ? user.sent_at.slice(0, 10)
-                      : user.sent_at.slice(11, 16)}
-                    <br />
+                <span className="chat-time">
+                  {isNotToday(user.sent_at) == "ieri"
+                    ? "ieri"
+                    : isNotToday(user.sent_at) == "prima"
+                    ? user.sent_at.slice(0, 10)
+                    : user.sent_at.slice(11, 16)}
+                  <br />
+                  {user.last_message_sender_id !== idUserAttuale ? (
                     <span
                       className={
                         findUnseen(user.chat_id) != "0" ? "chat-tosee" : ""
@@ -383,16 +370,10 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
                         ? findUnseen(user.chat_id)
                         : ""}
                     </span>
-                  </span>
-                ) : (
-                  <span className="chat-time">
-                    {isNotToday(user.sent_at) == "ieri"
-                      ? "ieri"
-                      : isNotToday(user.sent_at) == "prima"
-                      ? user.sent_at.slice(0, 10)
-                      : user.sent_at.slice(11, 16)}
-                  </span>
-                )}
+                  ) : (
+                    ""
+                  )}
+                </span>
               </div>
             </div>
           ))}

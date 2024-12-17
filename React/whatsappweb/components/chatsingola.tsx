@@ -165,9 +165,9 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
     }
   }, [selectedChat]);
 
-  const conferma_lettura = (): string => {
+  const conferma_lettura = () => {
     if (settings === 0) {
-      return "yes";
+      return true;
     }
 
     for (const setting of settings) {
@@ -175,11 +175,11 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
         setting.setting_name === "conferme_lettura" &&
         setting.setting_value === "no"
       ) {
-        return "no";
+        return false;
       }
     }
 
-    return "yes";
+    return true;
   };
 
   const ultimo_accesso = (): string => {
@@ -328,40 +328,30 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
         className="sezione-utente"
         onClick={() => alert("Sei andato nelle informazioni dell'utente")}
       >
-        {user && user.name == "" ? (
-          <Image
-            className="img-fluid profilo"
-            src={user.icon}
-            alt={getInitials(user.username)}
-            width={70}
-            height={70}
-          />
-        ) : user && user.name != "" ? (
+        {user && (
           <Image
             className="img-fluid profilo"
             width={70}
             height={70}
-            src={"/images/default_icon.jpg"}
-            alt={getInitials(user.name)}
+            src={user.name == "" ? user.icon : "/images/default_icon.jpg"}
+            alt={getInitials(user.name == "" ? user.username : user.name)}
           />
-        ) : (
-          []
         )}
         <div>
-          {user?.name == "" ? (
-            <h4>
-              {user?.username} <br />
-            </h4>
-          ) : (
-            <h4>
-              {user?.name}
-              <br />
-            </h4>
-          )}
+          {user &&
+            (user.name == "" ? (
+              <h4>
+                {user.username} <br />
+              </h4>
+            ) : (
+              <h4>
+                {user.name} <br />
+              </h4>
+            ))}
 
           <p className="accesso">
-            {ultimo_accesso() === "yes" && user?.type == "single"
-              ? user?.last_access.slice(11, 16)
+            {user && ultimo_accesso() === "yes" && user.type == "single"
+              ? user.last_access.slice(11, 16)
               : []}
           </p>
         </div>
@@ -396,7 +386,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
           );
           // Verifica se è il primo messaggio di una sequenza
           const MettoPisellino =
-            index === 0 || messages[index - 1].id !== message.id;
+            index === 0 || displayDate || messages[index - 1].id !== message.id;
           return (
             <>
               {displayDate && (
@@ -438,17 +428,15 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
                     {message.sent_at.slice(11, 16)}
 
                     {/* Gestione conferma di lettura */}
-                    {conferma_lettura() === "yes" ? (
-                      message.username === nomeUserAttuale &&
-                      message.seen === "yes" ? (
+                    {message.username === nomeUserAttuale ? (
+                      conferma_lettura() && message.seen === "yes" ? (
                         <RiCheckDoubleFill size={18} color="#007FFF" />
-                      ) : message.username === nomeUserAttuale &&
-                        message.seen === "no" ? (
+                      ) : (
                         <RiCheckDoubleFill size={18} color="grey" />
-                      ) : null
-                    ) : message.username === nomeUserAttuale ? (
-                      <RiCheckDoubleFill size={18} color="grey" />
-                    ) : null}
+                      )
+                    ) : (
+                      []
+                    )}
                   </span>
                   <span className="chevron rounded-5 rounded-top-0">
                     <GoChevronDown
@@ -499,7 +487,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
           width={40}
           height={40}
         />
-
         <input
           type="text"
           placeholder="Scrivi un messaggio"
@@ -507,25 +494,18 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
           onChange={handleInputChange}
         />
 
-        {inputValue ? (
-          <Image
-            className="img-fluid invertito"
-            src="/images/send.png"
-            alt="Manda messaggio"
-            onClick={() => handleMessageSent(inputValue)}
-            width={40}
-            height={40}
-          />
-        ) : (
-          <Image
-            className="img-fluid invertito"
-            src="/images/microfono.png"
-            alt="Microfono"
-            onClick={() => alert("Hai cliccato il microfono")}
-            width={40}
-            height={40}
-          />
-        )}
+        <Image
+          className="img-fluid invertito"
+          src={inputValue ? "/images/send.png" : "/images/microfono.png"}
+          alt={inputValue ? "Manda messaggio" : "Microfono"}
+          onClick={
+            inputValue
+              ? () => handleMessageSent(inputValue)
+              : () => alert("Hai cliccato il microfono")
+          }
+          width={40}
+          height={40}
+        />
       </div>
     </>
   );
