@@ -40,6 +40,7 @@ interface ID {
   id: string;
   username: string;
   token: string;
+  onMessageInsert: Function;
 }
 
 const ChatSingola: React.FC<ChatSingolaID & ID> = ({
@@ -48,6 +49,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   id,
   username,
   token,
+  onMessageInsert,
 }) => {
   const idUserAttuale = id;
   const nomeUserAttuale = username;
@@ -277,6 +279,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       .then((response) => response.json())
       .then((data) => {
         setMessages(data);
+        onMessageInsert();
       })
       .then(() => setInputValue(""))
       .catch((error) => {

@@ -48,7 +48,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
 
   // Prende tutte le chat disponibili
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
-  useEffect(() => {
+  const selectAllChats = () => {
     fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`, {
       method: "GET",
       headers: {
@@ -64,6 +64,10 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
       .catch((error) => {
         console.error("Errore:", error);
       });
+  };
+
+  useEffect(() => {
+    selectAllChats();
   }, []);
 
   // Per fetchare ogni secondo
@@ -430,6 +434,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
               id={idUserAttuale}
               username={nomeUserAttuale}
               token={token}
+              onMessageInsert={selectAllChats}
             />
           }
         </div>
