@@ -278,7 +278,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
     })
       .then((response) => response.json())
       .then((data) => {
-        setMessages(data);
+        setMessages((messages) => [...messages, ...data]);
         onMessageInsert();
       })
       .then(() => setInputValue(""))
