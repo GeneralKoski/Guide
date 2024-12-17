@@ -1,5 +1,3 @@
-//Semplicemente la pagina che si visualizza di default quando non si ha una chat selezionata
-
 import Image from "next/image";
 
 const Preview: React.FC = () => {

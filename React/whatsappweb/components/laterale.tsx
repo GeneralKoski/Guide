@@ -70,31 +70,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
     selectAllChats();
   }, []);
 
-  // Per fetchare ogni secondo
-  // const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
-  // useEffect(() => {
-  //   const fetchChats = () => {
-  //     fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${tokenUserAttuale}`,
-  //       },
-  //     })
-  //       .then((response) => response.json()) // Converto in json
-  //       .then((data) => {
-  //         console.log("Chat ricevute:", data); // Verifica i dati
-  //         setUsers(data); // Memorizza i dati utenti
-  //         setFilteredChats(data);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Errore:", error);
-  //       });
-  //   };
-  //   fetchChats();
-  //   const intervalId = setInterval(fetchChats, 1000);
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
     fetch(`http://localhost:8000/get-users-settings?user_id=${idUserAttuale}`, {
@@ -182,7 +157,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
     };
   }, []);
 
-  // EFFICIENTE
   // Faccio una fetch singola per avere un array con tutti i valori dei messaggi non visti per chat
   const [unseenMessages, setUnseenMessages] = useState<
     {

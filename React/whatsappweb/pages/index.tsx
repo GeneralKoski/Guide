@@ -10,11 +10,18 @@ const Home: NextPage = () => {
   const [id, setId] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [icon, setIcon] = useState<string>("");
+  const [token, setToken] = useState<string>("");
 
-  const setUserData = (id: string, username: string, icon: string) => {
+  const setUserData = (
+    id: string,
+    username: string,
+    icon: string,
+    token: string
+  ) => {
     setId(id);
     setUsername(username);
     setIcon(icon);
+    setToken(token);
   };
   return (
     <div>
@@ -31,8 +38,9 @@ const Home: NextPage = () => {
               setIsAuthenticated={setIsAuthenticated}
               username={username}
               icon={icon}
+              token={token}
             />
-            <Laterale id={id} username={username} />
+            <Laterale id={id} username={username} token={token} />
           </>
         ) : (
           <LoginPage

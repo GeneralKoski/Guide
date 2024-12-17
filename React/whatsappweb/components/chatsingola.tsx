@@ -122,55 +122,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
     }
   }, [selectedChat]);
 
-  // Per fetchare ogni secondo
-  // const [messages, setMessages] = useState<Message[]>([]);
-  // useEffect(() => {
-  //   if (!selectedChat) return;
-
-  //   const fetchMessages = () => {
-  //     if (selectedChatType === "single") {
-  //       fetch(
-  //         `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
-  //         {
-  //           method: "GET",
-  //           headers: {
-  //             Authorization: `Bearer ${tokenUserAttuale}`,
-  //           },
-  //         }
-  //       )
-  //         .then((response) => response.json())
-  //         .then((data) => {
-  //           console.log("Messaggi ricevuti (singola chat):", data);
-  //           setMessages(data);
-  //         })
-  //         .catch((error) => {
-  //           console.error(
-  //             "Errore nel caricamento dei messaggi singola chat:",
-  //             error
-  //           );
-  //         });
-  //     } else if (selectedChatType === "group") {
-  //       fetch(
-  //         `http://localhost:8000/select-all-group-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`
-  //       )
-  //         .then((response) => response.json())
-  //         .then((data) => {
-  //           console.log("Messaggi ricevuti (chat di gruppo):", data);
-  //           setMessages(data);
-  //         })
-  //         .catch((error) => {
-  //           console.error(
-  //             "Errore nel caricamento dei messaggi chat di gruppo:",
-  //             error
-  //           );
-  //         });
-  //     }
-  //   };
-  //   fetchMessages();
-  //   const intervalId = setInterval(fetchMessages, 1000);
-  //   return () => clearInterval(intervalId);
-  // }, [selectedChat, selectedChatType, idUserAttuale]);
-
   const [user, setUser] = useState<ChatSingolaProps>();
   useEffect(() => {
     if (selectedChat) {
