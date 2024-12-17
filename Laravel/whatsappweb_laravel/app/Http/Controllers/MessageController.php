@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewMessageSent;
 use App\Http\Requests\checkUserChatIDS;
 use App\Http\Requests\checkUserID;
 use App\Http\Requests\InsertMessage;

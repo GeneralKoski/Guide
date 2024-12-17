@@ -1,17 +1,11 @@
 <?php
 
-use App\Events\NewAccess;
-use App\Events\NewMessageSent;
 use App\Http\Controllers\ChatAdminController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
-use App\Models\Message;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/selectlastsinglemessage', [MessageController::class, 'selectLastSingleMessage']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/select-all-single-messages', [MessageController::class, 'selectSingleMessages']);

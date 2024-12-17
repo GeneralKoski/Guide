@@ -6,7 +6,6 @@ use App\Http\Requests\checkChatID;
 use App\Http\Requests\checkUserID;
 use App\Models\Message;
 use App\Models\UserSetting;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
