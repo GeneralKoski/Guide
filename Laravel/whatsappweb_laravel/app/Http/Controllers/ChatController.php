@@ -19,9 +19,7 @@ class ChatController extends Controller
 
         $chats = DB::table('Chats as c')
             ->select(
-                DB::raw(
-                    'c.id as chat_id'
-                ),
+                DB::raw('c.id as chat_id'),
                 DB::raw('c.type as chat_type'),
                 DB::raw("CASE WHEN c.type = 'single' THEN (
                                                 SELECT u.icon
@@ -40,16 +38,10 @@ class ChatController extends Controller
                                             )
                                             ELSE c.name
                                         END AS chat_name"),
-                DB::raw(
-                    'm1.content AS last_message_content'
-                ),
-                DB::raw(
-                    'm1.type as message_type'
-                ),
+                DB::raw('m1.content AS last_message_content'),
+                DB::raw('m1.type as message_type'),
                 'm1.sent_at',
-                DB::raw(
-                    'm1.user_id AS last_message_sender_id'
-                ),
+                DB::raw('m1.user_id AS last_message_sender_id'),
                 'm1.seen'
             )
             ->join('ChatUsers as cu', 'c.id', '=', 'cu.chat_id')
@@ -67,5 +59,25 @@ class ChatController extends Controller
             ->get();
 
         return response()->json($chats);
+    }
+
+
+    public function longPolling($chatId)
+    {
+        // Continuare a verificare se ci sono nuovi messaggi finché non arriva un nuovo messaggio o si raggiunge il timeout
+        while (true) {
+            // Cerca nuovi messaggi nella chat
+            $newMessages = DB::table('messages')
+                ->where('chat_id', $chatId)
+                ->where('sent_at', '>', now()->subSeconds(30)) // Controlla gli ultimi 30 secondi
+                ->get();
+
+            if ($newMessages->isNotEmpty()) {
+                return response()->json($newMessages);
+            }
+
+            // Metti in pausa per un po' per evitare il sovraccarico della CPU
+            usleep(500000); // Pausa di 500ms
+        }
     }
 }

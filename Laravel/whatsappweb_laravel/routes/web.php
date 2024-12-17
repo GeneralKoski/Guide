@@ -20,4 +20,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/get-users-settings', [UserSettingController::class, 'usersSettings']);
 
     Route::get('/select-all-chats', [ChatController::class, 'allChats']);
+    Route::get('/long-polling', [ChatController::class, 'longPolling']);
 });
