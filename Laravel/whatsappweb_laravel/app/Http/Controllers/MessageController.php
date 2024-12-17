@@ -242,7 +242,7 @@ class MessageController extends Controller
                 'seen' => 'no',
             ]);
 
-            return $this->selectSingleMessages(new checkUserChatIDS([
+            return $this->selectLastSingleMessage(new checkUserChatIDS([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
             ]));
