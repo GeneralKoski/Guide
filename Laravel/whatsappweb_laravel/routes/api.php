@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NewAccess;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Auth;
@@ -7,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/verify-token', function () {
     $user = Auth::user();
+
+    event(new NewAccess($user));
     return response()->json([
         'success' => true,
         'user' => [

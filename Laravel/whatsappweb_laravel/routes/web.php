@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NewAccess;
 use App\Events\NewMessageSent;
 use App\Http\Controllers\ChatAdminController;
 use App\Http\Controllers\ChatController;
@@ -7,13 +8,10 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
 use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('testEvent', function () {
-    $message = Message::orderBy('sent_at', 'desc')->first();
-
-    event(new NewMessageSent($message));
-});
+Route::get('/selectlastsinglemessage', [MessageController::class, 'selectLastSingleMessage']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/select-all-single-messages', [MessageController::class, 'selectSingleMessages']);

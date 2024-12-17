@@ -64,6 +64,48 @@ class MessageController extends Controller
             ->update(['seen' => 'yes']);
         return $updatesGroup ? "Cambiato" : "No bono";
     }
+    public function selectLastSingleMessage(checkUserChatIDS $request)
+    {
+        $chat_id = $request->input('chat_id');
+        $user_id = $request->input('user_id');
+
+        $singleMessages = DB::table('Messages AS m')
+            ->select(
+                'u.id',
+                'u.username',
+                'm.sent_at',
+                'cu.added_at',
+                DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
+                           CASE WHEN m.type = 'media' THEN (
+                                    SELECT media.file_path
+                                    FROM Media media
+                                    WHERE media.message_id = m.id
+                                    LIMIT 1
+                                )
+                                ELSE m.content
+                            END AS content,
+                            IF (m.user_id = $user_id AND sent_at < (SELECT MAX(m1.sent_at) FROM Messages m1 WHERE user_id != $user_id AND chat_id = $chat_id), 'yes', seen) AS seen")
+            )
+            ->join('Users AS u', 'u.id', '=', 'm.user_id')
+            ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
+            ->leftJoin('ChatUsers AS cu', function ($join) {
+                $join->on('cu.user_id', '=', 'u.id')
+                    ->on('cu.chat_id', '=', 'c.id');
+            })
+            ->where('c.type', '=', 'single')
+            ->where('m.chat_id', '=', $chat_id)
+            ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
+                $query->select('cu2.added_at')
+                    ->from('ChatUsers AS cu2')
+                    ->where('cu2.chat_id', '=', $chat_id)
+                    ->where('cu2.user_id', '=', $user_id);
+            })
+            ->orderBy('m.sent_at', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json($singleMessages);
+    }
     public function selectSingleMessages(checkUserChatIDS $request)
     {
         $chat_id = $request->input('chat_id');
@@ -191,7 +233,7 @@ class MessageController extends Controller
         }
 
         try {
-            $message = $request->user()->messages()->create([
+            $request->user()->messages()->create([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
                 'type' => 'message',

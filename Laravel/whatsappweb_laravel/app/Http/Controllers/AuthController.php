@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewAccess;
 use App\Http\Requests\loginUser;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,6 +17,8 @@ class AuthController extends Controller
             return response()->json(['message' => 'Credenziali errate'], 401);
         } else {
             $token = $user->createToken($user->username);
+
+            event(new NewAccess($user));
 
             return response()->json([
                 'id' => $user->id,
