@@ -61,7 +61,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
 
   const [isAdmin, setIsAdmin] = useState<string>("false");
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat && selectedChatType == "group") {
       fetch(
         `http://localhost:8000/is-chat-admin?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
         {
@@ -486,6 +486,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
           height={40}
         />
         <input
+          id="messaggio"
           type="text"
           placeholder="Scrivi un messaggio"
           value={inputValue}

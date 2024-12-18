@@ -100,32 +100,36 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
       findUnseen(id) == 0
         ? ""
         : // Aggiorna lo stato dei messaggi non letti nel frontend
-          setUnseenMessages((prevUnseen) =>
-            prevUnseen.map((chat) =>
-              chat.chat_id === id ? { ...chat, non_letti: "0" } : chat
-            )
-          );
+          "";
+
       // Funzione per aggiornare il db al click della chat
-      fetch("http://localhost:8000/api/update-seen-messages", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json",
-          Authorization: `Bearer ${tokenUserAttuale}`,
-        },
-        body: new URLSearchParams({
-          user_id: idUserAttuale,
-          chat_id: id,
-          chat_type: type,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.message);
-        })
-        .catch((error) => {
-          console.error("Errore:", error);
-        });
+      findUnseen(id) == 0
+        ? ""
+        : fetch("http://localhost:8000/api/update-seen-messages", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              Accept: "application/json",
+              Authorization: `Bearer ${tokenUserAttuale}`,
+            },
+            body: new URLSearchParams({
+              user_id: idUserAttuale,
+              chat_id: id,
+              chat_type: type,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data.message);
+              setUnseenMessages((prevUnseen) =>
+                prevUnseen.map((chat) =>
+                  chat.chat_id === id ? { ...chat, non_letti: "0" } : chat
+                )
+              );
+            })
+            .catch((error) => {
+              console.error("Errore:", error);
+            });
     }
   };
 
