@@ -34,8 +34,8 @@ export const SidebarButton = ({
         src={imageSrc}
         alt={alt}
         title={title}
-        height={35}
         width={35}
+        height={35}
       />
     </li>
   );

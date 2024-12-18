@@ -4,6 +4,7 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { MessageChoices } from "./MessageChoices";
+import clsx from "clsx";
 
 interface Message {
   id: string;
@@ -374,7 +375,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       </div>
 
       {/* I messaggi */}
-      <div className="sezione-messaggi" ref={messagesRef}>
+      <div className={"sezione-messaggi"} ref={messagesRef}>
         {messages.map((message, index) => {
           // Prendo il messaggio precedente che mi serve per gestire le scritte "OGGI", "IERI" o "XX-XX-XX XX:XX:XX"
           const previousMessageSentAt =

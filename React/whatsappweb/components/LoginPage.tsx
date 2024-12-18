@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { hash } from "crypto";
 
 interface LoginProps {
   setIsAuthenticated: (auth: boolean) => void;
@@ -114,20 +115,25 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
           <li>Scrivi la tua Password</li>
           <li>Premi INVIO oppure l'apposito bottone "Login"</li>
         </ul>
-        <form onSubmit={handleSubmit}>
+        <form id="login" onSubmit={handleSubmit}>
           <input
+            id="username"
+            autoComplete="Martin Trajkovski"
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
           <input
+            id="password"
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">Login</button>
+          <button id="bottone" type="submit">
+            Login
+          </button>
           {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
         <p className="encryption">

@@ -96,7 +96,7 @@ const SideBar: React.FC<ID> = ({
               title={item.title}
               selected={selectedId === item.id}
               onClick={(id) => handleClick(id)}
-            ></SidebarButton>
+            />
           );
         })}
       </ul>
@@ -112,7 +112,13 @@ const SideBar: React.FC<ID> = ({
               title={item.title}
               selected={selectedId === item.id}
               onClick={(id) => handleClick(id)}
-              className={item.id == "profilo" ? "profile-image" : ""} // Passa la classe per l'immagine del profilo
+              className={
+                item.id == "profilo"
+                  ? "profilelogout profile"
+                  : item.id == "logout"
+                  ? "profilelogout"
+                  : ""
+              } // Passa la classe per l'immagine del profilo
             />
           );
         })}

@@ -326,9 +326,9 @@
   } 
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1450px) {
   .orario {
-    left: 85% !important;
+    margin-left: -10px;
   }
 }
 
@@ -344,14 +344,14 @@
       .emoji {
         right: 50% !important;
       }
+  
     }
     .messaggio-altro {
       .emoji {
         right: 8% !important;
       }
     }
-  }
-  
+  } 
 }
 
 @media (max-width: 980px) {

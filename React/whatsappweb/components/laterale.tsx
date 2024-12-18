@@ -121,7 +121,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("Messaggi non letti aggiornati", data);
+          console.log(data.message);
         })
         .catch((error) => {
           console.error("Errore:", error);
@@ -274,6 +274,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
             height={20}
           />
           <input
+            id="filtro"
             type="text"
             placeholder="Cerca"
             value={searchTerm}
