@@ -428,15 +428,12 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
                     {message.sent_at.slice(11, 16)}
 
                     {/* Gestione conferma di lettura */}
-                    {message.username === nomeUserAttuale ? (
-                      conferma_lettura() && message.seen === "yes" ? (
+                    {message.username === nomeUserAttuale &&
+                      (conferma_lettura() && message.seen === "yes" ? (
                         <RiCheckDoubleFill size={18} color="#007FFF" />
                       ) : (
                         <RiCheckDoubleFill size={18} color="grey" />
-                      )
-                    ) : (
-                      []
-                    )}
+                      ))}
                   </span>
                   <span className="chevron rounded-5 rounded-top-0">
                     <GoChevronDown
