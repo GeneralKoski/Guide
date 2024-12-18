@@ -11,12 +11,12 @@ class GroupChatMessage extends Model
 
     public function messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasOne(Message::class);
     }
 
     public function chats()
     {
-        return $this->hasMany(Chat::class);
+        return $this->hasOne(Chat::class);
     }
 
     public function users()

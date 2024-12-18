@@ -38,9 +38,9 @@ class MessageController extends Controller
         }
 
         if ($chatType == "single") {
-            $this->updateSeenSingle($user_id, $chat_id);
+            return $this->updateSeenSingle($user_id, $chat_id);
         } else {
-            $this->updateSeenGroup($user_id, $chat_id);
+            return $this->updateSeenGroup($user_id, $chat_id);
         }
     }
 
@@ -52,7 +52,8 @@ class MessageController extends Controller
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
 
-        return $updatesSingle ? "Cambiato" : "No bono";
+        return response()->json($updatesSingle ?
+            ["success" => true, "message" => "DB aggiornato per i messaggi non visualizzati"] : ["success" => false, "message" => "I messaggi sono già tutti visualizzati"]);
     }
     public function updateSeenGroup($user_id, $chat_id)
     {
@@ -61,7 +62,7 @@ class MessageController extends Controller
             ->where('seen_by_user', '=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
-        return $updatesGroup ? "Cambiato" : "No bono";
+        return response()->json($updatesGroup ? ["message" => "DB aggiornato per i messaggi non visualizzati"] : ["message" => "I messaggi sono già tutti visualizzati"]);
     }
     public function selectLastSingleMessage(checkUserChatIDS $request)
     {

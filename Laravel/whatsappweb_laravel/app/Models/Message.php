@@ -11,7 +11,7 @@ class Message extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasOne(User::class);
     }
 
     public function groupmessages()
@@ -21,12 +21,12 @@ class Message extends Model
 
     public function medias()
     {
-        return $this->hasMany(Media::class);
+        return $this->hasOne(Media::class);
     }
 
     public function chats()
     {
-        return $this->hasMany(Chat::class);
+        return $this->hasOne(Chat::class);
     }
 
     public static function hasChatId($chat_id, $user_id)

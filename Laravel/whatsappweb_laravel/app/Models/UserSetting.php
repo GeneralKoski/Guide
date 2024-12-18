@@ -11,6 +11,6 @@ class UserSetting extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasOne(User::class);
     }
 }

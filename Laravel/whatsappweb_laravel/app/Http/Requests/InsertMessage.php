@@ -24,7 +24,7 @@ class InsertMessage extends FormRequest
         return [
             'chat_id' => ['required', 'integer', 'not_in:7,12'],
             'user_id' => ['required', 'integer'],
-            'content' => ['required', 'string', 'max:100'],
+            'content' => ['required', 'string', 'max:1000'],
         ];
     }
 }
