@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class GroupChatMessage extends Model
 {
-    protected $table = 'groupchatmessages';
+    public $timestamps = false;
+    protected $table = 'GroupChatMessages';
     protected $fillable = ['chat_id', 'message_id', 'seen_by_user', 'seen'];
 
     public function messages()

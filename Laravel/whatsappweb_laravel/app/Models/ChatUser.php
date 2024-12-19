@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ChatUser extends Model
 {
@@ -22,5 +23,13 @@ class ChatUser extends Model
     public function chatadmins()
     {
         return $this->hasMany(ChatAdmin::class);
+    }
+
+    public static function utentichat(string $chat_id, string $user_id)
+    {
+        $IDutenti = DB::table('ChatUsers')->where('chat_id', $chat_id)->where('user_id', '!=', $user_id)->pluck('user_id');
+        $nUtenti = $IDutenti->count();
+
+        return ['IDutenti' => $IDutenti, 'nUtenti' => $nUtenti];
     }
 }

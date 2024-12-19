@@ -22,7 +22,7 @@ class InsertMessage extends FormRequest
     public function rules(): array
     {
         return [
-            'chat_id' => ['required', 'integer', 'not_in:7,12'],
+            'chat_id' => ['required', 'integer'],
             'user_id' => ['required', 'integer'],
             'content' => ['required', 'string', 'max:1000'],
         ];

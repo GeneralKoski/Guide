@@ -6,6 +6,9 @@ use App\Http\Requests\checkUserChatIDS;
 use App\Http\Requests\checkUserID;
 use App\Http\Requests\InsertMessage;
 use App\Http\Requests\updateSeen;
+use App\Models\Chat;
+use App\Models\ChatUser;
+use App\Models\GroupChatMessage;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -64,7 +67,7 @@ class MessageController extends Controller
             ->update(['seen' => 'yes']);
         return response()->json($updatesGroup ? ["message" => "DB aggiornato per i messaggi non visualizzati"] : ["message" => "I messaggi sono già tutti visualizzati"]);
     }
-    public function selectLastSingleMessage(checkUserChatIDS $request)
+    public function selectLastMessage(checkUserChatIDS $request)
     {
         $chat_id = $request->input('chat_id');
         $user_id = $request->input('user_id');
@@ -92,7 +95,6 @@ class MessageController extends Controller
                 $join->on('cu.user_id', '=', 'u.id')
                     ->on('cu.chat_id', '=', 'c.id');
             })
-            ->where('c.type', '=', 'single')
             ->where('m.chat_id', '=', $chat_id)
             ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
                 $query->select('cu2.added_at')
@@ -227,12 +229,14 @@ class MessageController extends Controller
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
-        $isThere = Message::hasChatId($chat_id, $user_id);
-        if (!$isThere) {
+        $chatUser = Message::hasChatId($chat_id, $user_id);
+        if (!$chatUser) {
             return response()->json(['message' => 'Non puoi mandare il messaggio perchè non appartieni a questa chat'], 401);
         }
 
         try {
+            $utentichat = ChatUser::utentichat($chat_id, $user_id);
+
             $request->user()->messages()->create([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
@@ -242,7 +246,21 @@ class MessageController extends Controller
                 'seen' => 'no',
             ]);
 
-            return $this->selectLastSingleMessage(new checkUserChatIDS([
+            if ($utentichat['nUtenti'] > 1) {
+                $lastMessageID = DB::table('Messages')->select('id')->orderBy('sent_at', 'desc')->first();
+                $lastMessageID = $lastMessageID->id;
+
+                for ($i = 0; $i < $utentichat['nUtenti']; $i++) {
+                    GroupChatMessage::create([
+                        'chat_id' => $chat_id,
+                        'message_id' => $lastMessageID,
+                        'seen_by_user' => $utentichat['IDutenti'][$i],
+                        'seen' => 'no',
+                    ]);
+                }
+            }
+
+            return $this->selectLastMessage(new checkUserChatIDS([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
             ]));

@@ -5,7 +5,13 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
+use App\Models\ChatUser;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/test', function () {
+    return 1;
+});
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/select-all-single-messages', [MessageController::class, 'selectSingleMessages']);
