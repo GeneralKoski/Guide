@@ -6,6 +6,7 @@ const MAP_SIZE = 10000;
 const TILE_SIZE = 2; // Dimensione di ogni mattonella (in pixel)
 const VISIBLE_TILES_X = Math.ceil(window.innerWidth / TILE_SIZE - 180);
 const VISIBLE_TILES_Y = Math.ceil(window.innerHeight / TILE_SIZE);
+var reverted = false;
 
 // Crea una matrice per memorizzare i tipi di mattonelle
 const mapTiles = Array.from({
@@ -74,24 +75,24 @@ const buildingSizes = {
 // Funzione per ottenere il colore in base al tipo di mattonella
 function getTileColor(type) {
     switch (type) {
-        case 'WATER':
-            return '#00BFFF'; // Azzurro
-        case 'ROAD':
-            return '#7F7F7F'; // Grigio
-        case 'GRASS':
-            return '#00FF00'; // Verde
-        case 'FACTORY':
-            return '#FF6600'; // Arancione
-        case 'HOUSE':
-            return '#FFFF00'; // Giallo
-        case 'HUT':
-            return '#996600'; // Marrone
-        case 'CANCEL':
-            return '#FFFFFF'; // Bianco
-        case 'ics':
-            return 'transparent'; // Bianco
-        default:
-            return '#6DCF40'; // Verde
+    case 'WATER':
+        return '#00BFFF'; // Azzurro
+    case 'ROAD':
+        return '#7F7F7F'; // Grigio
+    case 'GRASS':
+        return '#00FF00'; // Verde
+    case 'FACTORY':
+        return '#FF6600'; // Arancione
+    case 'HOUSE':
+        return '#FFFF00'; // Giallo
+    case 'HUT':
+        return '#996600'; // Marrone
+    case 'CANCEL':
+        return '#FFFFFF'; // Bianco
+    case 'ics':
+        return 'transparent'; // Bianco
+    default:
+        return '#6DCF40'; // Verde
     }
 }
 
@@ -130,9 +131,10 @@ document.getElementById('grass').addEventListener('click', () => {
 
 document.getElementById('rotate').addEventListener('click', () => {
     // Cambia la classe dell'icona
+    reverted ? reverted = false : reverted = true;
     const icon = document.querySelector('#rotate i');
-    icon.classList.toggle('fa-arrow-up-short-wide');
-    icon.classList.toggle('fa-arrow-down-wide-short');
+    icon.classList.toggle('fa-arrow-right-long');
+    icon.classList.toggle('fa-arrow-down-long');
     
     // Inverte larghezza e altezza per ogni tipo di edificio
     for (let building in buildingSizes) {
@@ -144,30 +146,30 @@ document.getElementById('rotate').addEventListener('click', () => {
 
 
 // Aggiunge funzionalità di scroll per navigare la mappa
-window.addEventListener('keydown', function(e) {
+window.addEventListener('keydown', function (e) {
     switch (e.key) {
-        case 'ArrowUp':
-            offsetY = Math.max(0, offsetY - 80);
-            break;
-        case 'ArrowDown':
-            offsetY = Math.min(MAP_SIZE - VISIBLE_TILES_Y, offsetY + 80);
-            break;
-        case 'ArrowLeft':
-            offsetX = Math.max(0, offsetX - 80);
-            break;
-        case 'ArrowRight':
-            offsetX = Math.min(MAP_SIZE - VISIBLE_TILES_X, offsetX + 80);
-            break;
+    case 'ArrowUp':
+        offsetY = Math.max(0, offsetY - 80);
+        break;
+    case 'ArrowDown':
+        offsetY = Math.min(MAP_SIZE - VISIBLE_TILES_Y, offsetY + 80);
+        break;
+    case 'ArrowLeft':
+        offsetX = Math.max(0, offsetX - 80);
+        break;
+    case 'ArrowRight':
+        offsetX = Math.min(MAP_SIZE - VISIBLE_TILES_X, offsetX + 80);
+        break;
     }
-
+    
     // Ricalcola e ridisegna la mappa basata sul nuovo offset
     drawMap(offsetX, offsetY);
 });
 
 // Script per fare class injection
 document.querySelectorAll('.controls button').forEach(button => {
-    button.addEventListener('click', function() {
-        if (this.id !== 'ics') { 
+    button.addEventListener('click', function () {
+        if (this.id !== 'ics') {
             const selectedIcon = document.querySelector('#selectedIcon i');
             const iconClass = this.querySelector('i').className; // Ottieni la classe dell'icona del bottone cliccato
             selectedIcon.className = iconClass; // Imposta la classe dell'icona selezionata
@@ -181,13 +183,13 @@ document.querySelectorAll('.controls button').forEach(button => {
 // Gestione del disabilitato
 let previousButton = null; // Memorizza il pulsante precedentemente cliccato
 document.querySelectorAll('.controls button').forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         // Se c'è un pulsante precedentemente cliccato, lo abilita
         if (previousButton) {
             previousButton.disabled = false;
         }
         // Disabilita il pulsante appena cliccato
-        if (this.id !== 'ics') { 
+        if (this.id !== 'ics') {
             this.disabled = true;
             previousButton = this; // Aggiorna il pulsante precedente
             // Aggiorna l'icona selezionata
@@ -199,54 +201,84 @@ document.querySelectorAll('.controls button').forEach(button => {
 });
 
 // Inizia il disegno al mousedown
-canvas.addEventListener('mousedown', function(e) {
+canvas.addEventListener('mousedown', function (e) {
     isDrawing = true;
     drawTileAtPosition(e.clientX, e.clientY); // Disegna la prima mattonella
 });
 
 // Ferma il disegno quando il mouse viene rilasciato
-window.addEventListener('mouseup', function() {
+window.addEventListener('mouseup', function () {
     isDrawing = false;
 });
 
 // Disegna durante il trascinamento del mouse (se il mouse è premuto)
-canvas.addEventListener('mousemove', function(e) {
+canvas.addEventListener('mousemove', function (e) {
     if (isDrawing) {
         drawTileAtPosition(e.clientX, e.clientY);
     }
 });
-  
+
+function updateClock() {
+    const now = new Date(); // Ottieni la data e l'orario correnti
+    let year = now.getFullYear().toString().padStart(2, '0'); // Anno
+    let month = now.getMonth().toString().padStart(2, '0'); // Mese
+    let day = now.getDate().toString().padStart(2, '0'); // Giorno
+    let hour = now.getHours().toString().padStart(2, '0'); // Ore
+    let minute = now.getMinutes().toString().padStart(2, '0'); // Minuti
+    let second = now.getSeconds().toString().padStart(2, '0'); // Secondi
+    
+    document.querySelector('.year').textContent = year;
+    document.querySelector('.month').textContent = month;
+    document.querySelector('.day').textContent = day;
+    
+    document.querySelector('.hour').textContent = hour;
+    document.querySelector('.minute').textContent = minute;
+    document.querySelector('.second').textContent = second;
+
+    // Qui si possono implementare funzionalità per gli eventi a seconda dell'orario. Esempio ogni tot secondi possiamo richiamare una funzione,
+    // se l'orario raggiunge un determinato minutaggio richiamo un'altra funzione ecc.
+    if (now.getSeconds() === 30) {
+        console.log("Mi vedi premendo F12 e andando in 'Console'");
+    } else {
+        console.log("Ciao");
+    }
+}
+
+setInterval(updateClock, 1000);
+// Chiamata iniziale per mostrare subito l'orario quando la pagina viene caricata
+updateClock();
+
 // Funzione per disegnare la porzione visibile della mappa
 function drawMap(offsetX, offsetY) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     for (let x = 0; x < VISIBLE_TILES_X; x++) {
         for (let y = 0; y < VISIBLE_TILES_Y; y++) {
             const tileX = x + offsetX;
             const tileY = y + offsetY;
-
+            
             if (tileX < 0 || tileY < 0 || tileX >= MAP_SIZE || tileY >= MAP_SIZE) continue;
-
+            
             const tileType = mapTiles[tileX][tileY]; // Ottiene il tipo di mattonella
             const color = getTileColor(tileType);
-
+            
             // Disegna la mattonella
             ctx.fillStyle = color;
             ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-
+            
             // Verifica le celle vicine
             const leftTile = tileX > 0 ? mapTiles[tileX - 1][tileY] : null;
             const rightTile = tileX < MAP_SIZE - 1 ? mapTiles[tileX + 1][tileY] : null;
             const topTile = tileY > 0 ? mapTiles[tileX][tileY - 1] : null;
             const bottomTile = tileY < MAP_SIZE - 1 ? mapTiles[tileX][tileY + 1] : null;
-
+            
             // Disegna il bordo solo agli estremi della sequenza di celle dello stesso tipo
             ctx.strokeStyle = '#000000';
-
+            
             function shouldDrawBorder(adjTile) {
                 return adjTile !== 'GRASS' && adjTile !== 'default'; // && adjTile !== 'ics'
             }
-
+            
             // Bordo a sinistra
             if (leftTile !== tileType && shouldDrawBorder(leftTile)) {
                 ctx.beginPath();
@@ -254,7 +286,7 @@ function drawMap(offsetX, offsetY) {
                 ctx.lineTo(x * TILE_SIZE, (y + 1) * TILE_SIZE);
                 ctx.stroke();
             }
-
+            
             // Bordo a destra
             if (rightTile !== tileType && shouldDrawBorder(rightTile)) {
                 ctx.beginPath();
@@ -262,7 +294,7 @@ function drawMap(offsetX, offsetY) {
                 ctx.lineTo((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
                 ctx.stroke();
             }
-
+            
             // Bordo superiore
             if (topTile !== tileType && shouldDrawBorder(topTile)) {
                 ctx.beginPath();
@@ -287,33 +319,71 @@ function drawTileAtPosition(canvasX, canvasY) {
     canvasX = canvasX - 159; // Abbasso il valore del canvasX per via del margine sinistro di 160px
     const clickedTileX = Math.floor((canvasX / TILE_SIZE) + offsetX);
     const clickedTileY = Math.floor((canvasY / TILE_SIZE) + offsetY);
-
-    // console.log(`Cella premuta: X=${clickedTileX}, Y=${clickedTileY}`);
-    // console.log(`Il suo tipo è: ${mapTiles[clickedTileX][clickedTileY]}`);
-
+    // selectedTileType !== 'CANCEL' ? console.log("L'angolo dove hai disegnato è: ", clickedTileX, clickedTileY) : "";
+    
     if (selectedTileType === 'FACTORY') {
-        if (clickedTileX > 9990 || clickedTileY > 9996) {
+        if (clickedTileX > 9720 || clickedTileY > 9910) {
             return;
         }
     }
-
     if (selectedTileType === 'HOUSE') {
-        if (clickedTileX > 9995 || clickedTileY > 9997) {
+        if (clickedTileX > 9945 || clickedTileY > 9970) {
             return;
         }
     }
-
-    // console.log("selectedTileType:", selectedTileType, typeof selectedTileType);
-    // console.log("buildingSizes[selectedTileType]:", buildingSizes[selectedTileType]);
-    if (selectedTileType === 'CANCEL') {
-        if (isABuilding[mapTiles[clickedTileX][clickedTileY]])
-            console.log(mapTiles[clickedTileX][clickedTileY]);
+    if (selectedTileType === 'ROAD' || selectedTileType === 'GRASS' || selectedTileType === 'HUT') {
+        if (clickedTileX > 9985 || clickedTileY > 9985) {
+            return;
+        }
+    }
+    if (selectedTileType === 'WATER') {
+        if (clickedTileX > 9990 || clickedTileY > 9990) {
+            return;
+        }
+    }
+    
+    if (selectedTileType === 'CANCEL' && isABuilding[mapTiles[clickedTileX][clickedTileY]]) {
+        // Controlla dove inizia la struttura
+        let x = 0,
+            y = 0;
+        // console.log("Dove hai cliccato ora è: ", clickedTileX, clickedTileY);
+        
+        // Trovo il punto più a sinistra
+        for (x = clickedTileX; isABuilding[mapTiles[x][clickedTileY]]; x--) {}
+        let left = x;
+        
+        // Trovo il punto più in alto
+        for (y = clickedTileY; isABuilding[mapTiles[clickedTileX][y]]; y--) {}
+        let top = y;
+        
+        // Trovo il punto più a destra
+        for (x = clickedTileX; isABuilding[mapTiles[x][clickedTileY]]; x++) {}
+        let right = x;
+        
+        // Trovo il punto più in basso
+        for (y = clickedTileY; isABuilding[mapTiles[clickedTileX][y]]; y++) {}
+        let bottom = y;
+        
+        left++;
+        top++;
+        
+        for (let larg = left; larg < right; larg++) {
+            for (let alt = top; alt < bottom; alt++) {
+                mapTiles[larg][alt] = 'default';
+            }
+        }
+        
+        drawMap(offsetX, offsetY); // Ridisegna la mappa
         return;
     }
-
+    
+    
     if (selectedTileType && buildingSizes[selectedTileType]) {
-        const { width, height } = buildingSizes[selectedTileType];
-
+        const {
+            width,
+            height
+        } = buildingSizes[selectedTileType];
+        
         let canBuild = true; // Variabile per controllare se è possibile costruire
         
         if (selectedTileType !== 'CANCEL') {
@@ -322,7 +392,7 @@ function drawTileAtPosition(canvasX, canvasY) {
                 for (let j = 0; j < height; j++) {
                     const tileX = clickedTileX + i;
                     const tileY = clickedTileY + j;
-
+                    
                     if (tileX < MAP_SIZE && tileY < MAP_SIZE) {
                         if (mapTiles[tileX][tileY] !== 'CANCEL' &&
                             mapTiles[tileX][tileY] !== 'GRASS' &&
@@ -338,7 +408,7 @@ function drawTileAtPosition(canvasX, canvasY) {
                 if (!canBuild) break; // Esce dal ciclo se ha trovato una cella occupata
             }
         }
-
+        
         if (canBuild) {
             // Se tutte le celle sono libere, costruisci l'edificio
             for (let i = 0; i < width; i++) {
@@ -348,9 +418,12 @@ function drawTileAtPosition(canvasX, canvasY) {
                     }
                 }
             }
+            ctx.font = "20px Arial"; // Imposta il font
+            ctx.fillStyle = "black"; // Imposta il colore del testo
+            ctx.fillText("FABBRICA", 10, 20); // Scrive "Ciao" a (x=10, y=20)
         }
     }
-
+    
     // Ricalcola e ridisegna la mappa
     drawMap(offsetX, offsetY);
 }

@@ -2,7 +2,7 @@ body {
       margin: 0;
       overflow: hidden;
     }
-
+    
     #tileCanvas {
       display: block;
       margin-left: 160px;

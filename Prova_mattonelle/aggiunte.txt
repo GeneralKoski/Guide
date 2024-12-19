@@ -4,8 +4,6 @@ messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco del
 
 - Da pensare a nuovi edifici
 
-- Da implementare che se la gomma clicca un oggetto di tipo edificio, lo cancella tutto senza doverlo cancellare a mano
-
 - Bisogna suddividere i file in cartelle, suddividendo per bene script e funzioni, includendole e richiamandole dove dovuto
 
 
@@ -37,3 +35,9 @@ FATTO:
 - Implementato bottone per deselezionare, se lo schiaccio non costruisco nulla. Si chiama ics
 
 - Il tasto ruota è diventata una freccia che al click mi ruota di 90° la struttura e si ruota l'icona
+
+- Da implementare che se la gomma clicca un oggetto di tipo edificio, lo cancella tutto senza doverlo cancellare a mano
+
+- Da migliorare la cancellatura degli edifici in modo che tenga conto se sono verticali o orizzontali
+
+- Aggiunto un orologio del tempo reale in basso a destra. Lo useremo come timer per raccogliere soldi ogni tot tempo
