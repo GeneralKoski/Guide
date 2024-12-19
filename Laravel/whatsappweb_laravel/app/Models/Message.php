@@ -31,7 +31,8 @@ class Message extends Model
 
     public static function hasChatId($chat_id, $user_id)
     {
-        $chatUser = ChatUser::select('chat_id')->where('user_id', '=', $user_id)->where('chat_id', '=', $chat_id)->get();
+        $chatUser = ChatUser::select('chat_id')->where('user_id', '=', $user_id)->where('chat_id', '=', $chat_id)->first();
+        // dd($chatUser);
         return $chatUser;
     }
 }

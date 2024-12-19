@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\checkChatID;
-use App\Http\Requests\checkUserID;
+use App\Http\Requests\Request;
 use App\Models\Message;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +20,9 @@ class UserSettingController extends Controller
         return view('usersettings.index', ['usersettings' => $usersettings]);
     }
 
-    public function usersSettings(checkUserID $request)
+    public function usersSettings()
     {
-        $user_id = $request->input('user_id');
+        $user_id = Auth::user()->id;
 
         $userAuth = Auth::user();
         if ($userAuth->id != $user_id) {

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\checkUserChatIDS;
+use App\Http\Requests\checkChatID;
+use App\Http\Requests\Request;
 use App\Models\ChatAdmin;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
@@ -18,13 +19,12 @@ class ChatAdminController extends Controller
         return view('chatadmins.index', ['admins' => $admins]);
     }
 
-    public function checkIfAdmin(checkUserChatIDS $request)
+    public function checkIfAdmin(checkChatID $request)
     {
         $Achat_id = $request->input('chat_id');
-        $Auser_id = $request->input('user_id');
+        $Auser_id = Auth::user()->id;
 
-        $userAuth = Auth::user();
-        if ($userAuth->id != $Auser_id) {
+        if (!$Auser_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 

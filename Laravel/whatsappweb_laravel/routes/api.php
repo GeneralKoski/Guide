@@ -2,6 +2,7 @@
 
 use App\Events\NewAccess;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -9,18 +10,27 @@ use Illuminate\Support\Facades\Route;
 Route::get('/verify-token', function () {
     $user = Auth::user();
 
-    event(new NewAccess($user));
-    return response()->json([
-        'success' => true,
-        'user' => [
-            'id' => $user->id,
-            'username' => $user->username,
-            'icon' => $user->icon,
-        ],
-    ]);
+    if ($user instanceof \App\Models\User) {
+        event(new NewAccess($user));
+        return response()->json([
+            'success' => true,
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'icon' => $user->icon,
+            ],
+            'message' => 'Utente autenticato con successo',
+        ]);
+    } else {
+        return response()->json(['message' => 'Erorre'], 401);
+    }
 })->middleware('auth:sanctum');
 
 Route::post('/login-user', [AuthController::class, 'loginUser'])->name('login');
+
+Route::get('/chats/{chat}', [ChatController::class, 'chatDetail']);
+Route::get('/chats/{chat}/messages', [ChatController::class, 'chatMessages']);
+Route::get('/chats/{chat}/messages/{message}', [ChatController::class, 'chatMessage'])->scopeBindings();;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/insert-message', [MessageController::class, 'insertMessage']);

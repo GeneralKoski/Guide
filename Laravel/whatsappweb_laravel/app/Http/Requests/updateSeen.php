@@ -22,7 +22,6 @@ class updateSeen extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|string',
             'chat_id' => 'required|string',
             'chat_type' => 'required|string',
         ];

@@ -2,18 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\checkUserID;
+use App\Http\Requests\Request;
+use App\Http\Resources\MessageResource;
+use App\Models\Chat;
+use App\Models\Message;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 
 class ChatController extends Controller
 {
-    public function allChats(checkUserID $request)
+    public function chatDetail(Chat $chat)
     {
-        $user_id = $request->input('user_id');
-        $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
+        // dd($id);
+        dd($chat->getAttributes());
+        // $chat = Chat::find($chat)->getAttributes();
+        // dd($chat);
+    }
+    public function chatMessages(Chat $chat)
+    {
+        $messages = $chat->messages;
+        $messages = MessageResource::collection($messages);
+        return $messages;
+        // dd($messages);
+    }
+    public function chatMessage(Chat $chat, Message $message)
+    {
+        return new MessageResource($message);
+        // dd($message->toArray());
+        // dd($id);
+        // dd($chat->getAttributes());
+        // $chat = Chat::find($chat)->getAttributes();
+        // dd($chat);
+    }
+
+
+
+    public function allChats()
+    {
+        $user_id = Auth::user()->id;
+
+        if (!$user_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
@@ -59,25 +88,5 @@ class ChatController extends Controller
             ->get();
 
         return response()->json($chats);
-    }
-
-
-    public function longPolling($chatId)
-    {
-        // Continuare a verificare se ci sono nuovi messaggi finché non arriva un nuovo messaggio o si raggiunge il timeout
-        while (true) {
-            // Cerca nuovi messaggi nella chat
-            $newMessages = DB::table('messages')
-                ->where('chat_id', $chatId)
-                ->where('sent_at', '>', now()->subSeconds(30)) // Controlla gli ultimi 30 secondi
-                ->get();
-
-            if ($newMessages->isNotEmpty()) {
-                return response()->json($newMessages);
-            }
-
-            // Metti in pausa per un po' per evitare il sovraccarico della CPU
-            usleep(500000); // Pausa di 500ms
-        }
     }
 }

@@ -9,14 +9,12 @@ use App\Models\ChatUser;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test', function () {
-    return 1;
-});
+Route::get('/test/{chat_id}', [MessageController::class, 'selectLastMessage']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/select-all-single-messages', [MessageController::class, 'selectSingleMessages']);
+    Route::get('/select-all-messages', [MessageController::class, 'selectMessages']);
     Route::get('/not-seen-messages-per-chat', [MessageController::class, 'notSeenMessages']);
-    Route::get('/select-all-group-messages', [MessageController::class, 'selectGroupMessages']);
+
 
     Route::get('/is-chat-admin', [ChatAdminController::class, 'checkIfAdmin']);
 

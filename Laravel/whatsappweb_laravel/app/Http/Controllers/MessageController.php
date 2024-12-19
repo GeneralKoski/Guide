@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\checkUserChatIDS;
-use App\Http\Requests\checkUserID;
+use App\Http\Requests\checkChatID;
+use App\Http\Requests\Request;
 use App\Http\Requests\InsertMessage;
 use App\Http\Requests\updateSeen;
 use App\Models\Chat;
 use App\Models\ChatUser;
 use App\Models\GroupChatMessage;
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -26,12 +28,12 @@ class MessageController extends Controller
 
     public function updateSeen(updateSeen $request)
     {
-        $user_id = $request->input('user_id');
+        $user_id = Auth::user()->id;
         $chat_id = $request->input('chat_id');
         $chatType = $request->input('chat_type');
 
         $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
+        if (!$user_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
@@ -65,19 +67,46 @@ class MessageController extends Controller
             ->where('seen_by_user', '=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
+
+        // Da aggiungere se tutti hanno visualizzato il messaggio, aggiorna anche il messaggio in Messages
         return response()->json($updatesGroup ? ["message" => "DB aggiornato per i messaggi non visualizzati"] : ["message" => "I messaggi sono già tutti visualizzati"]);
     }
-    public function selectLastMessage(checkUserChatIDS $request)
+    public function selectLastMessage(int $chat_id)
+    {
+        $message = Message::where('chat_id', '=', $chat_id)->orderBy('sent_at', 'desc')->first();
+        $message = [
+            'id' => $message->id,
+            'username' => User::find($message->user_id)->username,
+            'sent_at' => $message->sent_at,
+            'seen' => $message->seen,
+            'message_type' => $message->type,
+            'media_content' => $message->content,
+            'chat_type' => Chat::find($message->chat_id)->type,
+            'content' => $message->content,
+        ];
+        return $message;
+    }
+
+    public function selectMessages(checkChatID $request)
     {
         $chat_id = $request->input('chat_id');
-        $user_id = $request->input('user_id');
+        $user_id = Auth::user()->id;
 
-        $singleMessages = DB::table('Messages AS m')
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
+            return response()->json(['message' => 'Non puoi vedere i messaggi perchè non appartieni a questa chat'], 401);
+        }
+
+        if (!$user_id) {
+            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        }
+
+        $messages = DB::table('Messages AS m')
             ->select(
                 'u.id',
                 'u.username',
                 'm.sent_at',
-                'cu.added_at',
+                'm.seen',
                 DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
                            CASE WHEN m.type = 'media' THEN (
                                     SELECT media.file_path
@@ -86,8 +115,8 @@ class MessageController extends Controller
                                     LIMIT 1
                                 )
                                 ELSE m.content
-                            END AS content,
-                            IF (m.user_id = $user_id AND sent_at < (SELECT MAX(m1.sent_at) FROM Messages m1 WHERE user_id != $user_id AND chat_id = $chat_id), 'yes', seen) AS seen")
+                            END AS content
+                            ")
             )
             ->join('Users AS u', 'u.id', '=', 'm.user_id')
             ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
@@ -102,135 +131,26 @@ class MessageController extends Controller
                     ->where('cu2.chat_id', '=', $chat_id)
                     ->where('cu2.user_id', '=', $user_id);
             })
-            ->orderBy('m.sent_at', 'DESC')
-            ->limit(1)
-            ->get();
-
-        return response()->json($singleMessages);
-    }
-    public function selectSingleMessages(checkUserChatIDS $request)
-    {
-        $chat_id = $request->input('chat_id');
-        $user_id = $request->input('user_id');
-
-        $isThere = Message::hasChatId($chat_id, $user_id);
-        if (!$isThere) {
-            return response()->json(['message' => 'Non puoi vedere i messaggi perchè non appartieni a questa chat'], 401);
-        }
-
-        $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
-            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
-        }
-
-        $singleMessages = DB::table('Messages AS m')
-            ->select(
-                'u.id',
-                'u.username',
-                'm.sent_at',
-                'cu.added_at',
-                DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
-                           CASE WHEN m.type = 'media' THEN (
-                                    SELECT media.file_path
-                                    FROM Media media
-                                    WHERE media.message_id = m.id
-                                    LIMIT 1
-                                )
-                                ELSE m.content
-                            END AS content,
-                            IF (m.user_id = $user_id AND sent_at < (SELECT MAX(m1.sent_at) FROM Messages m1 WHERE user_id != $user_id AND chat_id = $chat_id), 'yes', seen) AS seen")
-            )
-            ->join('Users AS u', 'u.id', '=', 'm.user_id')
-            ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
-            ->leftJoin('ChatUsers AS cu', function ($join) {
-                $join->on('cu.user_id', '=', 'u.id')
-                    ->on('cu.chat_id', '=', 'c.id');
-            })
-            ->where('c.type', '=', 'single')
-            ->where('m.chat_id', '=', $chat_id)
-            ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
-                $query->select('cu2.added_at')
-                    ->from('ChatUsers AS cu2')
-                    ->where('cu2.chat_id', '=', $chat_id)
-                    ->where('cu2.user_id', '=', $user_id);
-            })
             ->orderBy('m.sent_at', 'ASC')
             ->get();
 
-        return response()->json($singleMessages);
+        // dd($messages[0]);
+        return response()->json($messages);
     }
 
-    public function selectGroupMessages(checkUserChatIDS $request)
-    {
-        $chat_id = $request->input('chat_id');
-        $user_id = $request->input('user_id');
-
-        $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
-            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
-        }
-
-        $isThere = Message::hasChatId($chat_id, $user_id);
-        if (!$isThere) {
-            return response()->json(['message' => 'Non puoi vedere i messaggi perchè non appartieni a questa chat'], 401);
-        }
-
-        $groupMessages = DB::table('Messages AS m')
-            ->select(
-                'u.id',
-                'u.username',
-                'm.sent_at',
-                'cu.added_at',
-                'm.id',
-                DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
-            CASE WHEN m.type = 'media' THEN (
-                    SELECT media.file_path
-                    FROM Media media
-                    WHERE media.message_id = m.id
-                    LIMIT 1
-                )
-                ELSE m.content
-            END AS content,
-
-            IF(
-                (SELECT COUNT(*) FROM GroupChatMessages gcm WHERE gcm.seen = 'yes' AND gcm.message_id = m.id) =
-                (SELECT COUNT(*) FROM ChatUsers cu WHERE cu.chat_id = m.chat_id AND cu.user_id != m.user_id),
-                'yes',
-                'no'
-            ) AS seen")
-            )
-            ->join('Users AS u', 'u.id', '=', 'm.user_id')
-            ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
-            ->leftJoin('ChatUsers AS cu', function ($join) {
-                $join->on('cu.user_id', '=', 'u.id')
-                    ->on('cu.chat_id', '=', 'c.id');
-            })
-            ->where('m.chat_id', '=', $chat_id)
-            ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
-                $query->select('cu2.added_at')
-                    ->from('ChatUsers as cu2')
-                    ->where('cu2.chat_id', '=', $chat_id)
-                    ->where('cu2.user_id', '=', $user_id);
-            })
-            ->orderBy('m.sent_at', 'ASC')
-            ->get();
-
-        return response()->json($groupMessages);
-    }
 
     public function insertMessage(InsertMessage $request)
     {
-        $chat_id = $request->input('chat_id');
-        $user_id = $request->input('user_id');
-        $content = $request->input('content');
+        $chat_id = $request->safe()->input('chat_id');
+        $user_id = Auth::user()->id;
+        $content = $request->safe()->input('content');
 
-        $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
-            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        if (!$user_id) {
+            return response()->json(['message' => 'Nessun utente loggato'], 401);
         }
 
-        $chatUser = Message::hasChatId($chat_id, $user_id);
-        if (!$chatUser) {
+        $isThere = Message::hasChatId($chat_id, $user_id);
+        if (!$isThere) {
             return response()->json(['message' => 'Non puoi mandare il messaggio perchè non appartieni a questa chat'], 401);
         }
 
@@ -260,18 +180,17 @@ class MessageController extends Controller
                 }
             }
 
-            return $this->selectLastMessage(new checkUserChatIDS([
-                'chat_id' => $chat_id,
-                'user_id' => $user_id,
-            ]));
+            $message = $this->selectLastMessage($chat_id);
+            // dd($message);
+            return response()->json($message);
         } catch (\Exception $e) {
             return response('Errore nell\'inserimento del messaggio: ' . $e->getMessage(), 500);
         }
     }
 
-    public function notSeenMessages(checkUserID $request)
+    public function notSeenMessages()
     {
-        $user_id = $request->input('user_id');
+        $user_id = Auth::user()->id;
 
         $userAuth = Auth::user();
         if ($userAuth->id != $user_id) {

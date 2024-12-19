@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\checkChatID;
 use App\Http\Requests\checkUserChatIDS;
 use App\Models\Message;
 use App\Models\User;
@@ -19,13 +20,12 @@ class UserController extends Controller
         return view('users.index', ['users' => $users]);
     }
 
-    public function userDetails(checkUserChatIDS $request)
+    public function userDetails(checkChatID $request)
     {
         $chat_id = $request->input('chat_id');
-        $user_id = $request->input('user_id');
+        $user_id = Auth::user()->id;
 
-        $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
+        if (!$user_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
