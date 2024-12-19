@@ -49,7 +49,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
   // Prende tutte le chat disponibili
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   const selectAllChats = () => {
-    fetch(`http://localhost:8000/select-all-chats?user_id=${idUserAttuale}`, {
+    fetch(`http://localhost:8000/select-all-chats`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${tokenUserAttuale}`,
@@ -113,7 +113,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
               Authorization: `Bearer ${tokenUserAttuale}`,
             },
             body: new URLSearchParams({
-              user_id: idUserAttuale,
               chat_id: id,
               chat_type: type,
             }),

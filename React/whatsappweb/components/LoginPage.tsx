@@ -30,17 +30,9 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.success) {
-            setUserData(
-              data.user.id,
-              data.user.username,
-              data.user.icon,
-              token
-            );
-            setIsAuthenticated(true);
-          } else {
-            localStorage.removeItem("authToken");
-          }
+          console.log(data.message);
+          setUserData(data.user.id, data.user.username, data.user.icon, token);
+          setIsAuthenticated(true);
         })
         .catch((error) => {
           console.error("Errore nella verifica del token:", error);

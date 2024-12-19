@@ -4,7 +4,6 @@ import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
 import { RiCheckDoubleFill } from "react-icons/ri";
 import { MessageChoices } from "./MessageChoices";
-import clsx from "clsx";
 
 interface Message {
   id: string;
@@ -62,15 +61,12 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const [isAdmin, setIsAdmin] = useState<string>("false");
   useEffect(() => {
     if (selectedChat && selectedChatType == "group") {
-      fetch(
-        `http://localhost:8000/is-chat-admin?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${tokenUserAttuale}`,
-          },
-        }
-      )
+      fetch(`http://localhost:8000/is-chat-admin?chat_id=${selectedChat}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenUserAttuale}`,
+        },
+      })
         .then((response) => response.json())
         .then((data) => {
           console.log("E' Admin?: ", data.isAdmin);
@@ -84,27 +80,9 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
 
   const [messages, setMessages] = useState<Message[]>([]);
   useEffect(() => {
-    if (selectedChat && selectedChatType == "single") {
+    if (selectedChat) {
       fetch(
-        `http://localhost:8000/select-all-single-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${tokenUserAttuale}`,
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Messaggi ricevuti:", data);
-          setMessages(data);
-        })
-        .catch((error) => {
-          console.error("Errore:", error);
-        });
-    } else if (selectedChat && selectedChatType == "group") {
-      fetch(
-        `http://localhost:8000/select-all-group-messages?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+        `http://localhost:8000/select-all-messages?chat_id=${selectedChat}`,
         {
           method: "GET",
           headers: {
@@ -127,7 +105,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/select-user-details?chat_id=${selectedChat}&user_id=${idUserAttuale}`,
+        `http://localhost:8000/select-user-details?chat_id=${selectedChat}`,
         {
           method: "GET",
           headers: {
@@ -148,7 +126,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
 
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat && selectedChatType === "single") {
       fetch(`http://localhost:8000/get-chat-settings?chat_id=${selectedChat}`, {
         method: "GET",
         headers: {
@@ -224,13 +202,12 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       },
       body: new URLSearchParams({
         chat_id: chatId,
-        user_id: idUserAttuale,
         content: inputValue,
       }),
     })
       .then((response) => response.json())
       .then((data) => {
-        setMessages((messages) => [...messages, ...data]);
+        setMessages((messages) => [...messages, data]);
         onMessageInsert();
       })
       .then(() => setInputValue(""))
