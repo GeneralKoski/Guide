@@ -61,7 +61,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const [isAdmin, setIsAdmin] = useState<string>("false");
   useEffect(() => {
     if (selectedChat && selectedChatType == "group") {
-      fetch(`http://localhost:8000/is-chat-admin?chat_id=${selectedChat}`, {
+      fetch(`http://localhost:8000/api/is-chat-admin?chat_id=${selectedChat}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${tokenUserAttuale}`,
@@ -82,7 +82,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/select-all-messages?chat_id=${selectedChat}`,
+        `http://localhost:8000/api/select-all-messages?chat_id=${selectedChat}`,
         {
           method: "GET",
           headers: {
@@ -105,7 +105,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat) {
       fetch(
-        `http://localhost:8000/select-user-details?chat_id=${selectedChat}`,
+        `http://localhost:8000/api/select-user-details?chat_id=${selectedChat}`,
         {
           method: "GET",
           headers: {
@@ -127,12 +127,15 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
     if (selectedChat && selectedChatType === "single") {
-      fetch(`http://localhost:8000/get-chat-settings?chat_id=${selectedChat}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenUserAttuale}`,
-        },
-      })
+      fetch(
+        `http://localhost:8000/api/get-chat-settings?chat_id=${selectedChat}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${tokenUserAttuale}`,
+          },
+        }
+      )
         .then((response) => response.json())
         .then((data) => {
           console.log("Settings della chat selezionate:", data);

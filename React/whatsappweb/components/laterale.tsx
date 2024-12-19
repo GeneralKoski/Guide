@@ -49,7 +49,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
   // Prende tutte le chat disponibili
   const [users, setUsers] = useState<ChatData[]>([]); // Stato per memorizzare gli utenti dalla chiamata PHP
   const selectAllChats = () => {
-    fetch(`http://localhost:8000/select-all-chats`, {
+    fetch(`http://localhost:8000/api/select-all-chats`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${tokenUserAttuale}`,
@@ -72,12 +72,15 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
 
   const [settings, setSettings] = useState<Settings[] | 0>(0);
   useEffect(() => {
-    fetch(`http://localhost:8000/get-users-settings?user_id=${idUserAttuale}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${tokenUserAttuale}`,
-      },
-    })
+    fetch(
+      `http://localhost:8000/api/get-users-settings?user_id=${idUserAttuale}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenUserAttuale}`,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log("Settings degli Utenti:", data);
@@ -141,7 +144,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
   >([]);
   useEffect(() => {
     fetch(
-      `http://localhost:8000/not-seen-messages-per-chat?user_id=${idUserAttuale}`,
+      `http://localhost:8000/api/not-seen-messages-per-chat?user_id=${idUserAttuale}`,
       {
         method: "GET",
         headers: {
