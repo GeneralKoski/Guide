@@ -320,8 +320,7 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
               <div>
                 <h4>{user.chat_name}</h4> <br />
                 <p className="chat-message text-truncate">
-                  {user.chat_type == "single" &&
-                  user.last_message_sender_id === idUserAttuale ? (
+                  {user.last_message_sender_id === idUserAttuale ? (
                     conferma_lettura(nomeUserAttuale) &&
                     conferma_lettura(user.chat_name) &&
                     user.seen === "yes" ? (
