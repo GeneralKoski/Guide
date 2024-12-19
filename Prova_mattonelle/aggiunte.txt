@@ -35,3 +35,5 @@ FATTO:
     disattiva quella appena cliccata;
 
 - Implementato bottone per deselezionare, se lo schiaccio non costruisco nulla. Si chiama ics
+
+- Il tasto ruota è diventata una freccia che al click mi ruota di 90° la struttura e si ruota l'icona

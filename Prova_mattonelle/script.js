@@ -1,5 +1,3 @@
-
-
 const canvas = document.getElementById('tileCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -26,6 +24,7 @@ let selectedTileType = 'ics';
 // Imposta una posizione di partenza per il "caricamento" della mappa
 let offsetX = 0;
 let offsetY = 0;
+const scrollSpeed = 30;
 
 // Disegna la mappa inizialmente
 drawMap(offsetX, offsetY);
@@ -129,6 +128,21 @@ document.getElementById('grass').addEventListener('click', () => {
     selectedTileType = 'GRASS';
 });
 
+document.getElementById('rotate').addEventListener('click', () => {
+    // Cambia la classe dell'icona
+    const icon = document.querySelector('#rotate i');
+    icon.classList.toggle('fa-arrow-up-short-wide');
+    icon.classList.toggle('fa-arrow-down-wide-short');
+    
+    // Inverte larghezza e altezza per ogni tipo di edificio
+    for (let building in buildingSizes) {
+        const temp = buildingSizes[building].width;
+        buildingSizes[building].width = buildingSizes[building].height;
+        buildingSizes[building].height = temp;
+    }
+});
+
+
 // Aggiunge funzionalità di scroll per navigare la mappa
 window.addEventListener('keydown', function(e) {
     switch (e.key) {
@@ -150,8 +164,62 @@ window.addEventListener('keydown', function(e) {
     drawMap(offsetX, offsetY);
 });
 
+// Script per fare class injection
+document.querySelectorAll('.controls button').forEach(button => {
+    button.addEventListener('click', function() {
+        if (this.id !== 'ics') { 
+            const selectedIcon = document.querySelector('#selectedIcon i');
+            const iconClass = this.querySelector('i').className; // Ottieni la classe dell'icona del bottone cliccato
+            selectedIcon.className = iconClass; // Imposta la classe dell'icona selezionata
+        } else {
+            const selectedIcon = document.querySelector('#selectedIcon i');
+            selectedIcon.className = ''; // Imposta la classe dell'icona selezionata
+        }
+    });
+});
+
+// Gestione del disabilitato
+let previousButton = null; // Memorizza il pulsante precedentemente cliccato
+document.querySelectorAll('.controls button').forEach(button => {
+    button.addEventListener('click', function() {
+        // Se c'è un pulsante precedentemente cliccato, lo abilita
+        if (previousButton) {
+            previousButton.disabled = false;
+        }
+        // Disabilita il pulsante appena cliccato
+        if (this.id !== 'ics') { 
+            this.disabled = true;
+            previousButton = this; // Aggiorna il pulsante precedente
+            // Aggiorna l'icona selezionata
+            const selectedIcon = document.querySelector('#selectedIcon i');
+            const iconClass = this.querySelector('i').className; // Ottieni la classe dell'icona
+            selectedIcon.className = iconClass; // Imposta la classe dell'icona selezionata
+        }
+    });
+});
+
+// Inizia il disegno al mousedown
+canvas.addEventListener('mousedown', function(e) {
+    isDrawing = true;
+    drawTileAtPosition(e.clientX, e.clientY); // Disegna la prima mattonella
+});
+
+// Ferma il disegno quando il mouse viene rilasciato
+window.addEventListener('mouseup', function() {
+    isDrawing = false;
+});
+
+// Disegna durante il trascinamento del mouse (se il mouse è premuto)
+canvas.addEventListener('mousemove', function(e) {
+    if (isDrawing) {
+        drawTileAtPosition(e.clientX, e.clientY);
+    }
+});
+  
 // Funzione per disegnare la porzione visibile della mappa
 function drawMap(offsetX, offsetY) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     for (let x = 0; x < VISIBLE_TILES_X; x++) {
         for (let y = 0; y < VISIBLE_TILES_Y; y++) {
             const tileX = x + offsetX;
@@ -237,15 +305,17 @@ function drawTileAtPosition(canvasX, canvasY) {
 
     // console.log("selectedTileType:", selectedTileType, typeof selectedTileType);
     // console.log("buildingSizes[selectedTileType]:", buildingSizes[selectedTileType]);
+    if (selectedTileType === 'CANCEL') {
+        if (isABuilding[mapTiles[clickedTileX][clickedTileY]])
+            console.log(mapTiles[clickedTileX][clickedTileY]);
+        return;
+    }
 
     if (selectedTileType && buildingSizes[selectedTileType]) {
-        const {
-            width,
-            height
-        } = buildingSizes[selectedTileType];
+        const { width, height } = buildingSizes[selectedTileType];
 
         let canBuild = true; // Variabile per controllare se è possibile costruire
-
+        
         if (selectedTileType !== 'CANCEL') {
             // Controlla se tutte le celle nell'area dell'edificio sono libere
             for (let i = 0; i < width; i++) {
@@ -263,7 +333,6 @@ function drawTileAtPosition(canvasX, canvasY) {
                             canBuild = false;
                             break;
                         }
-                        
                     }
                 }
                 if (!canBuild) break; // Esce dal ciclo se ha trovato una cella occupata
@@ -280,30 +349,8 @@ function drawTileAtPosition(canvasX, canvasY) {
                 }
             }
         }
-    } else {
-        if (clickedTileX < MAP_SIZE && clickedTileY < MAP_SIZE) {
-            mapTiles[clickedTileX][clickedTileY] = 'ics';
-        }
     }
 
     // Ricalcola e ridisegna la mappa
     drawMap(offsetX, offsetY);
 }
-
-// Inizia il disegno al mousedown
-canvas.addEventListener('mousedown', function(e) {
-    isDrawing = true;
-    drawTileAtPosition(e.clientX, e.clientY); // Disegna la prima mattonella
-});
-
-// Ferma il disegno quando il mouse viene rilasciato
-window.addEventListener('mouseup', function() {
-    isDrawing = false;
-});
-
-// Disegna durante il trascinamento del mouse (se il mouse è premuto)
-canvas.addEventListener('mousemove', function(e) {
-    if (isDrawing) {
-        drawTileAtPosition(e.clientX, e.clientY);
-    }
-});
