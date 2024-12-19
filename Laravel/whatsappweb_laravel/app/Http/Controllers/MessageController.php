@@ -77,7 +77,7 @@ class MessageController extends Controller
         $message = [
             'id' => $message->id,
             'username' => User::find($message->user_id)->username,
-            'sent_at' => $message->sent_at,
+            'sent_at' => $message->sent_at ? $message->sent_at : "no",
             'seen' => $message->seen,
             'message_type' => $message->type,
             'media_content' => $message->content,
@@ -108,15 +108,15 @@ class MessageController extends Controller
                 'm.sent_at',
                 'm.seen',
                 DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
-                           CASE WHEN m.type = 'media' THEN (
-                                    SELECT media.file_path
-                                    FROM Media media
-                                    WHERE media.message_id = m.id
-                                    LIMIT 1
-                                )
-                                ELSE m.content
-                            END AS content
-                            ")
+                       CASE WHEN m.type = 'media' THEN (
+                                SELECT media.file_path
+                                FROM Media media
+                                WHERE media.message_id = m.id
+                                LIMIT 1
+                            )
+                            ELSE m.content
+                        END AS content
+                        ")
             )
             ->join('Users AS u', 'u.id', '=', 'm.user_id')
             ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
@@ -134,7 +134,8 @@ class MessageController extends Controller
             ->orderBy('m.sent_at', 'ASC')
             ->get();
 
-        // dd($messages[0]);
+
+
         return response()->json($messages);
     }
 
@@ -181,7 +182,6 @@ class MessageController extends Controller
             }
 
             $message = $this->selectLastMessage($chat_id);
-            // dd($message);
             return response()->json($message);
         } catch (\Exception $e) {
             return response('Errore nell\'inserimento del messaggio: ' . $e->getMessage(), 500);

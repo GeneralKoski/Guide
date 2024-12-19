@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Request;
 use App\Http\Resources\MessageResource;
 use App\Models\Chat;
+use App\Models\ChatUser;
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,13 +40,18 @@ class ChatController extends Controller
 
 
 
-    public function allChats()
+    public function allChats(User $user)
     {
-        $user_id = Auth::user()->id;
-
-        if (!$user_id) {
-            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
-        }
+        // $user_id = Auth::user()->id;
+        $user = $user->getAttributes();
+        $user_id = $user['id'];
+        // $user_id = 5;
+        // if (!$user_id) {
+        //     return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
+        // }
+        $appartenente = ChatUser::where('user_id', '=', $user_id)->pluck('chat_id');
+        $chatsNuovo = Chat::whereIn('id', $appartenente)->get();
+        return $chatsNuovo;
 
         $chats = DB::table('Chats as c')
             ->select(
