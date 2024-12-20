@@ -6,6 +6,8 @@ messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco del
 
 - Bisogna suddividere i file in cartelle, suddividendo per bene script e funzioni, includendole e richiamandole dove dovuto
 
+- Per evitare problemi di lag possiamo aggiungere una schermata di Loading all'avvio della mappa
+
 
 FATTO:
 - Da sistemare il fatto che se cancello qualcosa poi non mi fa più disegnare lì;
@@ -32,7 +34,7 @@ FATTO:
 - L'icona cliccata diventa di tipo "disabled", se clicco un'altra icona, quella precedentemente disabilitata si riabilita e si
     disattiva quella appena cliccata;
 
-- Implementato bottone per deselezionare, se lo schiaccio non costruisco nulla. Si chiama ics
+- Implementato bottone per deselezionare, se lo schiaccio non costruisco nulla. Si chiama ICS
 
 - Il tasto ruota è diventata una freccia che al click mi ruota di 90° la struttura e si ruota l'icona
 

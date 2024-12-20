@@ -45,3 +45,9 @@ body {
 #rotate:hover {
   background-color: grey;
 }
+
+.description {
+  width: 160px;
+  text-align: center;
+  font-weight: bold;
+}

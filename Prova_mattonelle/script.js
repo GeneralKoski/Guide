@@ -1,8 +1,11 @@
 const canvas = document.getElementById("tileCanvas");
 const ctx = canvas.getContext("2d");
 
+// console.log(JSON.stringify(localStorage).length);
+// console.log(localStorage);
+
 // Definire le dimensioni della mappa e delle mattonelle
-const MAP_SIZE = 10000;
+const MAP_SIZE = 1000;
 const TILE_SIZE = 2; // Dimensione di ogni mattonella (in pixel)
 const VISIBLE_TILES_X = Math.ceil(window.innerWidth / TILE_SIZE - 180);
 const VISIBLE_TILES_Y = Math.ceil(window.innerHeight / TILE_SIZE);
@@ -16,6 +19,18 @@ const mapTiles = Array.from(
   () => Array(MAP_SIZE).fill("default")
 );
 
+// for (let $i = 0; $i < 50; $i++) {
+//   localStorage.setItem(`riga${$i}`, mapTiles[$i]);
+// }
+
+// for (let $i = 0; $i < 1000; $i++) {
+//   localStorage.removeItem(`riga${$i}`, mapTiles[$i]);
+// }
+
+// localStorage.removeItem("riga1");
+// console.log(localStorage);
+// console.log(localStorage.getItem("riga1"));
+
 // Imposta la dimensione del canvas pari alla dimensione dello schermo
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -23,14 +38,30 @@ canvas.height = window.innerHeight;
 let isDrawing = false; // Variabile per tracciare se il mouse è premuto
 
 // Variabile per memorizzare il tipo di mattonella selezionata
-let selectedTileType = "ics";
+let selectedTileType = "ICS";
+
+// Inizializzo come icona selezionata = ICS
+document.querySelector(".description").textContent =
+  selectedTileType + " " + (reverted ? "Girato" : "Normale");
+document.querySelector("#selectedIcon i").className = "fa-solid fa-x";
 
 // Imposta una posizione di partenza per il "caricamento" della mappa
 let offsetX = 0;
 let offsetY = 0;
 const scrollSpeed = 30;
 
-// Disegna la mappa inizialmente
+// E per recuperare i dati successivamente
+// window.onload = function () {
+//   const compressedMapState = localStorage.getItem("mapState");
+//   if (compressedMapState) {
+//     mapTiles = JSON.parse(LZString.decompress(compressedMapState));
+//     drawMap(); // Ridisegna la mappa
+//   } else {
+//     // Disegna la mappa inizialmente
+//     drawMap(offsetX, offsetY);
+//   }
+// };
+
 drawMap(offsetX, offsetY);
 
 const isABuilding = {
@@ -69,7 +100,7 @@ const buildingSizes = {
     width: 5,
     height: 5,
   },
-  ics: {
+  ICS: {
     width: 0,
     height: 0,
   },
@@ -92,7 +123,7 @@ function getTileColor(type) {
       return "#996600"; // Marrone
     case "CANCEL":
       return "#6DCF40"; // Bianco
-    case "ics":
+    case "ICS":
       return "transparent"; // Bianco
     default:
       return "#6DCF40"; // Verde
@@ -101,40 +132,60 @@ function getTileColor(type) {
 
 // Gestisce la selezione del tipo di mattonella dai bottoni
 document.getElementById("ics").addEventListener("click", () => {
-  selectedTileType = "ics";
+  selectedTileType = "ICS";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("cancel").addEventListener("click", () => {
   selectedTileType = "CANCEL";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("factory").addEventListener("click", () => {
   selectedTileType = "FACTORY";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("house").addEventListener("click", () => {
   selectedTileType = "HOUSE";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("hut").addEventListener("click", () => {
   selectedTileType = "HUT";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("road").addEventListener("click", () => {
   selectedTileType = "ROAD";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("water").addEventListener("click", () => {
   selectedTileType = "WATER";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("grass").addEventListener("click", () => {
   selectedTileType = "GRASS";
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
 });
 
 document.getElementById("rotate").addEventListener("click", () => {
   // Cambia la classe dell'icona
   reverted ? (reverted = false) : (reverted = true);
+
+  document.querySelector(".description").textContent =
+    selectedTileType + " " + (reverted ? "Girato" : "Normale");
+
   const icon = document.querySelector("#rotate i");
   icon.classList.toggle("fa-arrow-right-long");
   icon.classList.toggle("fa-arrow-down-long");
@@ -171,13 +222,13 @@ window.addEventListener("keydown", function (e) {
 // Script per fare class injection
 document.querySelectorAll(".controls button").forEach((button) => {
   button.addEventListener("click", function () {
-    if (this.id !== "ics") {
+    if (this.id !== "ICS") {
       const selectedIcon = document.querySelector("#selectedIcon i");
       const iconClass = this.querySelector("i").className; // Ottieni la classe dell'icona del bottone cliccato
       selectedIcon.className = iconClass; // Imposta la classe dell'icona selezionata
     } else {
       const selectedIcon = document.querySelector("#selectedIcon i");
-      selectedIcon.className = ""; // Imposta la classe dell'icona selezionata
+      selectedIcon.className = "ICS"; // Imposta la classe dell'icona selezionata
     }
   });
 });
@@ -191,7 +242,7 @@ document.querySelectorAll(".controls button").forEach((button) => {
       previousButton.disabled = false;
     }
     // Disabilita il pulsante appena cliccato
-    if (this.id !== "ics") {
+    if (this.id !== "ICS") {
       this.disabled = true;
       previousButton = this; // Aggiorna il pulsante precedente
       // Aggiorna l'icona selezionata
@@ -241,7 +292,7 @@ function updateClock() {
   // se l'orario raggiunge un determinato minutaggio richiamo un'altra funzione ecc.
   if (now.getSeconds() % 10 === 0) {
     // Stampa il messaggio ogni volta che il secondo è multiplo di 10
-    console.log("Commenta alla riga 241 per non vedere questo");
+    // console.log("Commenta alla riga 241 per non vedere questo");
   }
 }
 setInterval(updateClock, 1000);
@@ -317,6 +368,10 @@ function drawMap(offsetX, offsetY) {
       }
     }
   }
+
+  // Per salvare tutte le mattonelle
+  // const compressedMapState = LZString.compress(JSON.stringify(mapTiles));
+  // localStorage.setItem("mapState", compressedMapState);
 }
 
 // Funzione per gestire la logica di disegno
@@ -433,4 +488,6 @@ function drawTileAtPosition(canvasX, canvasY) {
 
   // Ricalcola e ridisegna la mappa
   drawMap(offsetX, offsetY);
+
+  // console.log(mapTiles[0]);
 }
