@@ -1,39 +1,47 @@
 body {
-      margin: 0;
-      overflow: hidden;
-    }
-    
-    #tileCanvas {
-      display: block;
-      margin-left: 160px;
-    }
+  margin: 0;
+  overflow: hidden;
+}
 
-    .controls, .selected{
-      width: 140px;
-    }
+#tileCanvas {
+  display: block;
+  margin-left: 160px;
+}
 
-    .informations {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
+.controls,
+.selected {
+  width: 140px;
+}
 
-    .selectedIcon {
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-    }
+.informations {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
 
-    .controls button, .informations button, .selected button {
-      display: block;
-      width: 60px;
-      height: 50px;
-      margin-left: 10px;
-      margin-bottom: 5px;
-      padding: 10px;
-      cursor: pointer;
-    }
+.selectedIcon {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
 
-    .controls button:hover, #rotate:hover {
-        background-color: grey;
-    }
+.controls button,
+.informations button,
+.selected button {
+  display: block;
+  width: 60px;
+  height: 50px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.selected #selectedIcon {
+  cursor: default;
+}
+
+.controls button:hover,
+#rotate:hover {
+  background-color: grey;
+}
