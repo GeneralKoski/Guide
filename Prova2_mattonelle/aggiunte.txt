@@ -1,0 +1,45 @@
+DA FARE:
+- In alto a destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei
+messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco delle mappe;
+
+- Da pensare a nuovi edifici
+
+- Bisogna suddividere i file in cartelle, suddividendo per bene script e funzioni, includendole e richiamandole dove dovuto
+
+- Per evitare problemi di lag possiamo aggiungere una schermata di Loading all'avvio della mappa
+
+
+FATTO:
+- Da sistemare il fatto che se cancello qualcosa poi non mi fa più disegnare lì;
+
+- A sinistra si ha l'elenco delle mattonelle selezionabili con le loro icone;
+
+- Aggiunte icone in basso a sinistra;
+
+- Icone aggiunte, suddivise in colonne da 2. Aggiunta in basso 2 bottoni, a sinistra è da gestire mettendo come icona.class il valore
+    dell'icona selezionata sopra
+
+- Inizializzato il mondo come "erba" e sistemato il fatto che se clicco sopra l'erba con un edificio, me lo fa piazzare;
+
+- Inizializzato mondo con colore "Erbaccia". Posso cancellare, aggiungere edifici grandi o singoli, cambiare da erbaccia ad erba
+    e ho fatto in modo che si possa piazzare edifici sopra l'erba senza il bisogno prima di cancellare.
+
+- Gli edifici non possono costruire dentro sè stessi, mentre oggetti di tipo erba, strada o acqua si. Tenendo premuto e scorrendo è più
+    autoesplicativo forse
+
+- In basso a sinistra, da far vedere l'icona del bottone selezionato;
+
+- In basso a sinistra, da implementare la funzione "ruota";
+
+- L'icona cliccata diventa di tipo "disabled", se clicco un'altra icona, quella precedentemente disabilitata si riabilita e si
+    disattiva quella appena cliccata;
+
+- Implementato bottone per deselezionare, se lo schiaccio non costruisco nulla. Si chiama ICS
+
+- Il tasto ruota è diventata una freccia che al click mi ruota di 90° la struttura e si ruota l'icona
+
+- Da implementare che se la gomma clicca un oggetto di tipo edificio, lo cancella tutto senza doverlo cancellare a mano
+
+- Da migliorare la cancellatura degli edifici in modo che tenga conto se sono verticali o orizzontali
+
+- Aggiunto un orologio del tempo reale in basso a destra. Lo useremo come timer per raccogliere soldi ogni tot tempo
