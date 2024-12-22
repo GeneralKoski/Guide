@@ -1,0 +1,68 @@
+body {
+  margin: 0px;
+}
+
+#grid-container {
+  position: absolute;
+  margin-left: 160px;
+  width: 10000px;
+  height: 10000px;
+  border: 1px solid black;
+  background-color: #6dcf40;
+  z-index: -1;
+  padding-right: 160px;
+}
+
+.grid-cell {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background-color: green;
+}
+
+.controls {
+  width: 150px;
+}
+
+.controls button,
+.selected button {
+  display: block;
+  width: 60px;
+  height: 50px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+#selectedIcon {
+  cursor: default;
+}
+
+.controls button:hover,
+#rotate:hover {
+  background-color: grey;
+}
+
+.selectedDescription {
+  width: 150px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.preview {
+  position: absolute;
+  pointer-events: none;
+  border: 2px dashed #888;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: none; /* Inizialmente nascosta */
+}
+
+.userDescription {
+  width: 160px;
+  height: auto;
+  background-color: transparent;
+}
+
+.roundabout {
+  border: 10px solid #7f7f7f;
+  border-radius: 100px;
+}
