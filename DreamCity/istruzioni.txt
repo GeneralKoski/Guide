@@ -1,0 +1,73 @@
+### 1. **Gestione degli utenti**
+   - **Login/registrazione**: Usa PHP per gestire l'autenticazione, e potresti archiviare gli utenti in un database MySQL.
+      Gli utenti devono avere almeno un nome utente e un ruolo assegnato (assessorato).
+   - **Salvataggio delle informazioni**: Potresti memorizzare le informazioni sullo stato del gioco e sui progressi dei giocatori
+      tramite sessioni o memorizzazione lato server in tabelle di database.
+
+### 2. **Tabelle dei record e invito ad amici**
+   - **Tabella dei record**: Archivia i punteggi finali delle città completate in un database.
+      Mostra una classifica con HTML e CSS dinamico.
+   - **Invito ad amici**: Invia link unici per partecipare a una partita. Ogni link potrebbe avere un token che identifica
+      la partita e consente l'accesso a nuovi giocatori.
+
+### 3. **Mappe**
+   - **Database delle mappe**: Crea un sistema che memorizza diverse mappe in un database MySQL, con ogni mappa composta da 10.000x10.000
+      mattonelle (in realtà ridurresti questa rappresentazione per evitare enormi dataset, memorizzando solo le aree rilevanti).
+   - **Selezione e gestione delle mappe**: Usa Javascript per permettere ai giocatori di scegliere una mappa prima di iniziare
+      il gioco. La mappa selezionata verrà caricata dal server.
+
+### 4. **Asincronicità**
+   - La logica asincrona potrebbe essere implementata con un cron job in PHP che aggiorna lo stato del gioco ad intervalli regolari,
+      anche quando i giocatori non sono attivi. Tutte le modifiche fatte da ogni assessorato devono essere registrate sul server
+      e applicate alla città comune.
+   
+### 5. **Assessorati e gestione ruoli**
+   - Ogni giocatore ha il controllo di un assessorato. Potresti creare ruoli per ciascuno nel database e avere una logica di
+      interfaccia utente personalizzata per consentire a ciascun giocatore di fare solo ciò che è previsto dal suo ruolo
+      (es. uno gestisce le tasse, un altro le strade, ecc.).
+   - **Scambio di assessorati**: Implementa una funzionalità che permetta di trasferire il controllo di un assessorato tra
+      i giocatori tramite una richiesta PHP lato server.
+
+### 6. **Interfaccia utente e gestione mappe**
+   - Usa **HTML5 canvas** e **JavaScript** per mostrare la mappa e permettere ai giocatori di interagire visivamente con la città,
+      costruendo strade, edifici, e altre strutture.
+   - **Creazione di nuove mappe**: Potresti fornire uno strumento lato client (in JavaScript) che permetta di creare una mappa
+      personalizzata e poi caricarla sul server tramite PHP, dove verrà archiviata in MySQL.
+
+### 7. **Misurazione della felicità dei cittadini**
+   - Questo potrebbe essere rappresentato da una serie di fattori (tasse, infrastrutture, attività commerciali, spettacoli, ecc.),
+      ognuno con un peso variabile. Implementa un algoritmo PHP che calcola un punteggio globale in base alle azioni di ciascun
+      assessorato.
+
+      
+
+### Struttura del Database
+Esempio di alcune tabelle chiave:
+
+1. **users**
+   - id
+   - username
+   - password_hash
+   - role (assessorato)
+   - game_id (partita attuale)
+   
+2. **games**
+   - id
+   - map_id
+   - status (attiva/inattiva)
+   - created_at
+   - last_activity
+   
+3. **maps**
+   - id
+   - name
+   - data (rappresentazione della mappa, es. JSON con coordinate)
+   
+4. **game_actions**
+   - id
+   - game_id
+   - user_id
+   - action_type (es. "build_road", "tax_adjustment", etc.)
+   - data (dettagli dell'azione)
+
+Questo è un approccio iniziale, potresti voler raffinare i dettagli man mano che sviluppi il progetto.
