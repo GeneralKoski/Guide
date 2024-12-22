@@ -65,7 +65,7 @@ function getTileColor(type) {
     case "ICS":
       return "transparent"; // Trasparente
     case "ROUNDABOUT":
-      return "transparent"; // Trasparente perchè il "buco" è gestito dal CSS
+      return "#AAAAAA"; // Trasparente perchè il "buco" è gestito dal CSS
     default:
       return "#6DCF40"; // Verde
   }

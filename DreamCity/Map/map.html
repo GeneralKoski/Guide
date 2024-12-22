@@ -61,9 +61,27 @@
     <div id="grid-container"></div>
 
     <div class="userDescription position-fixed end-0">
+      <a href="http://localhost:3000/php/logout.php"
+        ><i class="fa-solid fa-sign-out"></i
+      ></a>
+
+      <!-- DA IMPLEMENTARE IL WINDOW.REF ALLA PAGINA DELLE MAPPE -->
+      <a href=""><i class="fa-solid fa-map"></i></a>
+      <br />
       <img src="/prova.jpg" alt="Profilo" />
-      <h3 id="username">Nome profilo</h3>
-      <li><a href="http://localhost:3000/php/logout.php">Logout</a></li>
+      <h3 id="username"></h3>
+      <h6 id="username">Ruolo</h6>
+      <div>
+        <span>mapname</span> <br />
+        <span>Felicità</span>
+        <div class="progress">
+          <div
+            class="progress-bar progress-bar-striped"
+            role="progressbar"
+            style="width: 20%"
+          ></div>
+        </div>
+      </div>
     </div>
 
     <div id="preview" class="preview"></div>

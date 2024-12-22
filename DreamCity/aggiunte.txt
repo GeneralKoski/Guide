@@ -1,6 +1,6 @@
 IL GIOCO:
 In alto a sinistra ho l'elenco degli edifici. La X serve per cancellare le strutture\
-In alto a destra si hanno i dettagli dell'utente che ha eseguito il log-in
+In alto a destra si hanno i dettagli dell'utente che ha eseguito il log-in con il tasto di logout ed il tasto per tornare alle mappe
 In basso a sinistra ho l'edificio selezionato. Se premo la freccia, inverte il verso dell'edificio.
 In basso a destra ho l'orologio in tempo reale.
 Tutta la parte verde è la zona di gioco disponibile per piazzare le strutture e giocare.
@@ -13,10 +13,13 @@ L'orologio del tempo reale in basso a destra si potrebbe usare come timer per ra
 
 
 DA FARE:
-In alto a destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei messaggi, e nell'angolo i tasti per fare il log-out o
-per tornare all'elenco delle mappe;
+In alto a destra aggiungere la casella dei messaggi
 
-Da pensare a nuovi edifici
+Da implementare il tornare all'elenco delle mappe (appena Michelle manda il suo lavoro)
+
+Da implementare il click per la casella dei messaggi (appena Luigi Zheng manda il suo lavoro)
+
+Da pensare a nuovi ruoli ed edifici
 
 Bisogna suddividere i file in cartelle, suddividendo per bene script e funzioni, includendole e richiamandole dove dovuto
 
