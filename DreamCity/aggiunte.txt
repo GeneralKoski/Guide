@@ -13,8 +13,11 @@ L'orologio del tempo reale in basso a destra si potrebbe usare come timer per ra
 
 
 DA FARE:
-In alto a destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei
-messaggi, e nell'angolo i tasti per fare il log-out o per tornare all'elenco delle mappe;
+In alto a destra si hanno i dettagli dell'utente (icona, ruolo...), i dettagli della città (felicità dei cittadini..), la casella dei messaggi, e nell'angolo i tasti per fare il log-out o
+per tornare all'elenco delle mappe;
+
 Da pensare a nuovi edifici
+
 Bisogna suddividere i file in cartelle, suddividendo per bene script e funzioni, includendole e richiamandole dove dovuto
+
 Per evitare problemi di lag possiamo aggiungere una schermata di Loading all'avvio della mappa

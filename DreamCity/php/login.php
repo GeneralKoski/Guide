@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../config.php');  // Connessione al database
+include('../php/config.php');  // Connessione al database
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Recupera i dati dal modulo
@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
 
     // Query per trovare l'utente nel database
-    $sql = "SELECT * FROM Utenti u WHERE u.Username = '$username'";
+    $sql = "SELECT * FROM Users u WHERE u.username = '$username'";
     $res = $conn->query($sql);
 
     if (!$res) {
@@ -20,16 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!$user) {
         echo "  <script>
                     alert('Username o Password errati!');
-                    window.location.href='loginPage.html';
+                    window.location.href='/Login/loginPage.html';
                 </script>
             ";
     }
 
     if (password_verify(
         $password,
-        $user['Password']
+        $user['password']
     )) {
-        $_SESSION['username'] = $user['Username'];
+        $_SESSION['username'] = $user['username'];
         echo "  <script>
                     alert('Utente loggato con successo! Benvenut* $_SESSION[username]'); 
                     window.location.href='/Map/map.html';

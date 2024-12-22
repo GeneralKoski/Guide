@@ -3,23 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link rel="stylesheet" href="loginPage.css" />
+    <title>Register</title>
+    <link rel="stylesheet" href="/Login/loginPage.css" />
   </head>
   <body>
     <div class="login-container">
-      <h2>Accedi al tuo account</h2>
-      <form action="http://localhost:3000/php/login.php" method="POST">
+      <h2>Registra il tuo account</h2>
+      <form action="http://localhost:3000/php/registration.php" method="POST">
         <label for="username">Nome Utente</label>
         <input type="text" id="username" name="username" required />
 
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required />
 
-        <button type="submit">Accedi</button>
+        <button type="submit">Registrati</button>
         <label for="registration"
-          ><a href="/Login/registration.html"
-            ><small>Registrati</small></a
+          ><a href="/Login/loginPage.html"
+            ><small>Torna al login</small></a
           ></label
         >
       </form>

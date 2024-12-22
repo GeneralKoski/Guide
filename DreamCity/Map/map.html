@@ -62,7 +62,8 @@
 
     <div class="userDescription position-fixed end-0">
       <img src="/prova.jpg" alt="Profilo" />
-      <h3>Nome profilo</h3>
+      <h3 id="username">Nome profilo</h3>
+      <li><a href="http://localhost:3000/php/logout.php">Logout</a></li>
     </div>
 
     <div id="preview" class="preview"></div>
@@ -74,6 +75,15 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+
+    <script>
+      fetch("http://localhost:3000/php/userDetails.php")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("username").textContent = data;
+        })
+        .catch((error) => console.error("Errore nella richiesta:", error));
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
   </body>
 </html>
