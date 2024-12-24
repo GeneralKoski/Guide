@@ -163,6 +163,8 @@ var isDrawing = false;
 // E' la div che fa vedere la preview dell'elemento selezionato, mentre ti muovi con il mouse
 const previewDiv = document.getElementById("preview");
 
+let userBuildings = [];
+
 fetch("http://localhost:3000/php/selectUserBuildings.php")
   .then((response) => response.json())
   .then((buildings) => {
@@ -185,6 +187,8 @@ fetch("http://localhost:3000/php/selectUserBuildings.php")
         buildingType + " " + (rotated ? "Girato" : "Normale");
       document.querySelector("#selectedIcon i").textContent = "ICS";
     });
+
+    userBuildings.push("ICS");
 
     // Aggiungi il pulsante ICS al container
     controlsContainer.appendChild(icsButton);
@@ -211,6 +215,9 @@ fetch("http://localhost:3000/php/selectUserBuildings.php")
           buildingType.substring(0, 4);
       });
 
+      if (!userBuildings.includes(building.name)) {
+        userBuildings.push(building.name);
+      }
       // Aggiungi il pulsante al container
       controlsContainer.appendChild(button);
     });
@@ -327,59 +334,68 @@ setTimeout(loadBuildings());
 document
   .getElementById("grid-container")
   .addEventListener("mousedown", function (e) {
-    isDrawing = true;
-    const width = buildingSizes[buildingType].width; // Prendo le dimensioni dell'elemento selezionato
-    const height = buildingSizes[buildingType].height;
-    const rect = this.getBoundingClientRect();
-    // Prendo le coordinate
-    const cleft = e.clientX - rect.left;
-    const ctop = e.clientY - rect.top;
-    const cright = e.clientX - rect.left + width;
-    const cbottom = e.clientY - rect.top + height;
-    // console.log(buildingCosts[buildingType]);
-    // console.log(budget);
-    const result = isAreaOccupied(cleft, cright, ctop, cbottom); // Controllo se dove ho cliccato è già presente qualcosa
+    if (buildingType) {
+      isDrawing = true;
+      const width = buildingSizes[buildingType].width; // Prendo le dimensioni dell'elemento selezionato
+      const height = buildingSizes[buildingType].height;
+      const rect = this.getBoundingClientRect();
+      // Prendo le coordinate
+      const cleft = e.clientX - rect.left;
+      const ctop = e.clientY - rect.top;
+      const cright = e.clientX - rect.left + width;
+      const cbottom = e.clientY - rect.top + height;
+      // console.log(buildingCosts[buildingType]);
+      // console.log(budget);
+      const result = isAreaOccupied(cleft, cright, ctop, cbottom); // Controllo se dove ho cliccato è già presente qualcosa
 
-    if (result[0].success === true) {
-      const [x_coordinate, xr] = result[0].tile.dataset.x
-        .split(",")
-        .map(Number); // Trovo il lato sinistro e destro
-      const [y_coordinate, yr] = result[0].tile.dataset.y
-        .split(",")
-        .map(Number); // Trovo il lato superiore e inferiore
+      if (result[0].success === true) {
+        // Se c'è qualcosa e ho selezionato il tasto per cancellare cancello la div
+        if (buildingType === "ICS") {
+          const buildingType = result[0].tile.getAttribute("building-type"); // Prendo il suo tipo di elemento
+          if (userBuildings.includes(buildingType)) {
+            const [x_coordinate, xr] = result[0].tile.dataset.x
+              .split(",")
+              .map(Number); // Trovo il lato sinistro e destro
+            const [y_coordinate, yr] = result[0].tile.dataset.y
+              .split(",")
+              .map(Number); // Trovo il lato superiore e inferiore
+            result[0].tile.remove();
 
-      // Se c'è qualcosa e ho selezionato il tasto per cancellare cancello la div
-      if (buildingType === "ICS") {
-        result[0].tile.remove();
+            updateMapBuildingsDB(x_coordinate, y_coordinate);
 
-        updateMapBuildingsDB(x_coordinate, y_coordinate);
+            updateHappinessDB(
+              parseInt(happiness) -
+                parseInt(buildingHappiness[result[0].buildingType])
+            );
 
-        updateHappinessDB(
-          parseInt(happiness) -
-            parseInt(buildingHappiness[result[0].buildingType])
-        );
+            updateBudgetDB(
+              parseInt(budget) + parseInt(buildingCosts[result[0].buildingType])
+            );
+          } else {
+            console.log("Non possiedi questo edificio");
+            return;
+          }
+        } else {
+          console.log("Non hai abbastanza spazio qui");
+          return;
+        }
+      } else {
+        if (buildingType !== "ICS") {
+          // Se non c'è nulla, disegno
+          previewDiv.style.display = "none"; // Nasconde la preview finchè non mi muovo con il mouse
 
-        updateBudgetDB(
-          parseInt(budget) + parseInt(buildingCosts[result[0].buildingType])
-        );
-      }
-      return;
-    } else {
-      if (buildingType !== "ICS") {
-        // Se non c'è nulla, disegno
-        previewDiv.style.display = "none"; // Nasconde la preview finchè non mi muovo con il mouse
+          colorCells(cleft, ctop, buildingType); // Disegna la div
 
-        colorCells(cleft, ctop, buildingType); // Disegna la div
+          updateHappinessDB(
+            parseInt(happiness) + parseInt(buildingHappiness[buildingType])
+          );
 
-        updateHappinessDB(
-          parseInt(happiness) + parseInt(buildingHappiness[buildingType])
-        );
+          updateBudgetDB(
+            parseInt(budget) - parseInt(buildingCosts[buildingType])
+          );
 
-        updateBudgetDB(
-          parseInt(budget) - parseInt(buildingCosts[buildingType])
-        );
-
-        saveBuildingDB(buildingType, cleft, ctop, rotated);
+          saveBuildingDB(buildingType, cleft, ctop, rotated);
+        }
       }
     }
   });
@@ -401,43 +417,48 @@ document
 document
   .getElementById("grid-container")
   .addEventListener("mousemove", function (e) {
-    const width = buildingSizes[buildingType].width; // Prendo le dimensioni dell'elemento selezionato
-    const height = buildingSizes[buildingType].height;
+    if (buildingType) {
+      const width = buildingSizes[buildingType].width; // Prendo le dimensioni dell'elemento selezionato
+      const height = buildingSizes[buildingType].height;
 
-    const rect = this.getBoundingClientRect();
-    const left = e.clientX - rect.left;
-    const top = e.clientY - rect.top;
-    const right = e.clientX - rect.left + width;
-    const bottom = e.clientY - rect.top + height;
-
-    previewDiv.style.width = `${width}px`;
-    previewDiv.style.height = `${height}px`;
-    previewDiv.style.left = `${left + 160}px`; // +160 per il margin-left del grid-container
-    previewDiv.style.top = `${top}px`;
-    previewDiv.style.display = "block";
-
-    // const result = isAreaOccupied(cleft, cright, ctop, cbottom); // Controllo se dove ho cliccato è già presente qualcosa
-    // console.log(result);
-    // if (result[0].success === true) {
-    // console.log(isAreaOccupied(left, right, top, bottom));
-    if (
-      document.getElementById("role").textContent === "Gestione delle strade" &&
-      buildingType !== "ROUNDABOUT" &&
-      isAreaOccupied(left, right, top, bottom)[0].success === false &&
-      isDrawing &&
-      buildingType !== "ICS"
-    ) {
       const rect = this.getBoundingClientRect();
       const left = e.clientX - rect.left;
       const top = e.clientY - rect.top;
-      colorCells(left, top, buildingType);
-      updateHappinessDB(
-        parseInt(happiness) + parseInt(buildingHappiness[buildingType])
-      );
+      const right = e.clientX - rect.left + width;
+      const bottom = e.clientY - rect.top + height;
 
-      updateBudgetDB(parseInt(budget) - parseInt(buildingCosts[buildingType]));
+      previewDiv.style.width = `${width}px`;
+      previewDiv.style.height = `${height}px`;
+      previewDiv.style.left = `${left + 160}px`; // +160 per il margin-left del grid-container
+      previewDiv.style.top = `${top}px`;
+      previewDiv.style.display = "block";
 
-      saveBuildingDB(buildingType, left, top, rotated);
+      // const result = isAreaOccupied(cleft, cright, ctop, cbottom); // Controllo se dove ho cliccato è già presente qualcosa
+      // console.log(result);
+      // if (result[0].success === true) {
+      // console.log(isAreaOccupied(left, right, top, bottom));
+      if (
+        document.getElementById("role").textContent ===
+          "Gestione delle strade" &&
+        buildingType !== "ROUNDABOUT" &&
+        isAreaOccupied(left, right, top, bottom)[0].success === false &&
+        isDrawing &&
+        buildingType !== "ICS"
+      ) {
+        const rect = this.getBoundingClientRect();
+        const left = e.clientX - rect.left;
+        const top = e.clientY - rect.top;
+        colorCells(left, top, buildingType);
+        updateHappinessDB(
+          parseInt(happiness) + parseInt(buildingHappiness[buildingType])
+        );
+
+        updateBudgetDB(
+          parseInt(budget) - parseInt(buildingCosts[buildingType])
+        );
+
+        saveBuildingDB(buildingType, left, top, rotated);
+      }
     }
   });
 
