@@ -5,7 +5,7 @@ include('../php/config.php');  // Connessione al database
 $userId = $_SESSION['id'];
 $username = $_SESSION['username'];
 
-$sql = "SELECT b.name, b.color, b.width, b.height, b.happiness FROM Buildings b";
+$sql = "SELECT b.name, b.color, b.width, b.height, b.happiness, b.cost FROM Buildings b";
 $result = $conn->query($sql);
 
 $buildings = [];  // Inizializza un array vuoto
@@ -18,6 +18,7 @@ if ($result->num_rows > 0) {
             'width' => $row['width'],
             'height' => $row['height'],
             'happiness' => $row['happiness'],
+            'cost' => $row['cost'],
         ];
     }
 }

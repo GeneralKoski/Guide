@@ -53,13 +53,32 @@ body {
   pointer-events: none;
   border: 2px dashed #888;
   background-color: rgba(255, 255, 255, 0.5);
-  display: none; /* Inizialmente nascosta */
+  display: none;
 }
 
 .userDescription {
   width: 160px;
   height: auto;
   background-color: transparent;
+  color: black;
+}
+
+#buttons {
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  margin-right: 10px;
+}
+#buttons a {
+  margin-right: 10px;
+}
+
+#logout {
+  color: black;
+}
+
+#maps {
+  color: blue;
 }
 
 .roundabout {

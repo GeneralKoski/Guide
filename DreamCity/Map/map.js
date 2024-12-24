@@ -4,10 +4,13 @@ fetch("http://localhost:3000/php/userDetails.php")
   .then((data) => {
     document.getElementById("username").textContent = data.username;
     document.getElementById("role").textContent = data.role;
+    budget = parseInt(data.budget, 10);
+    updateBudgetSpan();
   })
   .catch((error) => console.error("Errore nella richiesta:", error));
 
 let happiness = 0;
+let budget = 0;
 
 // Fetch per ottenere il valore iniziale di happiness
 fetch("http://localhost:3000/php/mapDetails.php")
@@ -26,6 +29,14 @@ function updateMapBuildingsDB(x_coordinate, y_coordinate) {
 
   changeHappinessLevel(happiness); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
 }
+function updateBudgetDB(budget) {
+  // console.log(budget);
+  fetch(`http://localhost:3000/php/updateBudget.php?budget=${budget}`).catch(
+    (error) => console.error("Errore nella richiesta:", error)
+  );
+
+  changeBudgetLevel(budget); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
+}
 
 // Funzione per aggiornare nel DB il valore della felicità
 function updateHappinessDB(happiness) {
@@ -36,10 +47,19 @@ function updateHappinessDB(happiness) {
   changeHappinessLevel(happiness); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
 }
 
+function changeBudgetLevel(newBudget) {
+  budget = newBudget;
+  updateBudgetSpan();
+}
+
 // Funzione per cambiare il valore di happiness in locale
 function changeHappinessLevel(newHappiness) {
   happiness = newHappiness;
   updateHappinessSpan();
+}
+
+function updateBudgetSpan() {
+  document.getElementById("budget").textContent = budget;
 }
 
 // Funzione per aggiornare lo span con il valore corrente di happiness
@@ -50,7 +70,8 @@ function updateHappinessSpan() {
   progressBar.style.width = `${happiness / 100}%`;
 }
 
-function saveBuildingDB(buildingType, x, y) {
+function saveBuildingDB(buildingType, x, y, rotated) {
+  // console.log(rotated);
   fetch("http://localhost:3000/php/saveBuilding.php", {
     method: "POST",
     headers: {
@@ -60,6 +81,7 @@ function saveBuildingDB(buildingType, x, y) {
       building_type: buildingType,
       x: x,
       y: y,
+      rotated: rotated ? "yes" : "no",
     }),
   })
     .then((response) => response.json())
@@ -79,8 +101,15 @@ function loadBuildings() {
     .then((buildings) => {
       buildings.forEach((building) => {
         const gridContainer = document.getElementById("grid-container"); // All'intern dell'area
-        const width = buildingSizes[building.building_type].width; // Prendo le dimensioni dell'elemento selezionato
-        const height = buildingSizes[building.building_type].height;
+        let width = buildingSizes[building.building_type].width; // Prendo le dimensioni dell'elemento selezionato
+        let height = buildingSizes[building.building_type].height;
+        // console.log(building.rotated);
+        if (building.rotated === "yes") {
+          let temp = width;
+          width = height;
+          height = temp;
+        }
+
         const objectDiv = document.createElement("div"); // Creo una div
         objectDiv.classList.add("grid-cell"); // La div avrà classe grid-cell definita nel CSS
         // Se ho selezionato la rotonda, ha una classe specifica nel CSS
@@ -127,17 +156,68 @@ function loadBuildings() {
 }
 
 var rotated = false; // Variabile per gestire se invertire lunghezza e larghezza delle strutture
-let buildingType = "ICS"; // Inizializzazione della variabile che terrà conto dell'edificio selezionato
+let buildingType = ""; // Inizializzazione della variabile che terrà conto dell'edificio selezionato
 const MAP_SIZE = 10000; // Dimensione della mappa, 10000x10000 per questo progetto
 var isDrawing = false;
 
-// Codice per impostare l'icona selezionata, inizializzati come ICS Normale
-document.querySelector(".selectedDescription").textContent =
-  buildingType + " " + (rotated ? "Girato" : "Normale");
-document.querySelector("#selectedIcon i").className = "fa-solid fa-x";
-
 // E' la div che fa vedere la preview dell'elemento selezionato, mentre ti muovi con il mouse
 const previewDiv = document.getElementById("preview");
+
+fetch("http://localhost:3000/php/selectUserBuildings.php")
+  .then((response) => response.json())
+  .then((buildings) => {
+    const controlsContainer = document.querySelector(".controls");
+    controlsContainer.innerHTML = ""; // Svuota i pulsanti esistenti
+
+    // Aggiungi il pulsante ICS manualmente
+    const icsButton = document.createElement("button");
+    icsButton.id = "ICS";
+
+    // Aggiungi un'icona o una descrizione al pulsante ICS
+    const icsSpan = document.createElement("span");
+    icsSpan.textContent = "ICS";
+    icsButton.appendChild(icsSpan);
+
+    // Aggiungi l'event listener per il pulsante ICS
+    icsButton.addEventListener("click", () => {
+      buildingType = "ICS"; // Imposta buildingType a ICS
+      document.querySelector(".selectedDescription").textContent =
+        buildingType + " " + (rotated ? "Girato" : "Normale");
+      document.querySelector("#selectedIcon i").textContent = "ICS";
+    });
+
+    // Aggiungi il pulsante ICS al container
+    controlsContainer.appendChild(icsButton);
+
+    // Ciclo per aggiungere gli altri pulsanti dinamicamente
+    buildings.forEach((building) => {
+      // Crea un nuovo pulsante per ogni edificio
+      const button = document.createElement("button");
+      button.id = building.name; // Imposta l'id in base al nome
+
+      // Crea una <span> con le prime 3 lettere del nome
+      const span = document.createElement("span");
+      span.textContent = building.name.substring(0, 4); // Prime 3 lettere
+
+      // Aggiungi lo span al pulsante
+      button.appendChild(span);
+
+      // Aggiungi l'event listener per ogni pulsante dinamico
+      button.addEventListener("click", () => {
+        buildingType = building.name; // Imposta il buildingType al nome cliccato
+        document.querySelector(".selectedDescription").textContent =
+          buildingType + " " + (rotated ? "Girato" : "Normale");
+        document.querySelector("#selectedIcon i").textContent =
+          buildingType.substring(0, 4);
+      });
+
+      // Aggiungi il pulsante al container
+      controlsContainer.appendChild(button);
+    });
+  })
+  .catch((error) =>
+    console.error("Errore nella selezione degli edifici:", error)
+  );
 
 fetch("http://localhost:3000/php/selectBuildings.php")
   .then((response) => response.json())
@@ -153,6 +233,8 @@ fetch("http://localhost:3000/php/selectBuildings.php")
       buildingColors[building.name] = building.color;
 
       buildingHappiness[building.name] = building.happiness;
+
+      buildingCosts[building.name] = building.cost;
     });
 
     buildingSizes["ICS"] = {
@@ -161,6 +243,7 @@ fetch("http://localhost:3000/php/selectBuildings.php")
     };
     buildingColors["ICS"] = "transparent";
     buildingHappiness["ICS"] = 0;
+    buildingCosts["ICS"] = 0;
   })
   .catch((error) =>
     console.error("Errore nel caricamento degli edifici:", error)
@@ -168,55 +251,12 @@ fetch("http://localhost:3000/php/selectBuildings.php")
 const buildingSizes = {};
 const buildingColors = {};
 const buildingHappiness = {};
+const buildingCosts = {};
 
 // Funzione per ottenere il colore in base al tipo di elemento
 function getTileColor(type) {
   return buildingColors[type];
 }
-
-// Gestisce la selezione dell'elemento dai bottoni e imposta il valore all'icona selezionata
-document.getElementById("ICS").addEventListener("click", () => {
-  buildingType = "ICS";
-  document.querySelector(".selectedDescription").textContent =
-    buildingType + " " + (rotated ? "Girato" : "Normale");
-});
-
-document.getElementById("FACTORY").addEventListener("click", () => {
-  buildingType = "FACTORY";
-  document.querySelector(".selectedDescription").textContent =
-    buildingType + " " + (rotated ? "Girato" : "Normale");
-});
-
-document.getElementById("HOUSE").addEventListener("click", () => {
-  buildingType = "HOUSE";
-  document.querySelector(".selectedDescription").textContent =
-    buildingType + " " + (rotated ? "Girato" : "Normale");
-});
-
-document.getElementById("HUT").addEventListener("click", () => {
-  buildingType = "HUT";
-  document.querySelector(".selectedDescription").textContent =
-    buildingType + " " + (rotated ? "Girato" : "Normale");
-});
-
-document.getElementById("ROAD").addEventListener("click", () => {
-  buildingType = "ROAD";
-  document.querySelector(".selectedDescription").textContent =
-    buildingType + " " + (rotated ? "Girato" : "Normale");
-});
-
-document.getElementById("WATER").addEventListener("click", () => {
-  buildingType = "WATER";
-  document.querySelector(".selectedDescription").textContent =
-    buildingType + " " + (rotated ? "Girato" : "Normale");
-});
-
-document.getElementById("ROUNDABOUT").addEventListener("click", () => {
-  buildingType = "ROUNDABOUT";
-  const desc = "ROTONDA";
-  document.querySelector(".selectedDescription").textContent =
-    desc + " " + (rotated ? "Girato" : "Normale");
-});
 
 // Gestione dell'icona per la rotazione degli edifici di 90°
 document.getElementById("rotate").addEventListener("click", () => {
@@ -235,15 +275,6 @@ document.getElementById("rotate").addEventListener("click", () => {
     buildingSizes[building].width = buildingSizes[building].height;
     buildingSizes[building].height = temp;
   }
-});
-
-// Script per per gestire l'elemento selezionato
-document.querySelectorAll(".controls button").forEach((button) => {
-  button.addEventListener("click", function () {
-    const selectedIcon = document.querySelector("#selectedIcon i");
-    const iconClass = this.querySelector("i").className; // L'icona del bottone cliccato
-    selectedIcon.className = iconClass;
-  });
 });
 
 // Gestione del disabilitato, inizializzando ICS come selezionato
@@ -290,7 +321,7 @@ updateClock();
 // Chiamo la funzione ogni secondo per un aggiornamento costante
 setInterval(updateClock, 1000);
 
-loadBuildings();
+setTimeout(loadBuildings());
 
 // Gestione dei vari click
 document
@@ -305,7 +336,8 @@ document
     const ctop = e.clientY - rect.top;
     const cright = e.clientX - rect.left + width;
     const cbottom = e.clientY - rect.top + height;
-
+    // console.log(buildingCosts[buildingType]);
+    // console.log(budget);
     const result = isAreaOccupied(cleft, cright, ctop, cbottom); // Controllo se dove ho cliccato è già presente qualcosa
 
     if (result[0].success === true) {
@@ -326,6 +358,10 @@ document
           parseInt(happiness) -
             parseInt(buildingHappiness[result[0].buildingType])
         );
+
+        updateBudgetDB(
+          parseInt(budget) + parseInt(buildingCosts[result[0].buildingType])
+        );
       }
       return;
     } else {
@@ -339,7 +375,11 @@ document
           parseInt(happiness) + parseInt(buildingHappiness[buildingType])
         );
 
-        saveBuildingDB(buildingType, cleft, ctop);
+        updateBudgetDB(
+          parseInt(budget) - parseInt(buildingCosts[buildingType])
+        );
+
+        saveBuildingDB(buildingType, cleft, ctop, rotated);
       }
     }
   });
@@ -395,7 +435,9 @@ document
         parseInt(happiness) + parseInt(buildingHappiness[buildingType])
       );
 
-      saveBuildingDB(buildingType, left, top);
+      updateBudgetDB(parseInt(budget) - parseInt(buildingCosts[buildingType]));
+
+      saveBuildingDB(buildingType, left, top, rotated);
     }
   });
 

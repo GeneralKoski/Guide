@@ -4,7 +4,7 @@ include('../php/config.php');
 
 $mapid = 1;
 
-$sql = "SELECT (SELECT b.name FROM Buildings b WHERE b.id = mb.MBbuilding_id) as building_type, mb.x_coordinate, mb.y_coordinate FROM MapBuildings mb WHERE mb.MBmap_id = $mapid";
+$sql = "SELECT (SELECT b.name FROM Buildings b WHERE b.id = mb.MBbuilding_id) as building_type, mb.x_coordinate, mb.y_coordinate, mb.rotated FROM MapBuildings mb WHERE mb.MBmap_id = $mapid";
 $res = $conn->query($sql);
 
 $buildings = [];

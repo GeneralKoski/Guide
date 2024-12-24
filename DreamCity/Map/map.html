@@ -19,15 +19,7 @@
   <body>
     <div class="btn-group-vertical position-fixed p-2">
       <div class="row row-cols-2 g-2 controls">
-        <button id="ICS"><i class="fa-solid fa-x"></i></button>
-        <button id="FACTORY"><i class="fa-solid fa-industry"></i></button>
-        <button id="HOUSE"><i class="fa-solid fa-house"></i></button>
-        <button id="HUT"><i class="fa-solid fa-store"></i></button>
-        <button id="ROAD"><i class="fa-solid fa-road"></i></button>
-        <button id="ROUNDABOUT">
-          <i class="fa-regular fa-circle"></i>
-        </button>
-        <button id="WATER"><i class="fa-solid fa-water"></i></button>
+        <button id="ICS"><i class="null"></i></button>
       </div>
     </div>
 
@@ -61,24 +53,28 @@
     <div id="grid-container"></div>
 
     <div class="userDescription position-fixed end-0">
-      <a href="http://localhost:3000/php/logout.php"
-        ><i class="fa-solid fa-sign-out"></i
-      ></a>
+      <div id="buttons">
+        <a id="logout" href="http://localhost:3000/php/logout.php"
+          ><i class="fa-solid fa-sign-out"></i
+        ></a>
+        <!-- DA IMPLEMENTARE IL WINDOW.REF ALLA PAGINA DELLE MAPPE -->
+        <a id="maps" href=""><i class="fa-solid fa-map"></i></a>
+      </div>
 
-      <!-- DA IMPLEMENTARE IL WINDOW.REF ALLA PAGINA DELLE MAPPE -->
-      <a href=""><i class="fa-solid fa-map"></i></a>
-      <br />
       <img src="/prova.jpg" alt="Profilo" />
-      <h3 id="username"></h3>
+
+      <h3 id="username" class="text-center"></h3>
+
       <h6 id="role"></h6>
+
       <div>
-        <span id="mapName"></span> <br />
-        <span id="happiness">1</span>
+        <span><b>Budget: </b><span id="budget"></span></span> <br />
+        <span><b>Mappa: </b><span id="mapName"></span></span> <br />
+        <span><b>Felicità: </b><span id="happiness"></span></span>
         <div class="progress">
           <div
             class="progress-bar progress-bar-striped"
             role="progressbar"
-            style="width: 20%"
           ></div>
         </div>
       </div>
