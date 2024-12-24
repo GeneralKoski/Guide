@@ -171,27 +171,27 @@ fetch("http://localhost:3000/php/selectUserBuildings.php")
     const controlsContainer = document.querySelector(".controls");
     controlsContainer.innerHTML = ""; // Svuota i pulsanti esistenti
 
-    // Aggiungi il pulsante ICS manualmente
-    const icsButton = document.createElement("button");
-    icsButton.id = "ICS";
+    // Aggiungi il pulsante CANC manualmente
+    const CANCButton = document.createElement("button");
+    CANCButton.id = "CANC";
 
-    // Aggiungi un'icona o una descrizione al pulsante ICS
-    const icsSpan = document.createElement("span");
-    icsSpan.textContent = "ICS";
-    icsButton.appendChild(icsSpan);
+    // Aggiungi un'icona o una descrizione al pulsante CANC
+    const CANCSpan = document.createElement("span");
+    CANCSpan.textContent = "CANC";
+    CANCButton.appendChild(CANCSpan);
 
-    // Aggiungi l'event listener per il pulsante ICS
-    icsButton.addEventListener("click", () => {
-      buildingType = "ICS"; // Imposta buildingType a ICS
+    // Aggiungi l'event listener per il pulsante CANC
+    CANCButton.addEventListener("click", () => {
+      buildingType = "CANC"; // Imposta buildingType a CANC
       document.querySelector(".selectedDescription").textContent =
         buildingType + " " + (rotated ? "Girato" : "Normale");
-      document.querySelector("#selectedIcon i").textContent = "ICS";
+      document.querySelector("#selectedIcon i").textContent = "CANC";
     });
 
-    userBuildings.push("ICS");
+    userBuildings.push("CANC");
 
-    // Aggiungi il pulsante ICS al container
-    controlsContainer.appendChild(icsButton);
+    // Aggiungi il pulsante CANC al container
+    controlsContainer.appendChild(CANCButton);
 
     // Ciclo per aggiungere gli altri pulsanti dinamicamente
     buildings.forEach((building) => {
@@ -244,13 +244,13 @@ fetch("http://localhost:3000/php/selectBuildings.php")
       buildingCosts[building.name] = building.cost;
     });
 
-    buildingSizes["ICS"] = {
+    buildingSizes["CANC"] = {
       width: 0,
       height: 0,
     };
-    buildingColors["ICS"] = "transparent";
-    buildingHappiness["ICS"] = 0;
-    buildingCosts["ICS"] = 0;
+    buildingColors["CANC"] = "transparent";
+    buildingHappiness["CANC"] = 0;
+    buildingCosts["CANC"] = 0;
   })
   .catch((error) =>
     console.error("Errore nel caricamento degli edifici:", error)
@@ -284,8 +284,8 @@ document.getElementById("rotate").addEventListener("click", () => {
   }
 });
 
-// Gestione del disabilitato, inizializzando ICS come selezionato
-let previousButton = document.querySelector("#ICS");
+// Gestione del disabilitato, inizializzando CANC come selezionato
+let previousButton = document.querySelector("#CANC");
 previousButton.disabled = true;
 
 document.querySelectorAll(".controls button").forEach((button) => {
@@ -350,7 +350,7 @@ document
 
       if (result[0].success === true) {
         // Se c'è qualcosa e ho selezionato il tasto per cancellare cancello la div
-        if (buildingType === "ICS") {
+        if (buildingType === "CANC") {
           const buildingType = result[0].tile.getAttribute("building-type"); // Prendo il suo tipo di elemento
           if (userBuildings.includes(buildingType)) {
             const [x_coordinate, xr] = result[0].tile.dataset.x
@@ -380,7 +380,7 @@ document
           return;
         }
       } else {
-        if (buildingType !== "ICS") {
+        if (buildingType !== "CANC") {
           // Se non c'è nulla, disegno
           previewDiv.style.display = "none"; // Nasconde la preview finchè non mi muovo con il mouse
 
@@ -443,7 +443,7 @@ document
         buildingType !== "ROUNDABOUT" &&
         isAreaOccupied(left, right, top, bottom)[0].success === false &&
         isDrawing &&
-        buildingType !== "ICS"
+        buildingType !== "CANC"
       ) {
         const rect = this.getBoundingClientRect();
         const left = e.clientX - rect.left;
