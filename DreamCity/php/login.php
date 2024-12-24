@@ -29,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password,
         $user['password']
     )) {
+        $_SESSION['id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
+        echo $user;
         echo "  <script>
                     alert('Utente loggato con successo! Benvenut* $_SESSION[username]'); 
                     window.location.href='/Map/map.html';

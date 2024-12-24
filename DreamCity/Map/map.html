@@ -70,10 +70,10 @@
       <br />
       <img src="/prova.jpg" alt="Profilo" />
       <h3 id="username"></h3>
-      <h6 id="username">Ruolo</h6>
+      <h6 id="role"></h6>
       <div>
-        <span>mapname</span> <br />
-        <span>Felicità</span>
+        <span id="mapName"></span> <br />
+        <span id="happiness">1</span>
         <div class="progress">
           <div
             class="progress-bar progress-bar-striped"
@@ -94,14 +94,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script>
-      fetch("http://localhost:3000/php/userDetails.php")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("username").textContent = data;
-        })
-        .catch((error) => console.error("Errore nella richiesta:", error));
-    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
   </body>
 </html>
