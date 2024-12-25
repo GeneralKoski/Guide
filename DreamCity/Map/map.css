@@ -57,6 +57,9 @@ body {
 }
 
 .userDescription {
+  border: 2px dashed black;
+  display: flex;
+  flex-direction: column;
   width: 160px;
   height: auto;
   background-color: transparent;
@@ -64,13 +67,23 @@ body {
 }
 
 #buttons {
-  font-size: 30px;
+  font-size: 25px;
+  width: 160px;
   display: flex;
-  justify-content: center;
-  margin-right: 10px;
+  flex-direction: column;
 }
-#buttons a {
-  margin-right: 10px;
+
+.pfp {
+  width: 160px;
+  text-align: center;
+}
+
+#avatar {
+  max-width: 60px;
+  min-width: 60px;
+  max-height: 60px;
+  min-height: 60px;
+  border-radius: 50%;
 }
 
 #logout {

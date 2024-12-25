@@ -52,18 +52,25 @@
 
     <div id="grid-container"></div>
 
-    <div class="userDescription position-fixed end-0">
+    <div class="userDescription position-fixed end-0 text-center">
       <div id="buttons">
         <a id="logout" href="http://localhost:3000/php/logout.php"
-          ><i class="fa-solid fa-sign-out"></i
-        ></a>
-        <!-- DA IMPLEMENTARE IL WINDOW.REF ALLA PAGINA DELLE MAPPE -->
-        <a id="maps" href=""><i class="fa-solid fa-map"></i></a>
+          ><i class="fa-solid fa-sign-out"></i> LOGOUT</a
+        >
+
+        <a
+          id="maps"
+          href="#"
+          onclick="window.location.href='/MapChoices/mapChoice.html'"
+          ><i class="fa-solid fa-map"></i> MAPPE</a
+        >
       </div>
 
-      <img src="/prova.jpg" alt="Profilo" />
+      <div class="pfp">
+        <img id="avatar" src="" alt="Profilo" />
+      </div>
 
-      <h3 id="username" class="text-center"></h3>
+      <h3 id="username"></h3>
 
       <h6 id="role"></h6>
 

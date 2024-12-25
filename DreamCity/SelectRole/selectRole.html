@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seleziona il Ruolo</title>
+    <link rel="stylesheet" href="selectRole.css" />
+  </head>
+  <body>
+    <h2>Non hai un ruolo in questa mappa!</h2>
+    <h1>Seleziona il tuo ruolo</h1>
+
+    <form action="http://localhost:3000/php/addRole.php" method="POST">
+      <label for="role">Ruolo:</label>
+      <select id="role" name="role" required></select>
+
+      <input type="hidden" name="userId" id="userId" />
+      <input type="hidden" name="mapId" id="mapId" />
+      <input type="submit" value="Seleziona Ruolo" />
+    </form>
+
+    <script>
+      // Funzione per ottenere i parametri dalla URL
+      function getQueryParams() {
+        const params = {};
+        window.location.search
+          .substring(1)
+          .split("&")
+          .forEach(function (pair) {
+            let [key, value] = pair.split("=");
+            params[key] = decodeURIComponent(value);
+          });
+        return params;
+      }
+
+      // Funzione per caricare i ruoli dal server
+      function loadRoles() {
+        const params = getQueryParams();
+        const mapId = params["mapId"];
+
+        const url = `http://localhost:3000/php/selectRole.php?mapId=${mapId}`;
+        // Crea una richiesta AJAX
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            const roles = JSON.parse(xhr.responseText);
+            const roleSelect = document.getElementById("role");
+
+            // Aggiungi le opzioni dinamicamente
+            roles.forEach((role) => {
+              const option = document.createElement("option");
+              option.value = role;
+              option.textContent = role;
+              roleSelect.appendChild(option);
+            });
+          }
+        };
+        xhr.send();
+      }
+
+      // Impostare i valori di userId e mapId nei campi nascosti
+      document.addEventListener("DOMContentLoaded", function () {
+        const params = getQueryParams();
+        document.getElementById("userId").value = params["userId"] || "";
+        document.getElementById("mapId").value = params["mapId"] || "";
+
+        // Carica i ruoli
+        loadRoles();
+      });
+    </script>
+  </body>
+</html>
