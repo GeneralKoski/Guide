@@ -1,11 +1,11 @@
 <?php
 session_start();
-include('../php/config.php');  // Connessione al database
+include ('../php/config.php');  // Connessione al database
 
-$mapid = 1; // Diventerà l'id della mappa dove sono entrato
+$mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 $value = isset($_GET['value']) ? $_GET['value'] : '';
 
-$sql = "UPDATE Maps SET happiness = $value WHERE id = $mapid";
+$sql = "UPDATE Maps SET happiness = $value WHERE id = $mapId";
 $res = $conn->query($sql);
 
 if (!$res) {

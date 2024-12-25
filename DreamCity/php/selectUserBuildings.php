@@ -3,9 +3,9 @@ session_start();
 include ('../php/config.php');
 
 $userId = $_SESSION['id'];
-$mapId = 1;
+$mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 
-$sql = "SELECT d.Drole_id as id FROM Departments d WHERE user_id = $userId";
+$sql = "SELECT d.Drole_id as id FROM Departments d WHERE user_id = $userId AND Dmap_id = $mapId";
 $res = $conn->query($sql);
 $userBuildings = [];
 if ($res) {

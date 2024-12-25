@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../php/config.php');  // Connessione al database
+include ('../php/config.php');  // Connessione al database
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Recupera i dati dal modulo
@@ -33,8 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $_SESSION['username'] = $user['username'];
         echo $user;
         echo "  <script>
-                    alert('Utente loggato con successo! Benvenut* $_SESSION[username]'); 
-                    window.location.href='/Map/map.html';
+                    window.location.href='/MapChoices/mapChoice.html';
                 </script>
             ";
     } else {

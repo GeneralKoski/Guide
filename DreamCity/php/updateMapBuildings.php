@@ -1,8 +1,8 @@
 <?php
 session_start();
-include('../php/config.php');  // Connessione al database
+include ('../php/config.php');  // Connessione al database
 
-$mapId = 1; // Diventerà l'id della mappa dove sono entrato
+$mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 $x_coordinate = isset($_GET['x_coordinate']) ? $_GET['x_coordinate'] : '';
 $y_coordinate = isset($_GET['y_coordinate']) ? $_GET['y_coordinate'] : '';
 
