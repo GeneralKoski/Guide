@@ -98,3 +98,9 @@ body {
   border: 10px solid #7f7f7f;
   border-radius: 100px;
 }
+.messaggi i {
+  background-color: white;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+}

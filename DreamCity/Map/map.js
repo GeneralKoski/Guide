@@ -166,7 +166,6 @@ function loadBuildings() {
 
 var rotated = false; // Variabile per gestire se invertire lunghezza e larghezza delle strutture
 let buildingType = ""; // Inizializzazione della variabile che terrà conto dell'edificio selezionato
-const MAP_SIZE = 10000; // Dimensione della mappa, 10000x10000 per questo progetto
 var isDrawing = false;
 
 // E' la div che fa vedere la preview dell'elemento selezionato, mentre ti muovi con il mouse

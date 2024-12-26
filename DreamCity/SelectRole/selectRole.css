@@ -40,3 +40,11 @@ input[type="submit"] {
 input[type="submit"]:hover {
   background-color: #0056b3;
 }
+
+#maps {
+  font-size: 30px;
+  position: absolute;
+  margin-top: 10px;
+  top: 0;
+  color: black;
+}

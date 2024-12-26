@@ -4,31 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Crea una nuova mappa</title>
-    <link rel="stylesheet" href="/Map/creaMappa.css" />
+    <link rel="stylesheet" href="/CreateMap/createMap.css" />
+    <link rel="stylesheet" href="/loader.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="/loader.js"></script>
   </head>
   <body>
-    <h1>Crea una nuova mappa</h1>
-    <form
-      action="http://localhost:3000/php/createMap.php"
-      method="POST"
-      enctype="multipart/form-data"
-    >
-      <label for="nome">Nome Mappa:</label>
-      <input type="text" id="nome" name="nome" required />
+    <div class="loader"></div>
+    <a
+      id="maps"
+      href="#"
+      onclick="window.location.href='/MapChoices/mapChoice.html'"
+      ><i class="fa-solid fa-arrow-circle-left"></i
+    ></a>
+    <div class="creationFrom">
+      <h1>Crea una nuova mappa</h1>
+      <form
+        action="http://localhost:3000/php/createMap.php"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <label for="nome">Nome Mappa:</label>
+        <input type="text" id="nome" name="nome" required />
 
-      <label for="descrizione">Descrizione:</label>
-      <textarea id="descrizione" name="descrizione" required></textarea>
+        <label for="descrizione">Descrizione:</label>
+        <textarea id="descrizione" name="descrizione" required></textarea>
 
-      <label for="immagine">Immagine Mappa:</label>
-      <input
-        type="file"
-        id="immagine"
-        name="immagine"
-        accept="image/*"
-        required
-      />
+        <label for="immagine">Immagine Mappa:</label>
+        <input
+          type="file"
+          id="immagine"
+          name="immagine"
+          accept="image/*"
+          required
+        />
 
-      <button type="submit">Crea Mappa</button>
-    </form>
+        <button type="submit">Crea Mappa</button>
+      </form>
+    </div>
   </body>
 </html>
