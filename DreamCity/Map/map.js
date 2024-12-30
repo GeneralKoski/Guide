@@ -1,3 +1,115 @@
+fetch("http://localhost:3000/php/selectAllMessages.php")
+  .then((response) => response.json())
+  .then((messages) => {
+    const messageContainer = document.querySelector("#messagesContainer");
+    messageContainer.innerHTML = ""; // Svuota i messaggi esistenti
+
+    const addMessageBtn = document.createElement("button");
+    addMessageBtn.classList.add("add-message-btn");
+    addMessageBtn.id = "addMessageBtn";
+    addMessageBtn.textContent = "+ Crea nuovo messaggio";
+    messageContainer.appendChild(addMessageBtn);
+
+    messages.forEach((message) => {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message");
+
+      // Aggiungi il Tipo
+      const typeElement = document.createElement("h2");
+      typeElement.textContent = message.type;
+      messageDiv.appendChild(typeElement);
+
+      // Aggiungi il Mittente
+      const senderElement = document.createElement("p");
+      senderElement.innerHTML = `<strong>Mittente:</strong> ${message.sender}`;
+      messageDiv.appendChild(senderElement);
+
+      // Aggiungi il Titolo
+      const titleElement = document.createElement("p");
+      titleElement.innerHTML = `<strong>Titolo:</strong> ${message.title}`;
+      messageDiv.appendChild(titleElement);
+
+      // Aggiungi il Contenuto
+      const contentElement = document.createElement("p");
+      contentElement.textContent = message.content;
+      messageDiv.appendChild(contentElement);
+
+      // Se il tipo non è "Message", aggiungi i bottoni
+      if (message.type !== "Message") {
+        const buttonsDiv = document.createElement("div");
+        buttonsDiv.classList.add("buttons");
+
+        const acceptButton = document.createElement("button");
+        acceptButton.textContent = "Accetta";
+        buttonsDiv.appendChild(acceptButton);
+
+        const rejectButton = document.createElement("button");
+        rejectButton.textContent = "Rifiuta";
+        buttonsDiv.appendChild(rejectButton);
+
+        messageDiv.appendChild(buttonsDiv);
+      }
+
+      // Aggiungi il messaggio al container
+      messageContainer.appendChild(messageDiv);
+    });
+  })
+  .catch((error) => {
+    console.error("Errore nel caricamento delle mappe:", error);
+  });
+
+const toggleButton = document.getElementById("toggleMessagesBtn");
+const messagesContainer = document.getElementById("messagesContainer");
+const addMessageButton = document.getElementById("addMessageBtn");
+const messageModal = document.getElementById("messageModal");
+
+toggleButton.addEventListener("click", () => {
+  messagesContainer.classList.toggle("open");
+  addMessageButton.style.display =
+    addMessageButton.style.display === "block" ? "none" : "block";
+});
+
+addMessageButton.addEventListener("click", () => {
+  messageModal.style.display = "flex";
+});
+
+function closeModal() {
+  messageModal.style.display = "none";
+}
+
+function sendMessage() {
+  const messageType = document.getElementById("messageType").value;
+  const recipient = document.getElementById("recipient").value;
+  const content = document.getElementById("messageContent").value;
+
+  if (recipient && content) {
+    const newMessageSection = document.createElement("div");
+    newMessageSection.classList.add("message");
+
+    if (messageType === "info") {
+      newMessageSection.innerHTML = `
+              <h2>Messaggio Info</h2>
+              <p><strong>Mittente:</strong> ${recipient}</p>
+              <p>${content}</p>
+            `;
+    } else if (messageType === "work") {
+      newMessageSection.innerHTML = `
+              <h2>Richiesta di lavoro</h2>
+              <p><strong>Mittente:</strong> ${recipient}</p>
+              <p>${content}</p>
+              <div class="buttons">
+                <button>Accetta</button>
+                <button>Rifiuta</button>
+              </div>
+            `;
+    }
+
+    messagesContainer.appendChild(newMessageSection);
+  }
+
+  closeModal();
+}
+
 const params = new URLSearchParams(window.location.search);
 const mapId = params.get("id"); // Restituisce il valore dell'ID
 
