@@ -454,7 +454,7 @@ document.querySelectorAll(".controls button").forEach((button) => {
 function updateClock() {
   const now = new Date(); // Ottieni la data e l'orario correnti
   let year = now.getFullYear().toString().padStart(2, "0"); // Anno
-  let month = now.getMonth().toString().padStart(2, "0"); // Mese
+  let month = (now.getMonth() + 1).toString().padStart(2, "0"); // Mese
   let day = now.getDate().toString().padStart(2, "0"); // Giorno
   let hour = now.getHours().toString().padStart(2, "0"); // Ore
   let minute = now.getMinutes().toString().padStart(2, "0"); // Minuti
