@@ -2,13 +2,17 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
   .then((response) => response.json())
   .then((messages) => {
     const messageContainer = document.querySelector("#messagesContainer");
-    messageContainer.innerHTML = ""; // Svuota i messaggi esistenti
+    messageContainer.innerHTML = "";
 
     const addMessageBtn = document.createElement("button");
     addMessageBtn.classList.add("add-message-btn");
     addMessageBtn.id = "addMessageBtn";
     addMessageBtn.textContent = "+ Crea nuovo messaggio";
     messageContainer.appendChild(addMessageBtn);
+
+    addMessageBtn.addEventListener("click", () => {
+      messageModal.style.display = "flex";
+    });
 
     messages.forEach((message) => {
       const messageDiv = document.createElement("div");
@@ -37,14 +41,15 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
       // Se il tipo non è "Message", aggiungi i bottoni
       if (message.type !== "Message") {
         const buttonsDiv = document.createElement("div");
-        buttonsDiv.classList.add("buttons");
 
         const acceptButton = document.createElement("button");
         acceptButton.textContent = "Accetta";
+        acceptButton.classList.add("acceptdecline");
         buttonsDiv.appendChild(acceptButton);
 
         const rejectButton = document.createElement("button");
         rejectButton.textContent = "Rifiuta";
+        rejectButton.classList.add("acceptdecline");
         buttonsDiv.appendChild(rejectButton);
 
         messageDiv.appendChild(buttonsDiv);
@@ -55,22 +60,15 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
     });
   })
   .catch((error) => {
-    console.error("Errore nel caricamento delle mappe:", error);
+    console.error("Errore nel caricamento dei messaggi:", error);
   });
 
 const toggleButton = document.getElementById("toggleMessagesBtn");
 const messagesContainer = document.getElementById("messagesContainer");
-const addMessageButton = document.getElementById("addMessageBtn");
 const messageModal = document.getElementById("messageModal");
 
 toggleButton.addEventListener("click", () => {
   messagesContainer.classList.toggle("open");
-  addMessageButton.style.display =
-    addMessageButton.style.display === "block" ? "none" : "block";
-});
-
-addMessageButton.addEventListener("click", () => {
-  messageModal.style.display = "flex";
 });
 
 function closeModal() {
@@ -78,37 +76,65 @@ function closeModal() {
 }
 
 function sendMessage() {
-  const messageType = document.getElementById("messageType").value;
-  const recipient = document.getElementById("recipient").value;
+  const type = document.getElementById("messageType").value;
+  const receiver = document.getElementById("receiver").value;
+  const title = document.getElementById("messageTitle").value;
   const content = document.getElementById("messageContent").value;
 
-  if (recipient && content) {
-    const newMessageSection = document.createElement("div");
-    newMessageSection.classList.add("message");
+  // Crea un oggetto con i dati da inviare
+  const messageData = {
+    type: type,
+    receiver: receiver,
+    title: title,
+    content: content,
+    mapId: mapId,
+  };
 
-    if (messageType === "info") {
-      newMessageSection.innerHTML = `
-              <h2>Messaggio Info</h2>
-              <p><strong>Mittente:</strong> ${recipient}</p>
-              <p>${content}</p>
-            `;
-    } else if (messageType === "work") {
-      newMessageSection.innerHTML = `
-              <h2>Richiesta di lavoro</h2>
-              <p><strong>Mittente:</strong> ${recipient}</p>
-              <p>${content}</p>
-              <div class="buttons">
-                <button>Accetta</button>
-                <button>Rifiuta</button>
-              </div>
-            `;
-    }
+  // Esegui la chiamata POST al file PHP
+  fetch("http://localhost:3000/php/insertMessage.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(messageData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success === false) {
+        console.log(data.message);
+      } else {
+        console.log("Messaggio inviato con successo:", data);
+      }
 
-    messagesContainer.appendChild(newMessageSection);
-  }
-
-  closeModal();
+      closeModal();
+    })
+    .catch((error) => {
+      console.error("Errore nell'invio del messaggio:", error);
+    });
 }
+
+function populateReceiverOptions() {
+  fetch("http://localhost:3000/php/selectAllUsers.php") // Percorso del file PHP
+    .then((response) => response.json())
+    .then((users) => {
+      const receiverSelect = document.getElementById("receiver");
+      receiverSelect.innerHTML = ""; // Svuota le opzioni esistenti
+
+      // Popola le opzioni con gli ID degli utenti
+      users.forEach((user) => {
+        const option = document.createElement("option");
+        option.value = user.id; // Imposta il value all'ID dell'utente
+        option.textContent = user.username; // Testo dell'opzione uguale all'ID
+        receiverSelect.appendChild(option);
+      });
+    })
+    .catch((error) => {
+      console.error("Errore nel caricamento degli utenti:", error);
+    });
+}
+
+// Esegui la funzione per popolare il select al caricamento della pagina o dell'elemento modale
+populateReceiverOptions();
 
 const params = new URLSearchParams(window.location.search);
 const mapId = params.get("id"); // Restituisce il valore dell'ID

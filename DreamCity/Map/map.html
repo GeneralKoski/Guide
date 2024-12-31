@@ -108,24 +108,27 @@
             <h2>Nuovo Messaggio</h2>
             <label for="messageType">Tipo di Messaggio:</label>
             <select id="messageType">
-              <option value="info">Message</option>
-              <option value="work">Invite</option>
-              <option value="work">ChangeRole</option>
+              <option value="Message">Message</option>
+              <option value="Invite">Invite</option>
+              <option value="ChangeRole">ChangeRole</option>
             </select>
-            <label for="recipient">Destinatario:</label>
-            <select id="recipient">
-              <option value="User1">User1</option>
-              <option value="User2">User2</option>
-              <option value="User3">User3</option>
-              <option value="User4">User4</option>
-            </select>
+            <label for="receiver">Destinatario:</label>
+            <select id="receiver"></select>
+            <label for="messageTitle">Titolo:</label>
+            <input
+              id="messageTitle"
+              placeholder="Scrivi il tuo titolo..."
+              type="text"
+            />
             <label for="messageContent">Messaggio:</label>
             <textarea
               id="messageContent"
               placeholder="Scrivi il tuo messaggio..."
             ></textarea>
-            <button onclick="sendMessage()">Invia</button>
-            <button onclick="closeModal()">Annulla</button>
+            <div class="buttons">
+              <button onclick="sendMessage()">Invia</button>
+              <button onclick="closeModal()">Annulla</button>
+            </div>
           </div>
         </div>
       </div>
