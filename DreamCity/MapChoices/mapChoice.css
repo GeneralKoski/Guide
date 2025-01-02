@@ -54,9 +54,16 @@ h1 {
 }
 
 .descrizione-mappa {
-  padding: 0 10px 20px;
+  padding: 0 10px;
   color: lightgrey;
   font-size: 0.9em;
+}
+
+.felicita-mappa {
+  padding: 0 10px;
+  color: rgb(247, 255, 17);
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .aggiungi-mappa {

@@ -31,6 +31,11 @@ fetch("http://localhost:3000/php/allMaps.php")
       descrizioneMappa.classList.add("descrizione-mappa");
       descrizioneMappa.textContent = mappa.description;
 
+      // Crea la descrizione
+      const felicitaMappa = document.createElement("p");
+      felicitaMappa.classList.add("felicita-mappa");
+      felicitaMappa.textContent = "Happiness: " + mappa.happiness;
+
       // Crea il bottone di eliminazione
       const bottoneElimina = document.createElement("button");
       bottoneElimina.classList.add("delete-button");
@@ -66,6 +71,7 @@ fetch("http://localhost:3000/php/allMaps.php")
       boxMappa.appendChild(immagineMappa);
       boxMappa.appendChild(titoloMappa);
       boxMappa.appendChild(descrizioneMappa);
+      boxMappa.appendChild(felicitaMappa);
       boxMappa.appendChild(bottoneElimina);
 
       // Aggiungi la nuova mappa alla griglia
