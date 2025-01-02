@@ -20,7 +20,7 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
 
       // Aggiungi il Tipo
       const typeElement = document.createElement("h2");
-      typeElement.textContent = message.type;
+      typeElement.textContent = message.type + " da Mappa " + message.mapID;
       messageDiv.appendChild(typeElement);
 
       // Aggiungi il Mittente
@@ -53,6 +53,71 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
         buttonsDiv.appendChild(rejectButton);
 
         messageDiv.appendChild(buttonsDiv);
+
+        acceptButton.addEventListener("click", () => {
+          if (message.type === "Invite") {
+            // Fai una chiamata al backend per cancellare il messaggio
+            fetch("http://localhost:3000/php/deleteMessage.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                id: message.id, // Passa l'ID del messaggio da cancellare
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  console.log("Messaggio cancellato con successo");
+                  // Dopo aver cancellato il messaggio, reindirizza l'utente alla mappa
+                  window.location.href = `/Map/map.html?id=${message.mapID}`;
+                } else {
+                  console.error(
+                    "Errore nella cancellazione del messaggio:",
+                    data.message
+                  );
+                }
+              })
+              .catch((error) => {
+                console.error("Errore nella richiesta:", error);
+              });
+          } else if (message.type === "ChangeRole") {
+            changeRolesInMap(message.mapID, message.sender_id, message.id);
+
+            window.location.href = `/Map/map.html?id=${message.mapID}`;
+          }
+        });
+
+        // Aggiungi gestione dell'evento per il pulsante "Rifiuta"
+        rejectButton.addEventListener("click", function () {
+          // Fai una chiamata al backend per cancellare il messaggio
+          fetch("http://localhost:3000/php/deleteMessage.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: message.id, // Passa l'ID del messaggio da cancellare
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                console.log("Messaggio cancellato con successo");
+                // Rimuovi il messaggio dall'interfaccia
+                messageDiv.remove();
+              } else {
+                console.error(
+                  "Errore nella cancellazione del messaggio:",
+                  data.message
+                );
+              }
+            })
+            .catch((error) => {
+              console.error("Errore nella richiesta:", error);
+            });
+        });
       }
 
       // Aggiungi il messaggio al container
@@ -62,6 +127,32 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
   .catch((error) => {
     console.error("Errore nel caricamento dei messaggi:", error);
   });
+
+function changeRolesInMap(mapID, sender_id, id) {
+  const changeRoleData = {
+    mapID: mapID,
+    sender_id: sender_id,
+    id: id,
+  };
+  fetch("http://localhost:3000/php/changeRole.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(changeRoleData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success === false) {
+        console.log(data.message);
+      } else {
+        console.log("Ruoli cambiati con successo:", data);
+      }
+    })
+    .catch((error) => {
+      console.error("Errore nel cambiamento del messaggio:", error);
+    });
+}
 
 const toggleButton = document.getElementById("toggleMessagesBtn");
 const messagesContainer = document.getElementById("messagesContainer");
