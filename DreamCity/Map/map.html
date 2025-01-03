@@ -38,23 +38,6 @@
       </div>
     </div>
 
-    <div class="position-fixed bottom-0 end-0">
-      <div class="card bg-success text-white">
-        <h5 class="text-center">
-          DateTime
-          <div class="d-flex flex-wrap justify-content-center">
-            <span class="badge day"></span>/ <span class="badge month"></span>/
-            <span class="badge year"></span>
-          </div>
-          <div class="d-flex flex-wrap justify-content-center">
-            <span class="badge hour"></span> :
-            <span class="badge minute"></span> :
-            <span class="badge second"></span>
-          </div>
-        </h5>
-      </div>
-    </div>
-
     <div id="grid-container"></div>
 
     <div class="userDescription position-fixed end-0 text-center">
@@ -97,41 +80,54 @@
           aria-label="Mostra messaggi"
         >
           <i class="fa-regular fa-message"></i>
+          <div class="messages" id="messagesContainer"></div>
         </button>
+      </div>
 
-        <div class="messages" id="messagesContainer">
-          <button class="add-message-btn" id="addMessageBtn">
-            + Crea nuovo messaggio
-          </button>
-        </div>
-
-        <div class="modal" id="messageModal">
-          <div class="modal-content">
-            <h2>Nuovo Messaggio</h2>
-            <label for="messageType">Tipo di Messaggio:</label>
-            <select id="messageType">
-              <option value="Message">Message</option>
-              <option value="Invite">Invite</option>
-              <option value="ChangeRole">ChangeRole</option>
-            </select>
-            <label for="receiver">Destinatario:</label>
-            <select id="receiver"></select>
-            <label for="messageTitle">Titolo:</label>
-            <input
-              id="messageTitle"
-              placeholder="Scrivi il tuo titolo..."
-              type="text"
-            />
-            <label for="messageContent">Messaggio:</label>
-            <textarea
-              id="messageContent"
-              placeholder="Scrivi il tuo messaggio..."
-            ></textarea>
-            <div class="buttons">
-              <button onclick="sendMessage()">Invia</button>
-              <button onclick="closeModal()">Annulla</button>
+      <div class="position-fixed bottom-0 end-0" style="width: 160px">
+        <div class="card bg-success text-white" style="border-radius: 0">
+          <h5 class="text-center">
+            Data e Ora
+            <div class="d-flex flex-wrap justify-content-center">
+              <span class="badge day"></span>/
+              <span class="badge month"></span>/
+              <span class="badge year"></span>
             </div>
-          </div>
+            <div class="d-flex flex-wrap justify-content-center">
+              <span class="badge hour"></span> :
+              <span class="badge minute"></span> :
+              <span class="badge second"></span>
+            </div>
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="messageModal">
+      <div class="modal-content">
+        <h2>Nuovo Messaggio</h2>
+        <label for="messageType">Tipo di Messaggio:</label>
+        <select id="messageType">
+          <option value="Message">Message</option>
+          <option value="Invite">Invite</option>
+          <option value="ChangeRole">ChangeRole</option>
+        </select>
+        <label for="receiver">Destinatario:</label>
+        <select id="receiver"></select>
+        <label for="messageTitle">Titolo:</label>
+        <input
+          id="messageTitle"
+          placeholder="Scrivi il tuo titolo..."
+          type="text"
+        />
+        <label for="messageContent">Messaggio:</label>
+        <textarea
+          id="messageContent"
+          placeholder="Scrivi il tuo messaggio..."
+        ></textarea>
+        <div class="buttons">
+          <button onclick="sendMessage()">Invia</button>
+          <button onclick="closeModal()">Annulla</button>
         </div>
       </div>
     </div>

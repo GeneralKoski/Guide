@@ -2,7 +2,7 @@
 session_start();
 include ('../php/config.php');  // Connessione al database
 
-$sql = 'SELECT * FROM Maps m';
+$sql = 'SELECT * FROM Maps m ORDER BY m.happiness DESC';
 $res = $conn->query($sql);
 
 if (!$res) {

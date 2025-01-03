@@ -17,7 +17,6 @@ body {
   position: absolute;
   width: 1px;
   height: 1px;
-  background-color: green;
 }
 
 .controls {
@@ -57,12 +56,12 @@ body {
 }
 
 .userDescription {
-  border: 2px dashed black;
+  border: 2px solid black;
   display: flex;
   flex-direction: column;
   width: 160px;
-  height: auto;
-  background-color: transparent;
+  height: 100%;
+  background-color: #6dcf40;
   color: black;
 }
 
@@ -115,9 +114,9 @@ body {
 }
 
 .messages {
-  position: fixed;
-  top: 320px;
-  right: 80px;
+  position: relative;
+  right: 1450%;
+  top: -50%;
   width: 300px;
   max-height: 300px;
   background-color: #fff;
