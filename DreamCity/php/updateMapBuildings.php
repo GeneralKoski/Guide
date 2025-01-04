@@ -13,4 +13,3 @@ if (!$res) {
     echo $conn->error . '<br>';
     return;
 }
-$res->fetch_assoc();

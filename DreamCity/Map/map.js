@@ -224,6 +224,26 @@ function populateReceiverOptions() {
     });
 }
 
+function populateUserOptions() {
+  fetch(`http://localhost:3000/php/selectMapUsers.php?mapId=${mapId}`) // Percorso del file PHP
+    .then((response) => response.json())
+    .then((users) => {
+      const userSelect = document.getElementById("selectUser");
+      userSelect.innerHTML = ""; // Svuota le opzioni esistenti
+
+      // Popola le opzioni con gli ID degli utenti
+      users.forEach((user) => {
+        const option = document.createElement("option");
+        option.value = user.id; // Imposta il value all'ID dell'utente
+        option.textContent = user.username; // Testo dell'opzione uguale all'ID
+        userSelect.appendChild(option);
+      });
+    })
+    .catch((error) => {
+      console.error("Errore nel caricamento degli utenti:", error);
+    });
+}
+
 // Esegui la funzione per popolare il select al caricamento della pagina o dell'elemento modale
 populateReceiverOptions();
 
@@ -248,6 +268,7 @@ fetch(`http://localhost:3000/php/userDetails.php?mapId=${mapId}`)
 
 let happiness = 0;
 let budget = 0;
+let citizens = 0;
 
 // Fetch per ottenere il valore iniziale di happiness
 fetch(`http://localhost:3000/php/mapDetails.php?mapId=${mapId}`)
@@ -256,6 +277,8 @@ fetch(`http://localhost:3000/php/mapDetails.php?mapId=${mapId}`)
     document.getElementById("mapName").textContent = data.name;
     happiness = parseInt(data.happiness, 10);
     updateHappinessSpan();
+    citizens = parseInt(data.citizens, 10);
+    updateCitizensSpan();
   })
   .catch((error) => console.error("Errore nella richiesta:", error));
 
@@ -266,13 +289,31 @@ function updateMapBuildingsDB(x_coordinate, y_coordinate) {
 
   changeHappinessLevel(happiness); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
 }
-function updateBudgetDB(budget) {
+
+function updateBudgetDB(budget, selectedUser = null) {
+  let url = `http://localhost:3000/php/updateBudget.php?budget=${budget}&mapId=${mapId}`;
+
+  // Se selectedUser è presente, aggiungilo alla query string
+  if (selectedUser) {
+    url += `&selectedUser=${selectedUser}`;
+  }
+
+  // Esegui la fetch con l'URL modificato
+  fetch(url).catch((error) => console.error("Errore nella richiesta:", error));
+
+  // Aggiorna il livello del budget (per l'utente loggato)
+  if (!selectedUser) {
+    changeBudgetLevel(budget);
+  }
+}
+
+function updateCitizensDB(citizens) {
   // console.log(budget);
   fetch(
-    `http://localhost:3000/php/updateBudget.php?budget=${budget}&mapId=${mapId}`
+    `http://localhost:3000/php/updateCitizens.php?citizens=${citizens}&mapId=${mapId}`
   ).catch((error) => console.error("Errore nella richiesta:", error));
 
-  changeBudgetLevel(budget); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
+  changeCitizensLevel(citizens); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
 }
 
 // Funzione per aggiornare nel DB il valore della felicità
@@ -289,6 +330,11 @@ function changeBudgetLevel(newBudget) {
   updateBudgetSpan();
 }
 
+function changeCitizensLevel(newCitizens) {
+  citizens = newCitizens;
+  updateCitizensSpan();
+}
+
 // Funzione per cambiare il valore di happiness in locale
 function changeHappinessLevel(newHappiness) {
   happiness = newHappiness;
@@ -297,6 +343,10 @@ function changeHappinessLevel(newHappiness) {
 
 function updateBudgetSpan() {
   document.getElementById("budget").textContent = budget;
+}
+
+function updateCitizensSpan() {
+  document.getElementById("citizens").textContent = citizens;
 }
 
 // Funzione per aggiornare lo span con il valore corrente di happiness
@@ -458,6 +508,55 @@ fetch(`http://localhost:3000/php/selectUserBuildings.php?mapId=${mapId}`)
       // Aggiungi il pulsante al container
       controlsContainer.appendChild(button);
     });
+
+    if (
+      document.getElementById("role").textContent ===
+      "Riscossione delle tasse e ripartizione degli introiti"
+    ) {
+      const taxButton = document.createElement("button");
+      taxButton.id = "TAX";
+
+      // Aggiungi testo al pulsante
+      const taxSpan = document.createElement("span");
+      taxSpan.textContent = "TAX";
+      taxButton.appendChild(taxSpan);
+
+      // Imposta la larghezza all'80%
+      taxButton.style.width = "90%";
+
+      // Event listener per il pulsante TAX
+      taxButton.addEventListener("click", () => {
+        document.getElementById("taxModal").style.display = "flex";
+      });
+
+      userBuildings.push("TAX");
+
+      // Aggiungi il pulsante TAX al container
+      controlsContainer.appendChild(taxButton);
+
+      populateUserOptions();
+    }
+
+    // Gestione pulsante "Annulla"
+    document.getElementById("cancelBtn").addEventListener("click", () => {
+      document.getElementById("taxModal").style.display = "none"; // Chiudi il modal
+    });
+
+    // Gestione pulsante "Invia"
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      const inputValue = document.getElementById("inputValue").value;
+      const selectedUser = document.getElementById("selectUser").value;
+
+      if (inputValue && inputValue > 0) {
+        updateBudgetDB(parseInt(budget) - parseInt(inputValue));
+
+        updateBudgetDB(parseInt(inputValue), selectedUser); // Passa il valore e l'utente selezionato
+
+        document.getElementById("taxModal").style.display = "none"; // Chiudi il modal
+      } else {
+        alert("Per favore, inserisci un valore valido.");
+      }
+    });
   })
   .catch((error) =>
     console.error("Errore nella selezione degli edifici:", error)
@@ -567,6 +666,23 @@ setInterval(updateClock, 1000);
 
 setTimeout(loadBuildings());
 
+function checkAndUpdateBudget() {
+  const role = document.getElementById("role").textContent;
+  const budget = document.getElementById("budget").textContent;
+  const citizens = document.getElementById("citizens").textContent;
+
+  if (role === "Riscossione delle tasse e ripartizione degli introiti") {
+    const newBudget = parseInt(budget) + parseInt(citizens);
+
+    document.getElementById("budget").textContent = newBudget;
+
+    // Chiamata al server per aggiornare il budget nel database
+    updateBudgetDB(newBudget);
+  }
+}
+
+setInterval(checkAndUpdateBudget, 20000);
+
 // Gestione dei vari click
 document
   .getElementById("grid-container")
@@ -608,6 +724,12 @@ document
             updateBudgetDB(
               parseInt(budget) + parseInt(buildingCosts[result[0].buildingType])
             );
+
+            if (document.getElementById("role").textContent === "Edilizia") {
+              updateCitizensDB(
+                parseInt(citizens) - parseInt(buildingHappiness[buildingType])
+              );
+            }
           } else {
             console.log("Non possiedi questo edificio");
             return;
@@ -630,6 +752,12 @@ document
           updateBudgetDB(
             parseInt(budget) - parseInt(buildingCosts[buildingType])
           );
+
+          if (document.getElementById("role").textContent === "Edilizia") {
+            updateCitizensDB(
+              parseInt(citizens) + parseInt(buildingHappiness[buildingType])
+            );
+          }
 
           saveBuildingDB(buildingType, cleft, ctop, rotated);
         }

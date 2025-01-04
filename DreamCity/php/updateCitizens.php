@@ -3,9 +3,9 @@ session_start();
 include ('../php/config.php');  // Connessione al database
 
 $mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
-$value = isset($_GET['value']) ? $_GET['value'] : '';
+$citizens = isset($_GET['citizens']) ? $_GET['citizens'] : '';
 
-$sql = "UPDATE Maps SET happiness = $value WHERE id = $mapId";
+$sql = "UPDATE Maps SET citizens = $citizens WHERE id = $mapId";
 $res = $conn->query($sql);
 
 if (!$res) {

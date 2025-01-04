@@ -61,9 +61,15 @@ h1 {
 
 .felicita-mappa {
   padding: 0 10px;
-  color: rgb(247, 255, 17);
+  color: yellow;
   font-weight: bold;
   font-size: 1.2em;
+}
+
+.cittadini-mappa {
+  color: orange;
+  font-weight: bold;
+  font-size: 1em;
 }
 
 .aggiungi-mappa {

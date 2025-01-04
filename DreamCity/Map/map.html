@@ -38,6 +38,26 @@
       </div>
     </div>
 
+    <div id="taxModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <h2>Imposta Budget</h2>
+        <label for="selectUser">Seleziona un utente:</label>
+        <select id="selectUser"></select>
+
+        <label for="inputValue">Inserisci il valore:</label>
+        <input
+          type="number"
+          id="inputValue"
+          placeholder="Inserisci il valore..."
+        />
+
+        <div class="buttons">
+          <button id="submitBtn">Invia</button>
+          <button id="cancelBtn">Annulla</button>
+        </div>
+      </div>
+    </div>
+
     <div id="grid-container"></div>
 
     <div class="userDescription position-fixed end-0 text-center">
@@ -66,6 +86,7 @@
         <span><b>Budget: </b><span id="budget"></span></span> <br />
         <span><b>Mappa: </b><span id="mapName"></span></span> <br />
         <span><b>Felicità: </b><span id="happiness"></span></span>
+        <span><b>Citizens: </b><span id="citizens"></span></span>
 
         <div class="progress">
           <div
