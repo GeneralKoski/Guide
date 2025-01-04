@@ -433,7 +433,20 @@ function loadBuildings() {
           building.building_type !== "ROUNDABOUT"
         ) {
           objectDiv.style.border = "1px solid black";
+          const textNode = document.createElement("span");
+          textNode.textContent = building.building_type;
+          textNode.style.display = "flex";
+          var invertedColor = invertColor(getTileColor(building.building_type));
+          textNode.style.color = invertedColor;
+          textNode.style.fontSize = `clamp(12px, ${width * 0.2}px, 24px)`;
+          textNode.style.userSelect = "none";
+          textNode.style.alignItems = "center";
+          textNode.style.justifyContent = "center";
+          textNode.style.height = "100%"; // Centrare verticalmente
+
+          objectDiv.appendChild(textNode);
         }
+
         // Aggiungo la div all'interno del grid-container
         gridContainer.appendChild(objectDiv);
       });
@@ -441,6 +454,38 @@ function loadBuildings() {
     .catch((error) =>
       console.error("Errore nel caricamento degli edifici:", error)
     );
+}
+
+// Funzione per ottenere l'inverso di un colore in formato RGB
+function invertColor(hex) {
+  // Rimuove il # se presente
+  hex = hex.replace("#", "");
+
+  // Se il colore è a 3 caratteri, espandi a 6
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map(function (char) {
+        return char + char;
+      })
+      .join("");
+  }
+
+  // Converte il colore esadecimale in RGB
+  var r = parseInt(hex.substr(0, 2), 16);
+  var g = parseInt(hex.substr(2, 2), 16);
+  var b = parseInt(hex.substr(4, 2), 16);
+
+  // Calcola l'inverso di ogni componente
+  r = 255 - r;
+  g = 255 - g;
+  b = 255 - b;
+
+  // Converte di nuovo in formato esadecimale
+  return (
+    "#" +
+    ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()
+  );
 }
 
 var rotated = false; // Variabile per gestire se invertire lunghezza e larghezza delle strutture
@@ -885,7 +930,20 @@ function colorCells(startX, startY, buildingType) {
     buildingType !== "ROUNDABOUT"
   ) {
     objectDiv.style.border = "1px solid black";
+    const textNode = document.createElement("span");
+    textNode.textContent = buildingType;
+    textNode.style.display = "flex";
+    var invertedColor = invertColor(getTileColor(buildingType));
+    textNode.style.color = invertedColor;
+    textNode.style.fontSize = `clamp(12px, ${width * 0.2}px, 24px)`;
+    textNode.style.userSelect = "none";
+    textNode.style.alignItems = "center";
+    textNode.style.justifyContent = "center";
+    textNode.style.height = "100%"; // Centrare verticalmente
+
+    objectDiv.appendChild(textNode);
   }
+
   // Aggiungo la div all'interno del grid-container
   gridContainer.appendChild(objectDiv);
 }
