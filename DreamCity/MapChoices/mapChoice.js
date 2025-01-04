@@ -7,12 +7,53 @@ fetch("http://localhost:3000/php/allMaps.php")
 
     // Itera sui dati ricevuti
     data.forEach((mappa) => {
+      const lastLoginDate = new Date(mappa.lastLogin);
+      const currentDate = new Date();
+      const oneWeekAgo = new Date(
+        currentDate.setDate(currentDate.getDate() - 7)
+      );
+
+      // Se la data dell'ultimo accesso è più vecchia di una settimana, chiamo il fetch per eliminare la mappa
+      if (lastLoginDate < oneWeekAgo) {
+        // Chiamata per eliminare la mappa dal server
+        fetch(`http://localhost:3000/php/deleteMap.php?id=${mappa.id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: mappa.id }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log(
+                `La mappa ${mappa.name} è stata eliminata per non essere stata visitata da più di una settimana.`
+              );
+            } else {
+              console.error("Errore nell'eliminazione della mappa.");
+            }
+          })
+          .catch((error) => {
+            console.error("Errore nella richiesta di eliminazione:", error);
+          });
+        return; // Non procedere oltre per la mappa che è stata eliminata
+      }
       // Crea una nuova div per ogni mappa
       const boxMappa = document.createElement("div");
       boxMappa.classList.add("box-mappa");
       boxMappa.style.cursor = "pointer";
       boxMappa.onclick = () => {
-        window.location.href = "/Map/map.html?id=" + mappa.id; // Passa l'id mappa nell'URL
+        // Prima di fare il reindirizzamento, invio la richiesta di aggiornamento al server
+        fetch(`http://localhost:3000/php/updateLastLogin.php?mapId=${mappa.id}`)
+          .then(() => {
+            window.location.href = "/Map/map.html?id=" + mappa.id;
+          })
+          .catch((error) => {
+            console.error(
+              "Errore nell'aggiornamento dell'ultimo accesso:",
+              error
+            );
+          });
       };
 
       // Crea l'immagine
@@ -44,7 +85,7 @@ fetch("http://localhost:3000/php/allMaps.php")
       // Crea il bottone di eliminazione
       const bottoneElimina = document.createElement("button");
       bottoneElimina.classList.add("delete-button");
-      bottoneElimina.textContent = "DELETE";
+      bottoneElimina.textContent = "DELETE" + "/" + mappa.totalUsers;
 
       // Aggiungi un event listener per eliminare la mappa
       bottoneElimina.addEventListener("click", (event) => {
