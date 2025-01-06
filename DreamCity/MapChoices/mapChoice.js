@@ -85,32 +85,110 @@ fetch("http://localhost:3000/php/allMaps.php")
       // Crea il bottone di eliminazione
       const bottoneElimina = document.createElement("button");
       bottoneElimina.classList.add("delete-button");
-      bottoneElimina.textContent = "DELETE" + "/" + mappa.totalUsers;
+      bottoneElimina.textContent =
+        (mappa.clickCount ?? 0) + "/" + (mappa.totalUsers ?? 0);
 
       // Aggiungi un event listener per eliminare la mappa
       bottoneElimina.addEventListener("click", (event) => {
         event.stopPropagation(); // Evita che l'evento click sulla box si attivi
-        if (confirm(`Sei sicuro di voler eliminare la mappa ${mappa.name}?`)) {
-          // Chiamata per eliminare la mappa dal server, ad esempio tramite fetch
-          fetch(`http://localhost:3000/php/deleteMap.php?id=${mappa.id}`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: mappa.id }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                grigliaMappa.removeChild(boxMappa);
-              } else {
-                alert("Errore nell'eliminazione della mappa.");
+
+        // Invia la richiesta per registrare il clic (solo se non è stato già fatto)
+        fetch(`http://localhost:3000/php/registerClick.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mapId: mappa.id,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              mappa.clickCount = Number(mappa.clickCount) + 1; // Aggiorna il valore
+
+              // Aggiorna il testo del bottone
+              bottoneElimina.textContent =
+                mappa.clickCount + "/" + mappa.totalUsers;
+
+              alert(data.message);
+
+              if (mappa.clickCount >= mappa.totalUsers) {
+                alert(
+                  "Tutti hanno votato per eliminare la mappa, ora verrà cancellata!"
+                );
+                fetch(
+                  `http://localhost:3000/php/deleteMap.php?id=${mappa.id}`,
+                  {
+                    method: "DELETE",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ id: mappa.id }),
+                  }
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.success) {
+                      grigliaMappa.removeChild(boxMappa);
+                    } else {
+                      alert(data.error);
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Errore nella richiesta di eliminazione:",
+                      error
+                    );
+                  });
               }
-            })
-            .catch((error) => {
-              console.error("Errore nella richiesta di eliminazione:", error);
-            });
-        }
+            } else {
+              alert(data.message);
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "Errore nella richiesta di registrazione del clic:",
+              error
+            );
+          });
+      });
+
+      const bottoneMantieni = document.createElement("button");
+      bottoneMantieni.classList.add("keep-button");
+      bottoneMantieni.textContent = "-";
+
+      bottoneMantieni.addEventListener("click", (event) => {
+        event.stopPropagation(); // Evita che l'evento click sulla box si attivi
+
+        // Invia la richiesta per registrare il clic (solo se non è stato già fatto)
+        fetch(`http://localhost:3000/php/deleteClick.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mapId: mappa.id,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              mappa.clickCount = Number(mappa.clickCount) - 1; // Aggiorna il valore
+
+              // Aggiorna il testo del bottone
+              bottoneElimina.textContent =
+                mappa.clickCount + "/" + mappa.totalUsers;
+            }
+
+            alert(data.message);
+          })
+          .catch((error) => {
+            console.error(
+              "Errore nella richiesta di eliminazione del clic:",
+              error
+            );
+          });
       });
 
       // Aggiungi immagine, titolo e descrizione alla box-mappa
@@ -120,6 +198,7 @@ fetch("http://localhost:3000/php/allMaps.php")
       boxMappa.appendChild(abitantiMappa);
       boxMappa.appendChild(felicitaMappa);
       boxMappa.appendChild(bottoneElimina);
+      boxMappa.appendChild(bottoneMantieni);
 
       // Aggiungi la nuova mappa alla griglia
       grigliaMappa.appendChild(boxMappa);
