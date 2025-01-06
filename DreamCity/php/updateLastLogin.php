@@ -1,5 +1,5 @@
 <?php
-include ('../php/config.php');  // Connessione al database
+include ('../Config/config.php');  // Connessione al database
 
 $mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 

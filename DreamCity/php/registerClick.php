@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ('../php/config.php');  // Connessione al database
+include ('../Config/config.php');  // Connessione al database
 
 $data = json_decode(file_get_contents('php://input'), true);
 $mapId = $data['mapId'];

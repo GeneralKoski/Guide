@@ -1,5 +1,5 @@
 // Effettua la fetch verso allMaps.php
-fetch("http://localhost:3000/php/allMaps.php")
+fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
   .then((response) => response.json())
   .then((data) => {
     // Ottieni il container dove mettere le mappe
@@ -59,7 +59,7 @@ fetch("http://localhost:3000/php/allMaps.php")
       // Crea l'immagine
       const immagineMappa = document.createElement("img");
       immagineMappa.classList.add("immagine-mappa");
-      immagineMappa.src = "/php/uploads/" + mappa.image; // Usa un campo per l'URL immagine
+      immagineMappa.src = "/uploads/" + mappa.image;
       immagineMappa.alt = `Immagine ${mappa.name}`;
 
       // Crea il titolo
@@ -209,5 +209,5 @@ fetch("http://localhost:3000/php/allMaps.php")
   });
 
 document.getElementById("createMap").onclick = function () {
-  window.location.href = "/CreateMap/createMap.html";
+  window.location.href = "/App/Views/pages/createMap.html";
 };

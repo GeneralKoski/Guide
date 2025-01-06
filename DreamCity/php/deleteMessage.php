@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ('../php/config.php');
+include ('../Config/config.php');
 
 // Ricevi i dati inviati dal client
 $data = json_decode(file_get_contents('php://input'), true);

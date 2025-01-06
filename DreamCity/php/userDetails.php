@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ('../php/config.php');  // Connessione al database
+include ('../Config/config.php');  // Connessione al database
 
 $userId = $_SESSION['id'];
 $username = $_SESSION['username'];

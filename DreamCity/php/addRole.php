@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ('../php/config.php');
+include ('../Config/config.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userId = isset($_POST['userId']) ? intval($_POST['userId']) : null;

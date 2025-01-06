@@ -4,26 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Crea una nuova mappa</title>
-    <link rel="stylesheet" href="/CreateMap/createMap.css" />
-    <link rel="stylesheet" href="/loader.css" />
+    <link rel="stylesheet" href="../css/createMap.css" />
+    <link rel="stylesheet" href="../css/loader.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       rel="stylesheet"
     />
-    <script src="/loader.js"></script>
+    <script src="../js/loader.js"></script>
   </head>
   <body>
     <div class="loader"></div>
     <a
       id="maps"
       href="#"
-      onclick="window.location.href='/MapChoices/mapChoice.html'"
+      onclick="window.location.href='../pages/mapChoice.html'"
       ><i class="fa-solid fa-arrow-circle-left"></i
     ></a>
     <div class="creationFrom">
       <h1>Crea una nuova mappa</h1>
       <form
-        action="http://localhost:3000/php/createMap.php"
+        action="http://localhost:3000/Routes/MapRoutes.php/createMap"
         method="POST"
         enctype="multipart/form-data"
       >

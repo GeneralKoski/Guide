@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ('../php/config.php');
+include ('../Config/config.php');
 
 $userId = $_SESSION['id'];
 

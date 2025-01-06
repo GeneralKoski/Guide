@@ -1,11 +1,11 @@
 <?php
 session_start();
-include('../php/config.php');  // Connessione al database
+include ('../Config/config.php');
 
 $userId = $_SESSION['id'];
 $username = $_SESSION['username'];
 
-$sql = "SELECT b.name, b.color, b.width, b.height, b.happiness, b.cost FROM Buildings b";
+$sql = 'SELECT b.name, b.color, b.width, b.height, b.happiness, b.cost FROM Buildings b';
 $result = $conn->query($sql);
 
 $buildings = [];  // Inizializza un array vuoto
