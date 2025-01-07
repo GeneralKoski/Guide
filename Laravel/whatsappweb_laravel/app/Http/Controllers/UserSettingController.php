@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\checkChatID;
-use App\Http\Requests\Request;
 use App\Models\Chat;
-use App\Models\Message;
+use App\Models\ChatUser;
 use App\Models\UserSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,39 +30,20 @@ class UserSettingController extends Controller
 
         if (!$chat['id']) {
             // In questo caso trovo le impostazioni di tutte le chat
-            $usersSettings = DB::table('ChatUsers as cu')
-                ->select(
-                    'cu.user_id',
-                    'us.setting_name',
-                    'u.username',
-                    DB::raw('MAX(us.setting_value) AS setting_value, MAX(cu.chat_id) AS chat_id')
-                )
-                ->join('UserSettings as us', 'cu.user_id', '=', 'us.user_id')
-                ->join('Users as u', 'u.id', '=', 'us.user_id')
-                ->join('Chats as c', 'c.id', '=', 'cu.chat_id')
-                ->whereIn('cu.chat_id', function ($query) use ($user_id) {
-                    $query
-                        ->select('cu2.chat_id')
-                        ->from('ChatUsers as cu2')
-                        ->where('cu2.user_id', $user_id);
-                })
-                ->where('c.type', '=', 'single')
-                ->groupBy('us.setting_name', 'cu.user_id', 'u.username')
-                ->orderBy('cu.chat_id')
-                ->orderBy('u.id')
+            $allChats = ChatUser::where('user_id', '=', $user_id)->groupBy('chat_id')->pluck('chat_id');
+
+            $users = ChatUser::select('user_id')->whereIn('chat_id', $allChats)->distinct()->orderBy('user_id')->get();
+
+            $usersSettings = UserSetting::select('setting_name', 'setting_value', 'u.username')
+                ->join('Users as u', 'u.id', '=', 'user_id')
+                ->whereIn('user_id', $users)
                 ->get();
         } else {
             // In questo caso trovo le impostazioni di una chat specifica
             $chat_id = $chat['id'];
 
-            $usersSettings = DB::table('UserSettings as us')
-                ->select('us.user_id', 'us.setting_name', 'us.setting_value', 'u.username')
-                ->join('Users as u', 'u.id', '=', 'us.user_id')
-                ->join('ChatUsers as cu', 'u.id', '=', 'cu.user_id')
-                ->join('Chats as c', 'c.id', '=', 'cu.chat_id')
-                ->where('c.type', '=', 'single')
-                ->where('cu.chat_id', '=', $chat_id)
-                ->get();
+            $chat_users = DB::table('ChatUsers')->where('chat_id', $chat_id)->pluck('user_id');
+            $usersSettings = UserSetting::select('setting_name', 'setting_value', 'user_id')->whereIn('user_id', $chat_users)->get();
         }
 
         return response()->json($usersSettings);

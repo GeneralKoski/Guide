@@ -20,7 +20,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/select-all-messages/messagesChat{chat}', [MessageController::class, 'selectMessages']);
     Route::get('/is-chat-admin/adminChat{chat}', [ChatAdminController::class, 'checkIfAdmin']);
     Route::get('/select-user-details/detailsChat{chat}', [UserController::class, 'userDetails']);
-    Route::get('/get-users-settings/settingsChat{chat}', [UserSettingController::class, 'usersSettings']);
+    Route::get('/users-settings/settingsChat{chat}', [UserSettingController::class, 'usersSettings']);
 
     Route::post('/insert-message', [MessageController::class, 'insertMessage']);
     Route::post('/logout', [AuthController::class, 'logoutUser']);
