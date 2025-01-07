@@ -131,7 +131,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
   useEffect(() => {
     if (selectedChat && selectedChatType === "single") {
       fetch(
-        `http://localhost:8000/api/get-users-settings/settingsChat${selectedChat}`,
+        `http://localhost:8000/api/users-settings/settingsChat${selectedChat}`,
         {
           method: "GET",
           headers: {
