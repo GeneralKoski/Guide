@@ -22,7 +22,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated, setUserData }) => {
     const expirationTime = localStorage.getItem("authTokenExpiration");
 
     if (token && expirationTime && Date.now() < parseInt(expirationTime)) {
-      fetch("http://localhost:8000/api/verify-token", {
+      fetch("http://localhost:8000/api/verify", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

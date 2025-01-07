@@ -20,7 +20,7 @@ const SideBar: React.FC<ID> = ({
 
   const handleClick = (id: string) => {
     if (id === "logout") {
-      fetch("http://localhost:8000/api/logout-user", {
+      fetch("http://localhost:8000/api/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
