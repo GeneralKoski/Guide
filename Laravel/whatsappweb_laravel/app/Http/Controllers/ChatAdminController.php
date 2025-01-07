@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\checkChatID;
 use App\Http\Requests\Request;
+use App\Models\Chat;
 use App\Models\ChatAdmin;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
@@ -19,9 +20,9 @@ class ChatAdminController extends Controller
         return view('chatadmins.index', ['admins' => $admins]);
     }
 
-    public function checkIfAdmin(checkChatID $request)
+    public function checkIfAdmin(Chat $chat)
     {
-        $Achat_id = $request->input('chat_id');
+        $Achat_id = $chat['id'];
         $Auser_id = Auth::user()->id;
 
         if (!$Auser_id) {

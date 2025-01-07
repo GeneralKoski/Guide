@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\checkChatID;
-use App\Http\Requests\Request;
 use App\Http\Requests\InsertMessage;
 use App\Http\Requests\updateSeen;
 use App\Models\Chat;
@@ -16,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      */
@@ -32,7 +29,6 @@ class MessageController extends Controller
         $chat_id = $request->input('chat_id');
         $chatType = $request->input('chat_type');
 
-        $userAuth = Auth::user();
         if (!$user_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
@@ -42,7 +38,7 @@ class MessageController extends Controller
             return response()->json(['message' => 'Non puoi aggiornare i non visualizzati perchè non appartieni a questa chat'], 401);
         }
 
-        if ($chatType == "single") {
+        if ($chatType == 'single') {
             return $this->updateSeenSingle($user_id, $chat_id);
         } else {
             return $this->updateSeenGroup($user_id, $chat_id);
@@ -51,45 +47,31 @@ class MessageController extends Controller
 
     public function updateSeenSingle($user_id, $chat_id)
     {
-        $updatesSingle = DB::table('Messages')
+        $updateSingle = DB::table('Messages')
             ->where('chat_id', '=', $chat_id)
             ->where('user_id', '!=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
 
-        return response()->json($updatesSingle ?
-            ["success" => true, "message" => "DB aggiornato per i messaggi non visualizzati"] : ["success" => false, "message" => "I messaggi sono già tutti visualizzati"]);
+        return response()->json($updateSingle
+            ? ['success' => true, 'message' => 'DB aggiornato per i messaggi non visualizzati']
+            : ['success' => false, 'message' => 'I messaggi sono già tutti visualizzati']);
     }
+
     public function updateSeenGroup($user_id, $chat_id)
     {
-        $updatesGroup = DB::table('GroupChatMessages')
+        $updateGroup = DB::table('GroupChatMessages')
             ->where('chat_id', '=', $chat_id)
             ->where('seen_by_user', '=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
 
-        // Da aggiungere se tutti hanno visualizzato il messaggio, aggiorna anche il messaggio in Messages
-        return response()->json($updatesGroup ? ["message" => "DB aggiornato per i messaggi non visualizzati"] : ["message" => "I messaggi sono già tutti visualizzati"]);
-    }
-    public function selectLastMessage(int $chat_id)
-    {
-        $message = Message::where('chat_id', '=', $chat_id)->orderBy('sent_at', 'desc')->first();
-        $message = [
-            'id' => $message->id,
-            'username' => User::find($message->user_id)->username,
-            'sent_at' => $message->sent_at ? $message->sent_at : "no",
-            'seen' => $message->seen,
-            'message_type' => $message->type,
-            'media_content' => $message->content,
-            'chat_type' => Chat::find($message->chat_id)->type,
-            'content' => $message->content,
-        ];
-        return $message;
+        return response()->json($updateGroup ? ['message' => 'DB aggiornato per i messaggi non visualizzati'] : ['message' => 'I messaggi sono già tutti visualizzati']);
     }
 
-    public function selectMessages(checkChatID $request)
+    public function selectMessages(Chat $chat)
     {
-        $chat_id = $request->input('chat_id');
+        $chat_id = $chat['id'];
         $user_id = Auth::user()->id;
 
         $isThere = Message::hasChatId($chat_id, $user_id);
@@ -121,12 +103,14 @@ class MessageController extends Controller
             ->join('Users AS u', 'u.id', '=', 'm.user_id')
             ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
             ->leftJoin('ChatUsers AS cu', function ($join) {
-                $join->on('cu.user_id', '=', 'u.id')
+                $join
+                    ->on('cu.user_id', '=', 'u.id')
                     ->on('cu.chat_id', '=', 'c.id');
             })
             ->where('m.chat_id', '=', $chat_id)
             ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
-                $query->select('cu2.added_at')
+                $query
+                    ->select('cu2.added_at')
                     ->from('ChatUsers AS cu2')
                     ->where('cu2.chat_id', '=', $chat_id)
                     ->where('cu2.user_id', '=', $user_id);
@@ -134,16 +118,13 @@ class MessageController extends Controller
             ->orderBy('m.sent_at', 'ASC')
             ->get();
 
-
-
         return response()->json($messages);
     }
 
-
     public function insertMessage(InsertMessage $request)
     {
-        $chat_id = $request->safe()->input('chat_id');
         $user_id = Auth::user()->id;
+        $chat_id = $request->safe()->input('chat_id');
         $content = $request->safe()->input('content');
 
         if (!$user_id) {
@@ -181,10 +162,10 @@ class MessageController extends Controller
                 }
             }
 
-            $message = $this->selectLastMessage($chat_id);
+            $message = Message::selectLastMessage($chat_id);
             return response()->json($message);
         } catch (\Exception $e) {
-            return response('Errore nell\'inserimento del messaggio: ' . $e->getMessage(), 500);
+            return response("Errore nell'inserimento del messaggio: " . $e->getMessage(), 500);
         }
     }
 
@@ -197,29 +178,17 @@ class MessageController extends Controller
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
-        $singleChats = DB::table('Chats')
-            ->select('id')
-            ->where('type', '=', 'single');
-        $userChats = DB::table('ChatUsers')
-            ->select('chat_id')
-            ->where('user_id', '=', $user_id);
-
-        $notSeenMessages = DB::table('Messages')
-            ->select('chat_id', DB::raw('COUNT(*) AS non_letti'))
+        $notSeen = Message::select('chat_id', DB::raw('COUNT(*) as non_letti'))
             ->where('seen', '=', 'no')
-            ->whereIn('chat_id', $singleChats)
-            ->whereIn('chat_id', $userChats)
             ->where('user_id', '!=', $user_id)
-            ->groupBy('chat_id');
-
-        $notSeenGCM = DB::table('GroupChatMessages')
-            ->select('chat_id', DB::raw('COUNT(*) AS non_letti'))
-            ->where('seen_by_user', '=', $user_id)
-            ->where('seen', '=', 'no')
-            ->unionAll($notSeenMessages)
             ->groupBy('chat_id')
             ->get();
 
-        return response()->json($notSeenGCM);
+        $notSeen = $notSeen->filter(function ($chat) use ($user_id) {
+            $userInChat = Message::hasChatId($chat->chat_id, $user_id);
+            return $userInChat;
+        });
+
+        return response()->json($notSeen);
     }
 }

@@ -6,6 +6,7 @@ use App\Events\NewAccess;
 use App\Http\Requests\loginUser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -34,5 +35,25 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return response()->json(['message' => 'Log out eseguito con successo']);
+    }
+
+    public function verifyToken()
+    {
+        $user = Auth::user();
+
+        if ($user instanceof User) {
+            event(new NewAccess($user));
+            return response()->json([
+                'success' => true,
+                'user' => [
+                    'id' => $user->id,
+                    'username' => $user->username,
+                    'icon' => $user->icon,
+                ],
+                'message' => 'Utente autenticato con successo',
+            ]);
+        } else {
+            return response()->json(['message' => 'Erorre'], 401);
+        }
     }
 }
