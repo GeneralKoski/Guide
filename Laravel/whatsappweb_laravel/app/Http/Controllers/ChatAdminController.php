@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\checkChatID;
-use App\Http\Requests\Request;
 use App\Models\Chat;
 use App\Models\ChatAdmin;
 use App\Models\Message;

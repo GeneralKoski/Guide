@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InsertMessage;
 use App\Http\Requests\updateSeen;
+use App\Http\Resources\MessageResource;
 use App\Models\Chat;
 use App\Models\ChatUser;
 use App\Models\GroupChatMessage;
-use App\Models\Media;
 use App\Models\Message;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -75,10 +74,9 @@ class MessageController extends Controller
 
     public function selectMessages(Chat $chat)
     {
-        $chat_id = $chat['id'];
         $user_id = Auth::user()->id;
 
-        $isThere = Message::hasChatId($chat_id, $user_id);
+        $isThere = Message::hasChatId($chat['id'], $user_id);
         if (!$isThere) {
             return response()->json(['message' => 'Non puoi vedere i messaggi perchè non appartieni a questa chat'], 401);
         }
@@ -87,21 +85,23 @@ class MessageController extends Controller
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
-        $messages = Message::where('chat_id', '=', $chat_id)->get();
+        $messages = $chat->messages;
 
-        $messages = $messages->map(function ($message) {
-            return [
-                'content' => $message->type !== 'media' ? $message->content : Media::where('message_id', '=', $message->id)->pluck('file_path'),
-                'media_content' => $message->content,
-                'message_type' => $message->type,
-                'seen' => $message->seen,
-                'sent_at' => $message->sent_at,
-                'id' => $message->id,
-                'chat_type' => Chat::where('id', '=', $message->chat_id)->pluck('type')[0],
-                'username' => User::where('id', '=', $message->user_id)->pluck('username')[0],
-                'chat_id' => $message->chat_id,
-            ];
-        });
+        // $messages = $messages->map(function ($message) {
+        //     return [
+        //         'content' => $message->type !== 'media' ? $message->content : Media::where('message_id', '=', $message->id)->pluck('file_path'),
+        //         'media_content' => $message->content,
+        //         'message_type' => $message->type,
+        //         'seen' => $message->seen,
+        //         'sent_at' => $message->sent_at,
+        //         'id' => $message->id,
+        //         'chat_type' => Chat::where('id', '=', $message->chat_id)->pluck('type')[0],
+        //         'username' => User::where('id', '=', $message->user_id)->pluck('username')[0],
+        //         'chat_id' => $message->chat_id,
+        //     ];
+        // });
+        // Diventa
+        $messages = MessageResource::collection($messages);
 
         return response()->json($messages);
     }
@@ -122,8 +122,6 @@ class MessageController extends Controller
         }
 
         try {
-            $utentichat = ChatUser::utentichat($chat_id, $user_id);
-
             $request->user()->messages()->create([
                 'chat_id' => $chat_id,
                 'user_id' => $user_id,
@@ -133,6 +131,9 @@ class MessageController extends Controller
                 'seen' => 'no',
             ]);
 
+            $utentichat = ChatUser::utentichat($chat_id, $user_id);
+
+            // Nel caso di chat di gruppo
             if ($utentichat['nUtenti'] > 1) {
                 $lastMessageID = DB::table('Messages')->select('id')->orderBy('sent_at', 'desc')->first();
                 $lastMessageID = $lastMessageID->id;

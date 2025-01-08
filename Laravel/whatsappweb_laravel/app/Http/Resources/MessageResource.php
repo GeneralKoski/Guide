@@ -2,8 +2,11 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Request;
+use App\Models\Chat;
+use App\Models\Media;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request;
 
 class MessageResource extends JsonResource
 {
@@ -14,13 +17,16 @@ class MessageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // return parent::toArray($request);
         return [
-            'id' => $this->user_id,
-            'sent_at' => $this->sent_at,
-            'message_type' => $this->message_type,
+            'content' => $this->type !== 'media' ? $this->content : Media::where('message_id', '=', $this->id)->pluck('file_path'),
             'media_content' => $this->content,
-            ''
+            'message_type' => $this->type,
+            'seen' => $this->seen,
+            'sent_at' => $this->sent_at,
+            'id' => $this->id,
+            'chat_type' => Chat::where('id', '=', $this->chat_id)->pluck('type')[0],
+            'username' => User::where('id', '=', $this->user_id)->pluck('username')[0],
+            'chat_id' => $this->chat_id,
         ];
     }
 }
