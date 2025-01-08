@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\checkChatID;
 use App\Http\Requests\checkUserChatIDS;
 use App\Models\Chat;
+use App\Models\ChatUser;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -34,21 +35,19 @@ class UserController extends Controller
         if (!$isThere) {
             return response()->json(['message' => "Non puoi vedere i dettagli dell'utente perchè non appartieni a questa chat"], 401);
         }
+        $type = Chat::find($chat_id)->type;
 
-        $details =
-            DB::table('Users as u')
-                ->select(
-                    'u.username',
-                    'u.icon',
-                    DB::raw("IF(c.type = 'group', NULL, u.last_access) AS last_access"),
-                    DB::raw("IF(c.type = 'group', c.name, '') AS name"),
-                    'c.type'
-                )
-                ->join('ChatUsers as cu', 'u.id', '=', 'cu.user_id')
-                ->join('Chats as c', 'c.id', '=', 'cu.chat_id')
-                ->where('cu.user_id', '!=', $user_id)
-                ->where('cu.chat_id', '=', $chat_id)
-                ->get();
-        return response()->json($details);
+        $other_user_id = ChatUser::where('chat_id', '=', $chat_id)->where('user_id', '!=', $user_id)->get();
+
+        $other_user_id = $other_user_id[0]['user_id'];
+
+        $newDetails = [
+            'type' => $type,
+            'name' => $type === 'group' ? Chat::find($chat_id)->name : '',
+            'icon' => User::find($other_user_id)->icon,
+            'username' => User::find($other_user_id)->username,
+            'last_access' => $type === 'single' ? User::find($other_user_id)->last_access : NULL,
+        ];
+        return response()->json($newDetails);
     }
 }

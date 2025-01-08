@@ -12,9 +12,11 @@ class AuthController extends Controller
 {
     public function loginUser(loginUser $request)
     {
-        $user = User::where('username', '=', $request->username)->first();
+        $username = $request->safe()->username;
+        $user = User::where('username', '=', $username)->first();
 
-        if (!$user || !password_verify($request->password, $user->password)) {
+        $password = $request->safe()->password;
+        if (!$user || !password_verify($password, $user->password)) {
             return response()->json(['message' => 'Credenziali errate'], 401);
         } else {
             $token = $user->createToken($user->username);

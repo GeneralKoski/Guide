@@ -7,10 +7,13 @@ use App\Http\Requests\updateSeen;
 use App\Models\Chat;
 use App\Models\ChatUser;
 use App\Models\GroupChatMessage;
+use App\Models\Media;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
+use function PHPSTORM_META\map;
 
 class MessageController extends Controller
 {
@@ -26,8 +29,9 @@ class MessageController extends Controller
     public function updateSeen(updateSeen $request)
     {
         $user_id = Auth::user()->id;
-        $chat_id = $request->input('chat_id');
-        $chatType = $request->input('chat_type');
+
+        $chat_id = $request->safe()->input('chat_id');
+        $chatType = $request->safe()->input('chat_type');
 
         if (!$user_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
@@ -83,40 +87,21 @@ class MessageController extends Controller
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
-        $messages = DB::table('Messages AS m')
-            ->select(
-                'u.id',
-                'u.username',
-                'm.sent_at',
-                'm.seen',
-                DB::raw("m.type AS message_type, m.content AS media_content, c.type AS chat_type,
-                       CASE WHEN m.type = 'media' THEN (
-                                SELECT media.file_path
-                                FROM Media media
-                                WHERE media.message_id = m.id
-                                LIMIT 1
-                            )
-                            ELSE m.content
-                        END AS content
-                        ")
-            )
-            ->join('Users AS u', 'u.id', '=', 'm.user_id')
-            ->join('Chats AS c', 'm.chat_id', '=', 'c.id')
-            ->leftJoin('ChatUsers AS cu', function ($join) {
-                $join
-                    ->on('cu.user_id', '=', 'u.id')
-                    ->on('cu.chat_id', '=', 'c.id');
-            })
-            ->where('m.chat_id', '=', $chat_id)
-            ->where('m.sent_at', '>', function ($query) use ($chat_id, $user_id) {
-                $query
-                    ->select('cu2.added_at')
-                    ->from('ChatUsers AS cu2')
-                    ->where('cu2.chat_id', '=', $chat_id)
-                    ->where('cu2.user_id', '=', $user_id);
-            })
-            ->orderBy('m.sent_at', 'ASC')
-            ->get();
+        $messages = Message::where('chat_id', '=', $chat_id)->get();
+
+        $messages = $messages->map(function ($message) {
+            return [
+                'content' => $message->type !== 'media' ? $message->content : Media::where('message_id', '=', $message->id)->pluck('file_path'),
+                'media_content' => $message->content,
+                'message_type' => $message->type,
+                'seen' => $message->seen,
+                'sent_at' => $message->sent_at,
+                'id' => $message->id,
+                'chat_type' => Chat::where('id', '=', $message->chat_id)->pluck('type')[0],
+                'username' => User::where('id', '=', $message->user_id)->pluck('username')[0],
+                'chat_id' => $message->chat_id,
+            ];
+        });
 
         return response()->json($messages);
     }

@@ -32,11 +32,6 @@ class ChatController extends Controller
     public function chatMessage(Chat $chat, Message $message)
     {
         return new MessageResource($message);
-        // dd($message->toArray());
-        // dd($id);
-        // dd($chat->getAttributes());
-        // $chat = Chat::find($chat)->getAttributes();
-        // dd($chat);
     }
 
     public function allChats(User $user)
