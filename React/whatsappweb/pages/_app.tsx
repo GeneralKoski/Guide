@@ -3,6 +3,7 @@ import SideBar from "@/components/Sidebar";
 import Laterale from "@/components/Laterale";
 import React, { useState } from "react";
 import "@/styles/theme.scss";
+import Head from "next/head";
 
 function MyApp() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,24 +25,30 @@ function MyApp() {
   };
 
   return (
-    <div className="app">
-      {isAuthenticated ? (
-        <>
-          <SideBar
+    <>
+      <Head>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <title>WhatsApp - Trajkovski Martin</title>
+      </Head>
+      <div className="app">
+        {isAuthenticated ? (
+          <>
+            <SideBar
+              setIsAuthenticated={setIsAuthenticated}
+              username={username}
+              icon={icon}
+              token={token}
+            />
+            <Laterale id={id} username={username} token={token} />
+          </>
+        ) : (
+          <LoginPage
             setIsAuthenticated={setIsAuthenticated}
-            username={username}
-            icon={icon}
-            token={token}
+            setUserData={setUserData}
           />
-          <Laterale id={id} username={username} token={token} />
-        </>
-      ) : (
-        <LoginPage
-          setIsAuthenticated={setIsAuthenticated}
-          setUserData={setUserData}
-        />
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
 
