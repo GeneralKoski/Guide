@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\DB;
 
-class ChatUser extends Model
+class ChatUser extends Pivot
 {
+    public $incrementing = true;
     protected $table = 'chatusers';
     protected $fillable = ['user_id', 'chat_id', 'added_at'];
 

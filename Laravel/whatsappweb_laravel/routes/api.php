@@ -8,8 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/prova/{chat}', [ChatController::class, 'chatMessages']);
-Route::get('/prova/{chat}/{message}', [ChatController::class, 'chatMessage']);
+Route::get('/prova/{chat}', [ChatController::class, 'chatMessages'])->scopeBindings();;
+Route::get('/prova/{chat}/{message}', [ChatController::class, 'chatMessage'])->scopeBindings();;
 
 Route::post('/login-user', [AuthController::class, 'loginUser'])->name('login');
 
@@ -18,12 +18,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/not-seen-messages', [MessageController::class, 'notSeenMessages']);
     Route::get('/users-settings', [UserSettingController::class, 'usersSettings']);
-    Route::get('/all-chats/chatsOfUserID{user}', [ChatController::class, 'allChats']);
+    Route::get('/all-chats/chatsOfUserID{user}', [ChatController::class, 'allChats'])->scopeBindings();
 
-    Route::get('/select-all-messages/messagesChat{chat}', [MessageController::class, 'selectMessages']);
-    Route::get('/is-chat-admin/adminChat{chat}', [ChatAdminController::class, 'checkIfAdmin']);
-    Route::get('/select-user-details/detailsChat{chat}', [UserController::class, 'userDetails']);
-    Route::get('/users-settings/settingsChat{chat}', [UserSettingController::class, 'usersSettings']);
+    Route::get('/select-all-messages/messagesChat{chat}', [MessageController::class, 'selectMessages'])->scopeBindings();
+    Route::get('/is-chat-admin/adminChat{chat}', [ChatAdminController::class, 'checkIfAdmin'])->scopeBindings();;
+    Route::get('/select-user-details/detailsChat{chat}', [UserController::class, 'userDetails'])->scopeBindings();;
+    Route::get('/users-settings/settingsChat{chat}', [UserSettingController::class, 'usersSettings'])->scopeBindings();;
 
     Route::post('/insert-message', [MessageController::class, 'insertMessage']);
     Route::post('/logout', [AuthController::class, 'logoutUser']);
