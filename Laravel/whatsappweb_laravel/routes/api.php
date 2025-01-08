@@ -8,6 +8,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/prova/{chat}', [ChatController::class, 'chatMessages']);
+Route::get('/prova/{chat}/{message}', [ChatController::class, 'chatMessage']);
+
 Route::post('/login-user', [AuthController::class, 'loginUser'])->name('login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -15,7 +18,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/not-seen-messages', [MessageController::class, 'notSeenMessages']);
     Route::get('/users-settings', [UserSettingController::class, 'usersSettings']);
-    Route::get('/all-chats', [ChatController::class, 'allChats']);
+    Route::get('/all-chats/chatsOfUserID{user}', [ChatController::class, 'allChats']);
 
     Route::get('/select-all-messages/messagesChat{chat}', [MessageController::class, 'selectMessages']);
     Route::get('/is-chat-admin/adminChat{chat}', [ChatAdminController::class, 'checkIfAdmin']);

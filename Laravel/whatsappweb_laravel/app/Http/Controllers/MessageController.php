@@ -101,9 +101,7 @@ class MessageController extends Controller
         //     ];
         // });
         // Diventa
-        $messages = MessageResource::collection($messages);
-
-        return response()->json($messages);
+        return response()->json(MessageResource::collection($messages));
     }
 
     public function insertMessage(InsertMessage $request)

@@ -24,8 +24,8 @@ class MessageResource extends JsonResource
             'seen' => $this->seen,
             'sent_at' => $this->sent_at,
             'id' => $this->id,
-            'chat_type' => Chat::where('id', '=', $this->chat_id)->pluck('type')[0],
-            'username' => User::where('id', '=', $this->user_id)->pluck('username')[0],
+            'chat_type' => Chat::where('id', '=', $this->chat_id)->pluck('type')->first(),
+            'username' => User::where('id', '=', $this->user_id)->pluck('username')->first(),
             'chat_id' => $this->chat_id,
         ];
     }
