@@ -72,7 +72,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("E' Admin?: ", data.isAdmin);
           setIsAdmin(data.isAdmin);
         })
         .catch((error) => {
@@ -95,7 +94,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("Messaggi ricevuti:", data);
           setMessages(data);
         })
         .catch((error) => {
@@ -118,7 +116,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("User ricevuti:", data);
           setUser(data[0]);
         })
         .catch((error) => {
@@ -141,7 +138,6 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("Settings della chat selezionate:", data);
           setSettings(data.length > 0 ? data : 0);
         })
         .catch((error) => {

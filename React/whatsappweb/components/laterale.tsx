@@ -57,7 +57,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
     })
       .then((response) => response.json()) // Converto in json
       .then((data) => {
-        console.log("Chat ricevute:", data); // Verifica i dati
         setUsers(data); // Memorizza i dati utenti
         setFilteredChats(data);
       })
@@ -80,7 +79,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Settings degli Utenti:", data);
         setSettings(data);
       })
       .catch((error) => {
@@ -122,7 +120,6 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
           )
             .then((response) => response.json())
             .then((data) => {
-              console.log(data.message);
               setUnseenMessages((prevUnseen) =>
                 prevUnseen.map((chat) =>
                   chat.chat_id === id ? { ...chat, non_letti: "0" } : chat
@@ -152,10 +149,8 @@ const Laterale: React.FC<ID> = ({ id, username, token }) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.length > 0) {
-          console.log("Not seen messages: ", data);
           setUnseenMessages(data);
         } else {
-          console.log("Tutti i messaggi sono stati visualizzati");
         }
       })
       .catch((error) => {
