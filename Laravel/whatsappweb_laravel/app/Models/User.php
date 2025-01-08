@@ -7,6 +7,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
+    public $timestamps = false;
+
     use HasApiTokens;
 
     protected $fillable = ['username', 'password', 'icon', 'last_access'];
@@ -21,9 +23,9 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
-    public function chatusers()
+    public function chats()
     {
-        return $this->hasMany(ChatUser::class);
+        return $this->belongsToMany(Chat::class, 'ChatUsers', 'user_id', 'chat_id');
     }
 
     public function groupmessages()

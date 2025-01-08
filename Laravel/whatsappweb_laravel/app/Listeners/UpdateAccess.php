@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\NewAccess;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class UpdateAccess
@@ -21,8 +22,7 @@ class UpdateAccess
     public function handle(NewAccess $event): void
     {
         $user = $event->user->getAttributes();
-        DB::table('Users')
-            ->where('id', '=', $user['id'])
+        User::where('id', '=', $user['id'])
             ->update(['last_access' => now()]);
     }
 }

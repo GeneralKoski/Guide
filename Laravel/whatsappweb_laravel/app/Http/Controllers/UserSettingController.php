@@ -42,7 +42,7 @@ class UserSettingController extends Controller
             // In questo caso trovo le impostazioni di una chat specifica
             $chat_id = $chat['id'];
 
-            $chat_users = DB::table('ChatUsers')->where('chat_id', $chat_id)->pluck('user_id');
+            $chat_users = ChatUser::where('chat_id', $chat_id)->pluck('user_id');
             $usersSettings = UserSetting::select('setting_name', 'setting_value', 'user_id')->whereIn('user_id', $chat_users)->get();
         }
 

@@ -50,8 +50,7 @@ class MessageController extends Controller
 
     public function updateSeenSingle($user_id, $chat_id)
     {
-        $updateSingle = DB::table('Messages')
-            ->where('chat_id', '=', $chat_id)
+        $updateSingle = Message::where('chat_id', '=', $chat_id)
             ->where('user_id', '!=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
@@ -63,8 +62,7 @@ class MessageController extends Controller
 
     public function updateSeenGroup($user_id, $chat_id)
     {
-        $updateGroup = DB::table('GroupChatMessages')
-            ->where('chat_id', '=', $chat_id)
+        $updateGroup = GroupChatMessage::where('chat_id', '=', $chat_id)
             ->where('seen_by_user', '=', $user_id)
             ->where('seen', '=', 'no')
             ->update(['seen' => 'yes']);
@@ -133,7 +131,7 @@ class MessageController extends Controller
 
             // Nel caso di chat di gruppo
             if ($utentichat['nUtenti'] > 1) {
-                $lastMessageID = DB::table('Messages')->select('id')->orderBy('sent_at', 'desc')->first();
+                $lastMessageID = Message::select('id')->orderBy('sent_at', 'desc')->first();
                 $lastMessageID = $lastMessageID->id;
 
                 for ($i = 0; $i < $utentichat['nUtenti']; $i++) {

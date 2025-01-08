@@ -20,10 +20,14 @@ class ChatController extends Controller
 
     public function chatMessage(Chat $chat, Message $message)
     {
-        if ($message->chat_id !== $chat->id) {
-            return response()->json(['error' => 'Message does not belong to the specified chat'], 403);
-        }
+        $message = $chat->messages->find($message->id);
+
         return new MessageResource($message);
+    }
+
+    public function prova(User $user)
+    {
+        return $user->chats;
     }
 
     public function allChats(User $user)
@@ -34,30 +38,33 @@ class ChatController extends Controller
             return 'Richiesta errata';
         }
 
-        // Trovo gli ID delle chat alle quali l'utente partecipa
-        $allChatsID = ChatUser::where('user_id', '=', $user_id)->pluck('chat_id');
+        // Prima
+        // $allChatsID = ChatUser::where('user_id', '=', $user_id)->pluck('chat_id');
+        // $chats = Chat::whereIn('id', $allChatsID)->get();
 
-        // Trovo i dettagli delle chat con ID contenuti nell'array trovato prima
-        $chats = Chat::whereIn('id', $allChatsID)->get();
+        // Dopo
+        $chats = $user->chats;
 
         // Formatto le chat per avere tutti i dati
-        $chats = $chats->map(function ($chat) use ($user_id) {
-            $lastMessage = Message::selectLastMessage($chat->id);
+        // $chats = $chats->map(function ($chat) use ($user_id) {
+        //     $lastMessage = Message::selectLastMessage($chat->id);
 
-            return [
-                'chat_id' => $chat->id,
-                'chat_name' => User::getChatName($chat->id, $chat->type, $user_id),
-                'chat_type' => $chat->type,
-                'icon' => User::getIcon($chat->id, $chat->type, $user_id),
-                'last_message_content' => $lastMessage['content'],
-                'last_message_sender_id' => $lastMessage['user_id'],
-                'message_type' => $lastMessage['message_type'],
-                'seen' => $lastMessage['seen'],
-                'sent_at' => $lastMessage['sent_at'],
-            ];
-        });
+        //     return [
+        //         'chat_id' => $chat->id,
+        //         'chat_name' => User::getChatName($chat->id, $chat->type, $user_id),
+        //         'chat_type' => $chat->type,
+        //         'icon' => User::getIcon($chat->id, $chat->type, $user_id),
+        //         'last_message_content' => $lastMessage['content'],
+        //         'last_message_sender_id' => $lastMessage['user_id'],
+        //         'message_type' => $lastMessage['message_type'],
+        //         'seen' => $lastMessage['seen'],
+        //         'sent_at' => $lastMessage['sent_at'],
+        //     ];
+        // });
 
-        $chats = $chats->sortByDesc('sent_at')->values();
-        return $chats;
+        $chats = ChatResource::collection($chats);
+        $chats = $chats->sortByDesc('sent_at')->values();  // NON FUNZIONA, NON RIORDINA
+
+        return response()->json($chats);
     }
 }
