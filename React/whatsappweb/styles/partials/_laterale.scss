@@ -35,19 +35,20 @@
         filter: invert(0.8);
       }
     }
+    
     .ricerca {
-        input {
-          width: 100%;
-          padding: 10px;
-          background-color: #323739;
-          color: white;
-          border: 1px solid #646464;
-          border-radius: 5px;
-          margin-bottom: 20px;
-          text-indent: 30px;
-          &:hover{
-            border-color: rgb(171, 170, 170);;
-          }
+      input {
+        width: 100%;
+        padding: 10px;
+        background-color: #323739;
+        color: white;
+        border: 1px solid #646464;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        text-indent: 30px;
+        &:hover{
+          border-color: rgb(171, 170, 170);;
+        }
       }
       .lente {
         filter: invert(0.8);
@@ -56,7 +57,11 @@
         margin-left: 11px;
       }
     }
-    ul#filtri li {
+    
+    ul#filtri{ 
+      text-align: center;
+      padding: 0;
+      li {
         display: inline-block !important;
         font-size: smaller;
         background-color: #2a2f32;
@@ -65,14 +70,15 @@
         padding: 5px;
         margin: 2px;
         text-align: center;
-        a {
-            text-decoration: none;
-            color: #8696a0;
-            padding: 15px;
-        }
-        &:hover{
-          background-color: #4d5154;
-        }
+      a {
+        text-decoration: none;
+        color: #8696a0;
+        padding: 15px;
+      }
+      &:hover{
+        background-color: #4d5154;
+      }
+    }
     }
     .lechat {
       overflow-y: auto;

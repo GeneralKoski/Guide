@@ -116,7 +116,7 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
       )
         .then((response) => response.json())
         .then((data) => {
-          setUser(data[0]);
+          setUser(data);
         })
         .catch((error) => {
           console.error("Errore:", error);
