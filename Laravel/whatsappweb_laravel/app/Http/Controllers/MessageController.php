@@ -85,6 +85,8 @@ class MessageController extends Controller
 
         $messages = $chat->messages;
 
+        return response()->json(MessageResource::collection($messages));
+        // Era
         // $messages = $messages->map(function ($message) {
         //     return [
         //         'content' => $message->type !== 'media' ? $message->content : Media::where('message_id', '=', $message->id)->pluck('file_path'),
@@ -98,8 +100,6 @@ class MessageController extends Controller
         //         'chat_id' => $message->chat_id,
         //     ];
         // });
-        // Diventa
-        return response()->json(MessageResource::collection($messages));
     }
 
     public function insertMessage(InsertMessage $request)

@@ -18,15 +18,15 @@ class MessageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'content' => $this->type !== 'media' ? $this->content : Media::where('message_id', '=', $this->id)->pluck('file_path'),
             'media_content' => $this->content,
             'message_type' => $this->type,
             'seen' => $this->seen,
             'sent_at' => $this->sent_at,
             'id' => $this->id,
+            'chat_id' => $this->chat_id,
+            'content' => $this->type !== 'media' ? $this->content : Media::where('message_id', '=', $this->id)->pluck('file_path'),
             'chat_type' => Chat::where('id', '=', $this->chat_id)->pluck('type')->first(),
             'username' => User::where('id', '=', $this->user_id)->pluck('username')->first(),
-            'chat_id' => $this->chat_id,
         ];
     }
 }
