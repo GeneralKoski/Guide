@@ -9,6 +9,7 @@ use App\Models\Chat;
 use App\Models\ChatUser;
 use App\Models\GroupChatMessage;
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -83,23 +84,13 @@ class MessageController extends Controller
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
-        $messages = $chat->messages;
+        $messages = $chat->messages()->with('user')->get()->map(function ($message) use ($chat) {
+            $message->chat_type = $chat->type;
+            $message->username = $message->user->username;
+            return $message;
+        });
 
         return response()->json(MessageResource::collection($messages));
-        // Era
-        // $messages = $messages->map(function ($message) {
-        //     return [
-        //         'content' => $message->type !== 'media' ? $message->content : Media::where('message_id', '=', $message->id)->pluck('file_path'),
-        //         'media_content' => $message->content,
-        //         'message_type' => $message->type,
-        //         'seen' => $message->seen,
-        //         'sent_at' => $message->sent_at,
-        //         'id' => $message->id,
-        //         'chat_type' => Chat::where('id', '=', $message->chat_id)->pluck('type')[0],
-        //         'username' => User::where('id', '=', $message->user_id)->pluck('username')[0],
-        //         'chat_id' => $message->chat_id,
-        //     ];
-        // });
     }
 
     public function insertMessage(InsertMessage $request)

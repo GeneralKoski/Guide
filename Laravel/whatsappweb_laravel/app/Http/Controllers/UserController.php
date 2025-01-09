@@ -32,18 +32,15 @@ class UserController extends Controller
         if (!$isThere) {
             return response()->json(['message' => "Non puoi vedere i dettagli dell'utente perchè non appartieni a questa chat"], 401);
         }
-        $type = Chat::find($chat_id)->type;
 
-        $other_user_id = ChatUser::where('chat_id', '=', $chat_id)->where('user_id', '!=', $user_id)->get();
-
-        $other_user_id = $other_user_id[0]['user_id'];
+        $other_user = Chat::otherUser($chat);
 
         $newDetails = [
-            'type' => $type,
-            'name' => $type === 'group' ? Chat::find($chat_id)->name : '',
-            'icon' => User::find($other_user_id)->icon,
-            'username' => User::find($other_user_id)->username,
-            'last_access' => $type === 'single' ? User::find($other_user_id)->last_access : NULL,
+            'type' => $chat->type,
+            'name' => $chat->type === 'group' ? Chat::find($chat_id)->name : '',
+            'icon' => $other_user->icon,
+            'username' => $other_user->username,
+            'last_access' => $chat->type === 'single' ? $other_user->last_access : NULL,
         ];
         return response()->json($newDetails);
     }

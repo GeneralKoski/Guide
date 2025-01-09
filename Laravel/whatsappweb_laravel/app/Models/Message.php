@@ -29,6 +29,11 @@ class Message extends Model
         return $this->hasOne(Chat::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public static function hasChatId($chat_id, $user_id)
     {
         $chatUser = ChatUser::select('chat_id')->where('user_id', '=', $user_id)->where('chat_id', '=', $chat_id)->first();

@@ -8,8 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/prova/{chat}', [ChatController::class, 'chatMessages'])->scopeBindings();;
-Route::get('/prova/{chat}/{message}', [ChatController::class, 'chatMessage'])->scopeBindings();;
+Route::get('/prova/{user}', [ChatController::class, 'prova'])->scopeBindings();;
 
 Route::post('/login-user', [AuthController::class, 'loginUser'])->name('login');
 
