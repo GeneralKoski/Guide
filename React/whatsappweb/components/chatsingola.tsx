@@ -13,7 +13,7 @@ interface Message {
   seen: "yes" | "no";
   chat_type: "single" | "group";
   message_type: string;
-  media_content: string;
+  media: string;
 }
 
 interface ChatSingolaProps {
@@ -400,8 +400,8 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
                     message.content
                   ) : (
                     <>
-                      <img src={message.content} alt="Immagine" /> <br />
-                      <span>{message.media_content}</span>
+                      <img src={message.media} alt="Immagine" /> <br />
+                      <span>{message.content}</span>
                     </>
                   )}
                   <span className="orario">
