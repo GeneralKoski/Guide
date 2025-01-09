@@ -313,13 +313,13 @@ const ChatSingola: React.FC<ChatSingolaID & ID> = ({
             className="img-fluid profilo"
             width={70}
             height={70}
-            src={user.name == "" ? user.icon : "/images/default_icon.jpg"}
-            alt={getInitials(user.name == "" ? user.username : user.name)}
+            src={user.username ? user.icon : "/images/default_icon.jpg"}
+            alt={getInitials(user.username ? user.username : user.name)}
           />
         )}
         <div>
           {user &&
-            (user.name == "" ? (
+            (user.username ? (
               <h4>
                 {user.username} <br />
               </h4>
