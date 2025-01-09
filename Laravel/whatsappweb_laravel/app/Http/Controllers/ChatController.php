@@ -38,10 +38,6 @@ class ChatController extends Controller
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
 
-        // Prima
-        // $allChatsID = ChatUser::where('user_id', '=', $user_id)->pluck('chat_id');
-        // $chats = Chat::whereIn('id', $allChatsID)->get();
-        // Dopo
         $chats = $user->chats;
 
         // Formatto le chat per avere tutti i dati
@@ -60,8 +56,9 @@ class ChatController extends Controller
         //         'sent_at' => $lastMessage['sent_at'],
         //     ];
         // });
+
         $chats = ChatResource::collection($chats);
-        $chats = $chats->sortByDesc('sent_at')->values();  // NON FUNZIONA, NON RIORDINA
+        $chats = collect($chats->toArray(request()))->sortByDesc('sent_at')->values();  // NON FUNZIONA, NON RIORDINA
 
         return response()->json($chats);
     }
