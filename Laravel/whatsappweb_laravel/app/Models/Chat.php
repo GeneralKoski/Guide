@@ -33,6 +33,6 @@ class Chat extends Model
     {
         return $chat->users->filter(function ($user) {
             return $user->id != Auth::user()->id;
-        })[1];
+        });
     }
 }

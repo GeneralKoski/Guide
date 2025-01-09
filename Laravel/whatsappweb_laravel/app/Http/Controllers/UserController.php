@@ -23,7 +23,6 @@ class UserController extends Controller
     {
         $chat_id = $chat['id'];
         $user_id = Auth::user()->id;
-
         if (!$user_id) {
             return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
         }
@@ -33,14 +32,14 @@ class UserController extends Controller
             return response()->json(['message' => "Non puoi vedere i dettagli dell'utente perchè non appartieni a questa chat"], 401);
         }
 
-        $other_user = Chat::otherUser($chat);
+        $other_user = Chat::otherUser($chat)->first();
 
         $newDetails = [
             'type' => $chat->type,
-            'name' => $chat->type === 'group' ? Chat::find($chat_id)->name : '',
-            'icon' => $other_user->icon,
-            'username' => $other_user->username,
-            'last_access' => $chat->type === 'single' ? $other_user->last_access : NULL,
+            'name' => $chat->type === 'group' ? $chat->name : '',
+            'icon' => $chat->type === 'group' ? '' : $other_user->icon,
+            'username' => $chat->type === 'group' ? '' : $other_user->username,
+            'last_access' => $chat->type === 'group' ? '' : $other_user->last_access,
         ];
         return response()->json($newDetails);
     }

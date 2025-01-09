@@ -146,11 +146,6 @@ class MessageController extends Controller
     {
         $user_id = Auth::user()->id;
 
-        $userAuth = Auth::user();
-        if ($userAuth->id != $user_id) {
-            return response()->json(['message' => 'Hai il log-in con il profilo sbagliato'], 401);
-        }
-
         $notSeen = Message::select('chat_id', DB::raw('COUNT(*) as non_letti'))
             ->where('seen', '=', 'no')
             ->where('user_id', '!=', $user_id)
@@ -162,6 +157,6 @@ class MessageController extends Controller
             return $userInChat;
         });
 
-        return response()->json($notSeen);
+        return response()->json($notSeen->values()->toArray());
     }
 }
