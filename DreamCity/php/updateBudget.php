@@ -11,18 +11,18 @@ $selectedUser = isset($_GET['selectedUser']) ? $_GET['selectedUser'] : '';  // C
 if ($selectedUser) {
     // Ottieni l'attuale budget dell'utente selezionato
     $getBudgetSql = "SELECT budget FROM Departments d WHERE d.Dmap_id = $mapId AND d.user_id = $selectedUser";
-    $budgetResult = $conn->query($getBudgetSql);
+    $budgetResult = $pdo->query($getBudgetSql);
 
-    if ($budgetResult->num_rows > 0) {
-        $row = $budgetResult->fetch_assoc();
+    if ($budgetResult->rowCount() > 0) {
+        $row = $budgetResult->fetch(PDO::FETCH_ASSOC);
         $newBudget = $row['budget'] + $budget;  // Aggiungi il valore passato al budget attuale
 
         // Aggiorna il budget dell'utente selezionato
         $updateSelectedUserSql = "UPDATE Departments SET budget = $newBudget WHERE Dmap_id = $mapId AND user_id = $selectedUser";
-        $updateSelectedUserRes = $conn->query($updateSelectedUserSql);
+        $updateSelectedUserRes = $pdo->query($updateSelectedUserSql);
 
         if (!$updateSelectedUserRes) {
-            echo "Errore nell'aggiornamento del budget dell'utente selezionato: " . $conn->error . '<br>';
+            echo "Errore nell'aggiornamento del budget dell'utente selezionato: " . $pdo . '<br>';
             return;
         }
     } else {
@@ -32,10 +32,10 @@ if ($selectedUser) {
 } else {
     // Aggiorna il budget dell'utente loggato
     $sql = "UPDATE Departments SET budget = $budget WHERE Dmap_id = $mapId AND user_id = $userId";
-    $res = $conn->query($sql);
+    $res = $pdo->query($sql);
 
     if (!$res) {
-        echo "Errore nell'aggiornamento del budget dell'utente loggato: " . $conn->error . '<br>';
+        echo "Errore nell'aggiornamento del budget dell'utente loggato: " . $pdo . '<br>';
         return;
     }
 }

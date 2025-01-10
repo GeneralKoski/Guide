@@ -6,16 +6,16 @@ $userId = $_SESSION['id'];
 $mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 
 $sql = "SELECT d.Drole_id as id FROM Departments d WHERE user_id = $userId AND Dmap_id = $mapId";
-$res = $conn->query($sql);
+$res = $pdo->query($sql);
 $userBuildings = [];
 if ($res) {
-    $roleId = $res->fetch_assoc();
+    $roleId = $res->fetch(PDO::FETCH_ASSOC);
     $roleId = $roleId['id'];
 
     $sql = "SELECT b.name FROM Buildings b WHERE Brole_id = $roleId";
-    $res = $conn->query($sql);
+    $res = $pdo->query($sql);
 
-    while ($row = $res->fetch_assoc()) {
+    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
         $userBuildings[] = [
             'name' => $row['name'],
         ];

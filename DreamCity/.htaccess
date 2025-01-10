@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteRule ^mapChoice$ /App/Views/pages/mapChoice.html [L]
+RewriteRule ^createMap$ /App/Views/pages/createMap.html [L]
+RewriteRule ^registration$ /App/Views/pages/registration.html [L]

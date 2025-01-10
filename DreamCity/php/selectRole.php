@@ -5,11 +5,11 @@ include ('../Config/config.php');
 $mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 
 $sql = "SELECT r.name FROM Roles r WHERE r.id NOT IN (SELECT Drole_id FROM Departments d WHERE Dmap_id = $mapId)";
-$result = $conn->query($sql);
+$result = $pdo->query($sql);
 
 $roles = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+if ($result->rowCount() > 0) {
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         $roles[] = $row['name'];
     }
 } else {

@@ -35,11 +35,11 @@ class MapPresenter
                     if (move_uploaded_file($fileTmpPath, $dest_path)) {
                         $avatarPath = $newFileName;  // Salva il nome del file
                     } else {
-                        echo 'Errore nel caricamento del file immagine.';
+                        echo "<script>alert('Errore nel caricamento del file immagine.'); window.location.href='/createMap';</script>";
                         exit;
                     }
                 } else {
-                    echo 'Tipo di file immagine non valido. Solo JPG, JPEG e PNG sono permessi.';
+                    echo "<script>alert('Tipo di file immagine non valido. Solo JPG, JPEG e PNG sono permessi.'); window.location.href='/createMap';</script>";
                     exit;
                 }
             }
@@ -48,7 +48,7 @@ class MapPresenter
             $map = $this->mapModel->createMap($nome, $descrizione, $avatarPath);
             if ($map) {
                 // Reindirizza alla pagina di selezione delle mappe
-                echo "<script>alert('Mappa creata con successo!'); window.location.href='/App/Views/pages/mapChoice.html';</script>";
+                echo "<script>alert('Mappa creata con successo!'); window.location.href='/mapChoice';</script>";
             } else {
                 echo "<script>alert('Errore nella creazione!');";
             }

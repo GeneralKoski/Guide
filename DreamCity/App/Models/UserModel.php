@@ -2,16 +2,16 @@
 
 class UserModel
 {
-    private $conn;
+    private $pdo;
 
     public function __construct()
     {
         include_once (__DIR__ . '/../../Config/config.php');
 
-        $this->conn = $conn;
+        $this->pdo = $pdo;
 
-        if ($this->conn->connect_error) {
-            die('Connessione fallita: ' . $this->conn->connect_error);
+        if (!$this->pdo) {
+            die('Connessione fallita: ' . !$this->pdo);
         }
     }
 
@@ -19,10 +19,10 @@ class UserModel
     public function createUser($username, $password, $avatarPath)
     {
         $sql = "INSERT INTO Users (username, password, avatar) VALUES ('$username', '$password', '$avatarPath')";
-        $res = $this->conn->query($sql);
+        $res = $this->pdo->query($sql);
 
         if (!$res) {
-            echo $this->conn->error . '<br>';
+            echo $this->pdo . '<br>';
             return;
         }
 
@@ -33,16 +33,17 @@ class UserModel
     public function authenticateUser($username, $password)
     {
         $sql = "SELECT * FROM Users WHERE username = '$username'";
-        $result = $this->conn->query($sql);
+        $result = $this->pdo->query($sql);
 
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
+        if ($result->rowCount() > 0) {
+            $user = $result->fetch(PDO::FETCH_ASSOC);
             // Verifica la password
             if (password_verify($password, $user['password'])) {
                 // Impostiamo la sessione utente
+                session_start();
                 $_SESSION['id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                return $user;  // Ritorna l'utente per una gestione successiva nel presenter
+                return true;
             }
         }
         return null;  // Se non troviamo l'utente o la password non è corretta
@@ -54,11 +55,11 @@ class UserModel
         $userId = $_SESSION['id'];
 
         $sql = "SELECT * FROM Users WHERE id != $userId";
-        $result = $this->conn->query($sql);
+        $result = $this->pdo->query($sql);
         $users = [];
 
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
+        if ($result->rowCount() > 0) {
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 $users[] = $row;
             }
         }

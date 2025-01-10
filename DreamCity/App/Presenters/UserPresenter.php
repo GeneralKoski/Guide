@@ -37,16 +37,17 @@ class UserPresenter
                         if (move_uploaded_file($fileTmpPath, $dest_path)) {
                             $avatarPath = $newFileName;
                         } else {
-                            echo 'Errore nel caricamento del file. Controlla i permessi della cartella.';
+                            echo "<script>alert('Errore nel caricamento del file. Controlla i permessi della cartella.'); window.location.href = '/registration';</script>";
                             exit;
                         }
                     } else {
-                        echo 'Tipo di file non valido. Solo JPG, JPEG e PNG sono permessi.';
+                        echo "<script>alert('Tipo di file non valido. Solo JPG, JPEG e PNG sono permessi.'); window.location.href = '/registration';</script>";
                         exit;
                     }
                 } else {
                     // Mostra l'errore specifico legato al caricamento
                     echo 'Errore nel caricamento del file: ' . $_FILES['avatar']['error'];
+                    echo " <script>window.location.href = '/registration';</script>";
                     exit;
                 }
             }
@@ -68,10 +69,10 @@ class UserPresenter
             $username = $_POST['username'];
             $password = $_POST['password'];
 
-            $user = $this->userModel->authenticateUser($username, $password);
-            if ($user) {
+            $found = $this->userModel->authenticateUser($username, $password);
+            if ($found) {
                 // Se il login è avvenuto con successo, reindirizza alla pagina successiva
-                header('Location: /App/Views/pages/mapChoice.html');
+                echo "<script>window.location.href = '/mapChoice';</script>";
                 exit();  // Assicurati di uscire dopo il reindirizzamento
             } else {
                 // In caso di errore, reindirizza alla pagina di login con un messaggio di errore

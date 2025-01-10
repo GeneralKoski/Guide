@@ -13,16 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $sql = "SELECT r.id FROM Roles r WHERE r.name = '$role'";
-    $res = $conn->query($sql);
+    $res = $pdo->query($sql);
 
-    $roleId = $res->fetch_assoc();
+    $roleId = $res->fetch(PDO::FETCH_ASSOC);
     $roleId = $roleId['id'];
 
     $sql = "INSERT INTO Departments (user_id, Dmap_id, Drole_id, budget) VALUES ('$userId', '$mapId', '$roleId', 10000)";
-    $res = $conn->query($sql);
+    $res = $pdo->query($sql);
 
     if (!$res) {
-        echo $conn->error . '<br>';
+        echo $pdo . '<br>';
         return;
     }
 

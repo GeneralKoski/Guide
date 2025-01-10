@@ -23,7 +23,7 @@
     <h2>Non hai un ruolo in questa mappa!</h2>
     <h1>Seleziona un ruolo disponibile</h1>
 
-    <form action="http://localhost:3000/php/addRole.php" method="POST">
+    <form action="http://localhost/php/addRole.php" method="POST">
       <label for="role">Ruolo:</label>
       <select id="role" name="role" required></select>
 
@@ -51,7 +51,7 @@
         const params = getQueryParams();
         const mapId = params["mapId"];
 
-        const url = `http://localhost:3000/php/selectRole.php?mapId=${mapId}`;
+        const url = `http://localhost/php/selectRole.php?mapId=${mapId}`;
         // Crea una richiesta AJAX
         const xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);

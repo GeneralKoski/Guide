@@ -6,12 +6,12 @@ $userId = $_SESSION['id'];
 $username = $_SESSION['username'];
 
 $sql = 'SELECT b.name, b.color, b.width, b.height, b.happiness, b.cost FROM Buildings b';
-$result = $conn->query($sql);
+$result = $pdo->query($sql);
 
 $buildings = [];  // Inizializza un array vuoto
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
+if ($result->rowCount() > 0) {
+    while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         $buildings[] = [
             'name' => $row['name'],
             'color' => $row['color'],

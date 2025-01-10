@@ -18,7 +18,7 @@ if (empty($messageID)) {
 
 try {
     // Cancella il messaggio dalla tabella Messages
-    $stmt = $conn->prepare('DELETE FROM Messages WHERE id = ?');
+    $stmt = $pdo->prepare('DELETE FROM Messages WHERE id = ?');
     $stmt->bind_param('i', $messageID);
     $stmt->execute();
     $stmt->close();

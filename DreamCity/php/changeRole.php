@@ -19,11 +19,11 @@ if (empty($mapID) || empty($sender_id) || empty($userId) || empty($messageID)) {
 }
 
 // Inizia una transazione per garantire la coerenza dei dati
-$conn->begin_transaction();
+$pdo->begin_transaction();
 
 try {
     // Recupera il Drole_id per l'utente loggato
-    $stmt = $conn->prepare('SELECT Drole_id FROM Departments WHERE Dmap_id = ? AND user_id = ?');
+    $stmt = $pdo->prepare('SELECT Drole_id FROM Departments WHERE Dmap_id = ? AND user_id = ?');
     $stmt->bind_param('ii', $mapID, $userId);
     $stmt->execute();
     $stmt->bind_result($userRole);
@@ -31,7 +31,7 @@ try {
     $stmt->close();
 
     // Recupera il Drole_id per il sender
-    $stmt = $conn->prepare('SELECT Drole_id FROM Departments WHERE Dmap_id = ? AND user_id = ?');
+    $stmt = $pdo->prepare('SELECT Drole_id FROM Departments WHERE Dmap_id = ? AND user_id = ?');
     $stmt->bind_param('ii', $mapID, $sender_id);
     $stmt->execute();
     $stmt->bind_result($senderRole);
@@ -44,7 +44,7 @@ try {
     }
 
     // Scambia i ruoli aggiornando la tabella
-    $stmt = $conn->prepare('UPDATE Departments SET Drole_id = ? WHERE Dmap_id = ? AND user_id = ?');
+    $stmt = $pdo->prepare('UPDATE Departments SET Drole_id = ? WHERE Dmap_id = ? AND user_id = ?');
 
     // Imposta il ruolo del sender per l'utente loggato
     $stmt->bind_param('iii', $senderRole, $mapID, $userId);
@@ -57,13 +57,13 @@ try {
     $stmt->close();
 
     // Cancella il messaggio dalla tabella Messages
-    $stmt = $conn->prepare('DELETE FROM Messages WHERE id = ?');
+    $stmt = $pdo->prepare('DELETE FROM Messages WHERE id = ?');
     $stmt->bind_param('i', $messageID);
     $stmt->execute();
     $stmt->close();
 
     // Conferma la transazione
-    $conn->commit();
+    $pdo->commit();
 
     echo json_encode([
         'success' => true,
@@ -71,7 +71,7 @@ try {
     ]);
 } catch (Exception $e) {
     // In caso di errore, effettua il rollback della transazione
-    $conn->rollback();
+    $pdo->rollback();
 
     echo json_encode([
         'success' => false,

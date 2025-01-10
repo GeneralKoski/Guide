@@ -5,12 +5,12 @@ include ('../Config/config.php');  // Connessione al database
 $mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 
 $sql = "SELECT m.name, m.happiness, m.citizens FROM Maps m WHERE m.id = $mapId";
-$res = $conn->query($sql);
+$res = $pdo->query($sql);
 
 if (!$res) {
-    echo $conn->error . '<br>';
+    echo $pdo . '<br>';
     return;
 }
-$map = $res->fetch_assoc();
+$map = $res->fetch(PDO::FETCH_ASSOC);
 
 echo json_encode($map);

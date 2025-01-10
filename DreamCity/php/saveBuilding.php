@@ -13,19 +13,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rotated = $data['rotated'];
 
         $sql = "SELECT id FROM Buildings WHERE name = '$buildingType'";
-        $res = $conn->query($sql);
+        $res = $pdo->query($sql);
         if ($res) {
-            $id = $res->fetch_assoc();
+            $id = $res->fetch(PDO::FETCH_ASSOC);
             $buildingId = $id['id'];
 
             $sql = "INSERT INTO MapBuildings (MBmap_id, MBbuilding_id, x_coordinate, y_coordinate, rotated) 
                     VALUES ($mapId, '$buildingId', $x, $y, '$rotated')";
-            $res = $conn->query($sql);
+            $res = $pdo->query($sql);
 
             if ($res) {
                 echo json_encode(['status' => 'success']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => $conn->error]);
+                echo json_encode(['status' => 'error', 'message' => $pdo]);
             }
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Tipo di edificio non trovato']);

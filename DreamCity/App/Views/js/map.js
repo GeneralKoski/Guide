@@ -1,4 +1,4 @@
-fetch("http://localhost:3000/php/selectAllMessages.php")
+fetch("http://localhost/php/selectAllMessages.php")
   .then((response) => response.json())
   .then((messages) => {
     const messageContainer = document.querySelector("#messagesContainer");
@@ -57,7 +57,7 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
         acceptButton.addEventListener("click", () => {
           if (message.type === "Invite") {
             // Fai una chiamata al backend per cancellare il messaggio
-            fetch("http://localhost:3000/php/deleteMessage.php", {
+            fetch("http://localhost/php/deleteMessage.php", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -92,7 +92,7 @@ fetch("http://localhost:3000/php/selectAllMessages.php")
         // Aggiungi gestione dell'evento per il pulsante "Rifiuta"
         rejectButton.addEventListener("click", function () {
           // Fai una chiamata al backend per cancellare il messaggio
-          fetch("http://localhost:3000/php/deleteMessage.php", {
+          fetch("http://localhost/php/deleteMessage.php", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -134,7 +134,7 @@ function changeRolesInMap(mapID, sender_id, id) {
     sender_id: sender_id,
     id: id,
   };
-  fetch("http://localhost:3000/php/changeRole.php", {
+  fetch("http://localhost/php/changeRole.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -182,7 +182,7 @@ function sendMessage() {
   };
 
   // Esegui la chiamata POST al file PHP
-  fetch("http://localhost:3000/php/insertMessage.php", {
+  fetch("http://localhost/php/insertMessage.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -205,7 +205,7 @@ function sendMessage() {
 }
 
 function populateReceiverOptions() {
-  fetch("http://localhost:3000/php/selectAllUsers.php") // Percorso del file PHP
+  fetch("http://localhost/php/selectAllUsers.php") // Percorso del file PHP
     .then((response) => response.json())
     .then((users) => {
       const receiverSelect = document.getElementById("receiver");
@@ -225,7 +225,7 @@ function populateReceiverOptions() {
 }
 
 function populateUserOptions() {
-  fetch(`http://localhost:3000/php/selectMapUsers.php?mapId=${mapId}`) // Percorso del file PHP
+  fetch(`http://localhost/php/selectMapUsers.php?mapId=${mapId}`) // Percorso del file PHP
     .then((response) => response.json())
     .then((users) => {
       const userSelect = document.getElementById("selectUser");
@@ -251,7 +251,7 @@ const params = new URLSearchParams(window.location.search);
 const mapId = params.get("id"); // Restituisce il valore dell'ID
 
 // Fetch per perndere i dettagli dell'utente loggato
-fetch(`http://localhost:3000/php/userDetails.php?mapId=${mapId}`)
+fetch(`http://localhost/php/userDetails.php?mapId=${mapId}`)
   .then((response) => response.json())
   .then((data) => {
     if (data.error) {
@@ -271,7 +271,7 @@ let budget = 0;
 let citizens = 0;
 
 // Fetch per ottenere il valore iniziale di happiness
-fetch(`http://localhost:3000/php/mapDetails.php?mapId=${mapId}`)
+fetch(`http://localhost/php/mapDetails.php?mapId=${mapId}`)
   .then((response) => response.json())
   .then((data) => {
     document.getElementById("mapName").textContent = data.name;
@@ -284,14 +284,14 @@ fetch(`http://localhost:3000/php/mapDetails.php?mapId=${mapId}`)
 
 function updateMapBuildingsDB(x_coordinate, y_coordinate) {
   fetch(
-    `http://localhost:3000/php/updateMapBuildings.php?x_coordinate=${x_coordinate}&y_coordinate=${y_coordinate}&mapId=${mapId}`
+    `http://localhost/php/updateMapBuildings.php?x_coordinate=${x_coordinate}&y_coordinate=${y_coordinate}&mapId=${mapId}`
   ).catch((error) => console.error("Errore nella richiesta:", error));
 
   changeHappinessLevel(happiness); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
 }
 
 function updateBudgetDB(budget, selectedUser = null) {
-  let url = `http://localhost:3000/php/updateBudget.php?budget=${budget}&mapId=${mapId}`;
+  let url = `http://localhost/php/updateBudget.php?budget=${budget}&mapId=${mapId}`;
 
   // Se selectedUser è presente, aggiungilo alla query string
   if (selectedUser) {
@@ -310,7 +310,7 @@ function updateBudgetDB(budget, selectedUser = null) {
 function updateCitizensDB(citizens) {
   // console.log(budget);
   fetch(
-    `http://localhost:3000/php/updateCitizens.php?citizens=${citizens}&mapId=${mapId}`
+    `http://localhost/php/updateCitizens.php?citizens=${citizens}&mapId=${mapId}`
   ).catch((error) => console.error("Errore nella richiesta:", error));
 
   changeCitizensLevel(citizens); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
@@ -319,7 +319,7 @@ function updateCitizensDB(citizens) {
 // Funzione per aggiornare nel DB il valore della felicità
 function updateHappinessDB(happiness) {
   fetch(
-    `http://localhost:3000/php/updateHappiness.php?value=${happiness}&mapId=${mapId}`
+    `http://localhost/php/updateHappiness.php?value=${happiness}&mapId=${mapId}`
   ).catch((error) => console.error("Errore nella richiesta:", error));
 
   changeHappinessLevel(happiness); // Al posto di 1 c'è da mettere il quantitativo di felicità che aumenta la struttura cliccata
@@ -359,7 +359,7 @@ function updateHappinessSpan() {
 
 function saveBuildingDB(buildingType, x, y, rotated) {
   // console.log(rotated);
-  fetch("http://localhost:3000/php/saveBuilding.php", {
+  fetch("http://localhost/php/saveBuilding.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -384,7 +384,7 @@ function saveBuildingDB(buildingType, x, y, rotated) {
 // building.x_coordinate, building.y_coordinate, building.building_type;
 
 function loadBuildings() {
-  fetch(`http://localhost:3000/php/loadBuildings.php?mapId=${mapId}`)
+  fetch(`http://localhost/php/loadBuildings.php?mapId=${mapId}`)
     .then((response) => response.json())
     .then((buildings) => {
       buildings.forEach((building) => {
@@ -497,7 +497,7 @@ const previewDiv = document.getElementById("preview");
 
 let userBuildings = [];
 
-fetch(`http://localhost:3000/php/selectUserBuildings.php?mapId=${mapId}`)
+fetch(`http://localhost/php/selectUserBuildings.php?mapId=${mapId}`)
   .then((response) => response.json())
   .then((buildings) => {
     const controlsContainer = document.querySelector(".controls");
@@ -607,7 +607,7 @@ fetch(`http://localhost:3000/php/selectUserBuildings.php?mapId=${mapId}`)
     console.error("Errore nella selezione degli edifici:", error)
   );
 
-fetch("http://localhost:3000/php/selectBuildings.php")
+fetch("http://localhost/php/selectBuildings.php")
   .then((response) => response.json())
   .then((buildings) => {
     buildings.forEach((building) => {

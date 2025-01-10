@@ -7,14 +7,14 @@ $username = $_SESSION['username'];
 $mapId = isset($_GET['mapId']) ? $_GET['mapId'] : '';
 
 $sql = "SELECT (SELECT u.avatar FROM Users u WHERE u.id = $userId) as avatar, r.name, d.budget FROM Roles r, Departments d WHERE r.id = d.Drole_id AND d.user_id = $userId AND d.Dmap_id = $mapId";
-$res = $conn->query($sql);
+$res = $pdo->query($sql);
 
 if (!$res) {
-    echo $conn->error . '<br>';
+    echo $pdo . '<br>';
     return;
 }
 
-$role = $res->fetch_assoc();
+$role = $res->fetch(PDO::FETCH_ASSOC);
 
 if (!$role) {
     echo json_encode([

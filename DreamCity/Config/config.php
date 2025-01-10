@@ -1,13 +1,12 @@
 <?php
-$servername = "127.0.0.1";
-$dbname = "dreamcity";
-$username = "root";
-$password = "";
+$host = 'db';
+$db = 'dreamcity_db';
+$user = 'user';
+$pass = 'password';
 
-// Crea la connessione
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Controlla la connessione
-if ($conn->connect_error) {
-    die("Connessione fallita: " . $conn->connect_error);
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Errore di connessione: ' . $e->getMessage();
 }

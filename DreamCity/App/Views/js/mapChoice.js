@@ -1,5 +1,5 @@
 // Effettua la fetch verso allMaps.php
-fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
+fetch("http://localhost/Routes/MapRoutes.php/getMaps")
   .then((response) => response.json())
   .then((data) => {
     // Ottieni il container dove mettere le mappe
@@ -16,7 +16,7 @@ fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
       // Se la data dell'ultimo accesso è più vecchia di una settimana, chiamo il fetch per eliminare la mappa
       if (lastLoginDate < oneWeekAgo) {
         // Chiamata per eliminare la mappa dal server
-        fetch(`http://localhost:3000/php/deleteMap.php?id=${mappa.id}`, {
+        fetch(`http://localhost/php/deleteMap.php?id=${mappa.id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
@@ -44,7 +44,7 @@ fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
       boxMappa.style.cursor = "pointer";
       boxMappa.onclick = () => {
         // Prima di fare il reindirizzamento, invio la richiesta di aggiornamento al server
-        fetch(`http://localhost:3000/php/updateLastLogin.php?mapId=${mappa.id}`)
+        fetch(`http://localhost/php/updateLastLogin.php?mapId=${mappa.id}`)
           .then(() => {
             window.location.href = "/Map/map.html?id=" + mappa.id;
           })
@@ -93,7 +93,7 @@ fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
         event.stopPropagation(); // Evita che l'evento click sulla box si attivi
 
         // Invia la richiesta per registrare il clic (solo se non è stato già fatto)
-        fetch(`http://localhost:3000/php/registerClick.php`, {
+        fetch(`http://localhost/php/registerClick.php`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -117,16 +117,13 @@ fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
                 alert(
                   "Tutti hanno votato per eliminare la mappa, ora verrà cancellata!"
                 );
-                fetch(
-                  `http://localhost:3000/php/deleteMap.php?id=${mappa.id}`,
-                  {
-                    method: "DELETE",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ id: mappa.id }),
-                  }
-                )
+                fetch(`http://localhost/php/deleteMap.php?id=${mappa.id}`, {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ id: mappa.id }),
+                })
                   .then((response) => response.json())
                   .then((data) => {
                     if (data.success) {
@@ -162,7 +159,7 @@ fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
         event.stopPropagation(); // Evita che l'evento click sulla box si attivi
 
         // Invia la richiesta per registrare il clic (solo se non è stato già fatto)
-        fetch(`http://localhost:3000/php/deleteClick.php`, {
+        fetch(`http://localhost/php/deleteClick.php`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -209,5 +206,5 @@ fetch("http://localhost:3000/Routes/MapRoutes.php/getMaps")
   });
 
 document.getElementById("createMap").onclick = function () {
-  window.location.href = "/App/Views/pages/createMap.html";
+  window.location.href = "/createMap";
 };

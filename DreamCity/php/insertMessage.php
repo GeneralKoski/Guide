@@ -20,12 +20,12 @@ if (empty($type) || empty($receiver) || empty($title) || empty($content) || empt
 }
 
 $sql = "INSERT INTO Messages (title, content, type, sender_id, receiver_id, Mmap_id) VALUES ('$title', '$content', '$type', $userId, $receiver, $mapId)";
-$res = $conn->query($sql);
+$res = $pdo->query($sql);
 
 if (!$res) {
     echo json_encode([
         'success' => false,
-        'message' => 'Errore nella query: ' . $conn->error
+        'message' => 'Errore nella query: ' . $pdo
     ]);
 } else {
     echo json_encode([

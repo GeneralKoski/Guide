@@ -9,10 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
     if ($mapId > 0) {
         // Ottieni il nome dell'immagine dalla mappa nel database
         $sql = "SELECT image FROM Maps WHERE id = $mapId";
-        $result = $conn->query($sql);
+        $result = $pdo->query($sql);
 
-        if ($result && $result->num_rows > 0) {
-            $mappa = $result->fetch_assoc();
+        if ($result && $result->rowCount() > 0) {
+            $mappa = $result->fetch(PDO::FETCH_ASSOC);
             $imagePath = './uploads/' . $mappa['image'];  // Percorso dell'immagine
 
             // Rimuovi il file immagine, se esiste
@@ -22,12 +22,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
 
             // Ora elimina la mappa dal database
             $deleteSql = "DELETE FROM Maps WHERE id = $mapId";
-            $res = $conn->query($deleteSql);
+            $res = $pdo->query($deleteSql);
 
             if ($res) {
                 echo json_encode(['success' => true]);
             } else {
-                echo json_encode(['success' => false, 'error' => $conn->error]);
+                echo json_encode(['success' => false, 'error' => $pdo]);
             }
         } else {
             echo json_encode(['success' => false, 'error' => 'Mappa non trovata']);
